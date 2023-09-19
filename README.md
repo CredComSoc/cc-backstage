@@ -1,4 +1,4 @@
-# cc-backstage
+# CC Backstage
 
 Netlify auto-deploys to [cc-backstage.netlify.app](https://cc-backstage.netlify.app)
 
