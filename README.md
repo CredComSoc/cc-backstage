@@ -1,5 +1,9 @@
 # cc-backstage
 
+Netlify auto-deploys to [cc-backstage.netlify.app](https://cc-backstage.netlify.app)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e888cfbd-d88f-45ae-871b-81e821ec020f/deploy-status)](https://app.netlify.com/sites/cc-backstage/deploys)
+
 ## Build Setup
 
 ```bash
