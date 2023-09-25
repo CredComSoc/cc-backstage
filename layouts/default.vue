@@ -80,6 +80,11 @@
             title: 'Inspire',
             to: '/inspire',
           },
+          {
+            icon: 'mdi-chart-bubble',
+            title: 'Admin Panel',
+            to: '/admin/admin_panel'
+          }
         ],
         miniVariant: false,
         right: false,
