@@ -6,6 +6,8 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
+
+// Schema for the GraphQL
 let schema = buildSchema(`
 
     type User{
@@ -24,10 +26,13 @@ var root ={
         return "Testusername"
     },
     user: () =>{
-        return {
+        let data = {
             username: "Testname",
-            balance: 100
+            balance: 100,
+            transactions:[]
         }
+        data.transactions.push("1 currency for 1 food")
+        return data
 
     },
 }
@@ -40,7 +45,7 @@ app.use(
     })
 )
 
-app.get('/example', function (req, res){
+app.get('/example', function (req, res){ // initial
     let data = {
         username: {},
         example: {},
