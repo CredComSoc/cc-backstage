@@ -6,7 +6,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-
+// TODO: Move to a seperate file so Express and Graphql are seperated
 // Schema for the GraphQL
 let schema = buildSchema(`
 
@@ -15,17 +15,29 @@ let schema = buildSchema(`
         balance: Int
         transactions:[String]
     }
+    type Member{
+        name: String
+        balance: Int
+        status: String
+        phone: Int
+    }
     type Query{
         username: String
         user: User
+        member: Member
+        allMembers: [Member]
     }
 
-`)
+`) // add to schema: user that has "Member Name, Balance, Status, Phone Number"
+    // Transactions involving one specific member.
+    // Send how many members are online
+    // Send how many transactions were done on specific days
+
 var root ={
     username: () => {
         return "Testusername"
     },
-    user: () =>{
+    user: () =>{ // Temporary type for testing purposes
         let data = {
             username: "Testname",
             balance: 100,
@@ -33,6 +45,11 @@ var root ={
         }
         data.transactions.push("1 currency for 1 food")
         return data
+    },
+    member: () => { // A query that should try to match what information the app needs about a single member
+
+    },
+    allMembers: () => {
 
     },
 }

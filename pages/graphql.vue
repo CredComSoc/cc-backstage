@@ -55,7 +55,7 @@ export default {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ query: "{ user {username}, username }" }),
+      body: JSON.stringify({ query: "{ user {username, balance}, username }" }),
       })
       .then(r => r.json())
       .then(data => console.log("data returned:", data))
