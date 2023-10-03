@@ -40,7 +40,7 @@ let schema = buildSchema(`
     type Query{
         username: String
         user: User
-        member: Member
+        member(id: Int, name: String): Member
         allMembers: [Member]
     }
 
@@ -49,8 +49,42 @@ let schema = buildSchema(`
     // Transactions involving one specific member.
     // Send how many members are online
     // Send how many transactions were done on specific days
+const members = [
+   {id:1,
+    name: "exempel",
+    balance: 100,
+    status: "Online",
+    phone: 33333},
+    {id:2,
+        name: "Namnet",
+        balance: 200,
+        status: "Offline",
+        phone: 33333}
+]
 
 
+async function getMember({id, name}) {
+    //Now from array, later from Credit Coop backend
+    var temp_member
+    var arg
+    if(id!=null){
+        var temp_member = members.reduce((x, member) => x.set(member.id, member), new Map())
+        var arg = id
+    }else if(name!=null){
+        var temp_member = members.reduce((x, member) => x.set(member.name, member), new Map())
+        var arg = name
+    }else{
+        return null
+    }
+
+    return temp_member.get(arg)
+
+}
+
+async function getAllMembers(){
+    //Now from array, later from Credit Coop backend
+    return members
+}
 
 var root ={
     username: () => {
@@ -65,11 +99,11 @@ var root ={
         data.transactions.push("1 currency for 1 food")
         return data
     },
-    member: (arg) => { // A query that should try to match what information the app needs about a single member
-        return getMember(arg)
+    member: ({id, name}) => { // A query that should try to match what information the app needs about a single member
+        return getMember({id, name})
     },
-    allMembers: (arg) => {
-        return getAllMembers(arg)
+    allMembers: () => {
+        return getAllMembers()
     },
 }
 app.use(
