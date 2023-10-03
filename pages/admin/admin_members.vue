@@ -2,6 +2,7 @@
 <template>
     <div class="container_all_listings">
         <ul>
+
             <div v-for="member in  members ">
                 <li>
                     <NuxtLink :to="{ name: 'admin-member', params: { id: member.id, name: member.name } }"> Member: {{
@@ -25,12 +26,8 @@ export default {
 
     data() {
         return {
-            members:
-                [  // Fake users array
-                    { id: 1, name: "John Doe", email: "john.doe@example.com", status: "online" },
-                    { id: 2, name: "Jane Smith", email: "jane.smith@example.com", status: "offline" },
-                    { id: 3, name: "Bob Brown", email: "bob.brown@example.com", status: "away" },
-                ],
+            members:[]
+
         }
     },
 
@@ -41,8 +38,29 @@ export default {
 
         gotoOffersWants(member) {
             this.$router.push("/admin/offers_wants");
+        },
+        async getMembers(){
+            var member_arr
+            await fetch("/api/graphql", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            },
+            body: JSON.stringify({ query: "{ allMembers{ id, name, balance, status, phone}  }" }),
+            }).then(r => r.json())
+            .then(data => member_arr = data)
+            member_arr = member_arr.data.allMembers
+            console.log(member_arr)
+            this.members = member_arr
+            console.log(this.members)
         }
+
+    },
+    mounted: function(){
+        this.getMembers()
     }
+
 }
 </script>
 
