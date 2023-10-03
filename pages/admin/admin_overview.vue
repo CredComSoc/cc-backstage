@@ -1,24 +1,20 @@
 <template>
  
   
-<div>  
+<div> 
 
-    <!-- Text -->
     
-  
-    <!-- Icon layout -->
-    <v-row align="center" justify="center">
-      <v-col cols="1">
+
         
-        <div class="dashboard-text">
-          {{ dashBoardText }}
-        </div>     
+  <div class="dashboard-text">
+    {{ dashBoardText }}
+  </div>     
         
-        <div class="containers">
-    <div class="container container--red" @click="displayOnlineUserData">
+  <div class="containers">
+    <button class="container container--red" @click="displayOnlineUserData">
     
       
-      <!-- Image icon -->
+
       <img class="ImageLoader" :src="onlineUser" alt="User image">  
       
       
@@ -35,11 +31,11 @@
       </div>
 
       
-    </div>
+    </button>
 
-    <div class="container container--yellow" @click="displayTradeData">
-      <!-- Image icon -->
-      <img class="ImageLoader" :src="trade" alt="Trade image">  
+    <button class="container container--yellow" @click="displayTradeData">
+      
+      <img class="ImageLoader" :src="trade" alt="Trade image">   
       
       
       <div class="white-box">
@@ -53,11 +49,11 @@
         </div>
 
       </div>
-    </div>
+    </button> 
 
 
-    <div class="container container--blue">
-      <!-- Image icon -->
+    <button class="container container--blue" @click="displayListedData">
+       
       <img class="ImageLoader" :src="listed" alt="listed image">  
       
       
@@ -69,15 +65,15 @@
         
         <div class="section section-bottom">
           562
-        </div>
+        </div> 
 
-      </div>
+       </div>  
 
       
-    </div>
+    </button>
 
-    <div class="container container--green">
-      <!-- Image icon -->
+    <button class="container container--green">
+
       <img class="ImageLoader" :src="trade" alt="Trade image">  
       
       
@@ -91,14 +87,14 @@
           will.i.am
         </div>
 
-      </div>
+      </div> 
 
       
-    </div>
+     </button>
 
-    <div class="container container--red">
-      <!-- Image icon -->
-      <img class="ImageLoader" :src="trade" alt="Trade image">  
+    <button class="container container--red">
+       
+       <img class="ImageLoader" :src="trade" alt="Trade image">  
       
       
       <div class="white-box">
@@ -112,24 +108,34 @@
         </div>
 
       </div>
+    </button>
 
-      
+  </div>  
+    
+
+  <div class="chart-container">
+
+    <div>
+      <apexchart type="area" :options="chartOptions" :series="chartSeries" class="chart">
+      </apexchart>
     </div>
 
-        </div>  
-      </v-col>
-    </v-row>
-   
-    
-     <v-row align="center" justify="center">
-      <v-col cols="8">  
-        <apexchart type="area" :options="chartOptions" :series="chartSeries" height="550" width = "100%">
-        </apexchart>
-      </v-col>
-    </v-row>
+    <div class="chart-buttons">
+      <v-btn> 1w </v-btn>
+      <v-btn> 1m </v-btn>
+      <v-btn> 3m </v-btn>
+      <v-btn> 1y </v-btn>
+    </div>
+  </div>
+
+
+
   
 
-  </div>
+</div>
+
+ 
+
 </template>
 
 <script>
@@ -165,11 +171,21 @@ export default {
 
       dashBoardText: "",
 
-      chartSeries:
+      chartSeries: //Date structure for chart
       [
         {}
       ],
 
+      
+      dataListedTrades:
+      [
+        {
+          name: '# of Listed',
+          data: [500, 349, 675, 110, 99], // fake data
+        }
+      ],
+      
+      
       dataOnlineUsr:
       [
         {
@@ -178,9 +194,7 @@ export default {
         }
       ],
 
-
-
-      dataTrades:   //Date structure for chart
+      dataTrades:   
       [
         {
           name: '# of Trades',
@@ -203,17 +217,12 @@ export default {
           type: 'gradient',
           gradient: 
           {
-            type: 'vertical',
-            shadeIntensity: 1,
-            gradientToColors: ['#FF0000'], // default endpoint color
-            opacityFrom: 0.9,
-            opacityTo: 0.4,
-            stops: [0, 100]
+            
           }
         },
         dataLabels: 
         {
-          enabled: true
+          enabled: false
         },
         stroke: 
         {
@@ -221,8 +230,11 @@ export default {
         },
         xaxis: 
         {
-          categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-        }
+          categories: ['1/10', '2/10', '3/10', '4/10', '5/10']
+        },
+
+      
+      
       }
 
     };
@@ -257,21 +269,27 @@ export default {
       }
     },
 
+    // Displays the onlineusers data in the graph.
     displayOnlineUserData()
     {
       this.chartSeries = this.dataOnlineUsr;
       const newGradient = 
       {
         type: 'vertical',
-        shadeIntensity: 1,
-        gradientToColors: ['#FF0000'], // red
+        shadeIntensity: 1.0,
+        gradientToColors: ['#f50707'], // red
+        gradientFromColors: ['#f50707'],
         opacityFrom: 0.9,
         opacityTo: 0.4,
-        stops: [0, 100]
+        stops: [0, 100],
+        colorStops: [],
+    
       };
-      this.updateChartOptions(newGradient);
+      const newStrokeColor = '#FF0000'; // red
+      this.updateChartOptions(newGradient, newStrokeColor);
     },
 
+    // Displays the trade data in the graph.
     displayTradeData()
     {
       this.chartSeries = this.dataTrades;
@@ -280,15 +298,36 @@ export default {
         type: 'vertical',
         shadeIntensity: 1,
         gradientToColors: ['#FFD700'], // gold for example
+        gradientFromColors: ['#FFD700'],
+        opacityFrom: 0.9,
+        opacityTo: 0.4,
+        stops: [0, 100],
+        colorStops: []
+      };
+      const newStrokeColor = '#FFD700'; // gold
+      this.updateChartOptions(newGradient, newStrokeColor);
+    },
+
+    // Displays the listed data in the graph.
+    displayListedData()
+    {
+      this.chartSeries = this.dataListedTrades;
+      const newGradient = 
+      {
+        type: 'vertical',
+        shadeIntensity: 1,
+        gradientToColors: ['#0147AB'], 
+        gradientFromColors: ['#0147AB'],
         opacityFrom: 0.9,
         opacityTo: 0.4,
         stops: [0, 100]
       };
-      this.updateChartOptions(newGradient);
+      const newStrokeColor = '#0147AB'; 
+      this.updateChartOptions(newGradient, newStrokeColor)
     },
 
 
-    updateChartOptions(gradient) 
+    updateChartOptions(gradient, strokeColor) 
     {
     this.chartOptions = Object.assign({}, this.chartOptions, 
       {
@@ -296,18 +335,20 @@ export default {
         {
          type: 'gradient',
          gradient: gradient
-        }
+        },
+        stroke: {
+        curve: 'smooth',
+        colors: [strokeColor], // Set the stroke color here
+      },
       });
     }
-
-
-
 
   },
 
   mounted()
   {
     this.printDashboardText("Dashboard");
+    this.displayOnlineUserData();
   },
 
 }
@@ -316,6 +357,7 @@ export default {
 </script>
 
 <style scoped>
+
 
 
 
@@ -355,6 +397,42 @@ export default {
   
 }
 
+
+.chart
+{
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -30%);
+  width: 40vw;
+  height: 40vh;
+}
+
+.chart-buttons
+{
+  display: flex;
+  flex-direction: column;
+  gap:16px;
+  width: 75px;
+  margin-right: 350px;
+  margin-top: 25px;
+  color: white;
+}
+
+.chart-container
+{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+
+
 .container--blue
 {
   background: rgb(2,0,36);
@@ -381,7 +459,7 @@ export default {
 
 .container:hover
 {
-  transform: scale(1.1);
+  transform: scale(1.04);
 }
 
 .section
@@ -421,8 +499,8 @@ export default {
 {
   display: flex;
   justify-content: center;
-  align-items: center;
-  
+  align-items: center;  
+  padding-left: 60px;
 }
 
 
