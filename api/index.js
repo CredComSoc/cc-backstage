@@ -16,10 +16,26 @@ let schema = buildSchema(`
         transactions:[String]
     }
     type Member{
+        id: Int
         name: String
         balance: Int
         status: String
         phone: Int
+    }
+    type Entry{
+        payer: Int
+        payee: Int
+        amount: Int
+        description: String
+        author: String
+        metadata: String
+    }
+    type Transaction{
+        id: Int
+        version: Int
+        state: String
+        type: String
+        entries: [Entry]
     }
     type Query{
         username: String
@@ -28,10 +44,13 @@ let schema = buildSchema(`
         allMembers: [Member]
     }
 
-`) // add to schema: user that has "Member Name, Balance, Status, Phone Number"
+
+`)  // add to schema: user that has "Member Name, Balance, Status, Phone Number"
     // Transactions involving one specific member.
     // Send how many members are online
     // Send how many transactions were done on specific days
+
+
 
 var root ={
     username: () => {
@@ -46,11 +65,11 @@ var root ={
         data.transactions.push("1 currency for 1 food")
         return data
     },
-    member: () => { // A query that should try to match what information the app needs about a single member
-
+    member: (arg) => { // A query that should try to match what information the app needs about a single member
+        return getMember(arg)
     },
-    allMembers: () => {
-
+    allMembers: (arg) => {
+        return getAllMembers(arg)
     },
 }
 app.use(
