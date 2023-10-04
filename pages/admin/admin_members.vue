@@ -21,6 +21,8 @@
 <script>
 
 // import Member from '@/pages/admin/member.vue'
+import { getMembers } from '/pages/gqlFetch.js'
+
 
 export default {
 
@@ -39,26 +41,13 @@ export default {
         gotoOffersWants(member) {
             this.$router.push("/admin/offers_wants");
         },
-        async getMembers(){
-            var member_arr
-            await fetch("/api/graphql", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            },
-            body: JSON.stringify({ query: "{ allMembers{ id, name, balance, status, phone}  }" }),
-            }).then(r => r.json())
-            .then(data => member_arr = data)
-            member_arr = member_arr.data.allMembers
-            console.log(member_arr)
-            this.members = member_arr
-            console.log(this.members)
+        async updateMembers(){
+            this.members = await getMembers()
         }
 
     },
     mounted: function(){
-        this.getMembers()
+        this.updateMembers()
     }
 
 }

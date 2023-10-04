@@ -13,6 +13,7 @@ let schema = buildSchema(`
         balance: Int
         status: String
         phone: Int
+        email: String
     }
     type Entry{
         payer: Int
@@ -46,16 +47,20 @@ let schema = buildSchema(`
     // Send how many members are online
     // Send how many transactions were done on specific days
 const members = [
-   {id:1,
+   {
+    id:1,
     name: "exempel",
     balance: 100,
     status: "Online",
-    phone: 33333},
-    {id:2,
-        name: "Namnet",
-        balance: 200,
-        status: "Offline",
-        phone: 33333}
+    phone: 33333,
+    email: "example@example.com"},
+    {
+    id:2,
+    name: "Namnet",
+    balance: 200,
+    status: "Offline",
+    phone: 33333,
+    email: "test@example.com"}
 ]
 
 
@@ -102,7 +107,7 @@ var root ={
     member: ({id, name}) => { // A query that should try to match what information the app needs about a single member
         return getMember({id, name})
     },
-    allMembers: () => {
+    allMembers: () => { // A Query that returns all members
         return getAllMembers()
     },
 
