@@ -49,18 +49,26 @@ let schema = buildSchema(`
 const members = [
    {
     id:1,
-    name: "exempel",
+    name: "John Doe",
     balance: 100,
     status: "Online",
     phone: 33333,
-    email: "example@example.com"},
+    email: "john.doe@example.com"},
     {
     id:2,
-    name: "Namnet",
+    name: "Jane Smith",
     balance: 200,
     status: "Offline",
     phone: 33333,
-    email: "test@example.com"}
+    email: "jane.smith@example.com"},
+    {
+    id:3,
+    name: "Bob Brown",
+    balance: 300,
+    status: "Away",
+    phone: 50302,
+    email: "bob.brown@example.com"
+    }
 ]
 
 
