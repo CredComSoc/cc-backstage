@@ -62,6 +62,7 @@ export default {
     margin: auto;
 }
 
+
 ul {
     padding: 0;
     margin: auto;
