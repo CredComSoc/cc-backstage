@@ -1,29 +1,61 @@
 <template>
 	<div>
 		<h1>{{ name }}</h1>
-		<v-btn>Barterkronor</v-btn>
-		<v-btn>Kronor</v-btn>
 
 		<v-container>
 			<v-row>
+				<v-col xs="4">
+					<div class="tab_barterkronor" @click="toggleToBarterTab" v-if="barterkronorTabVisible">
+						Barterkronor
+					</div>
+					<div class="tab_barterkronor_dimmed" @click="toggleToBarterTab" v-if="kronorTabVisible">
+						Barterkronor
+					</div>
+
+
+
+				</v-col>
 				<v-col>
+					<div class="tab_sek" @click="toggleToKronorTab" v-if="kronorTabVisible">
+						Kronor
+					</div>
+					<div class="tab_sek_dimmed" @click="toggleToKronorTab" v-if="barterkronorTabVisible">
+						Kronor
+					</div>
 
 				</v-col>
 			</v-row>
 		</v-container>
-		<!--
+
+
+
+		<v-container v-if="barterkronorTabVisible">
+			<v-row v-for="transaction in transactions">
 				<v-col>
-					{{ member.balance }} SEK
+					{{ transaction.status }}
+				</v-col>
+				<v-col>
+					{{ transaction.date }}
+				</v-col>
+				<v-col>
+					{{ transaction.counterpart }}
+				</v-col>
+				<v-col>
+					{{ transaction.description }}
 				</v-col>
 
 				<v-col>
-					{{ member.status }}
+					{{ transaction.amount }}
 				</v-col>
-
+			</v-row>
+		</v-container>
+		<v-container v-if="kronorTabVisible">
+			<v-row>
 				<v-col>
-					{{ member.phone }}
+					Fakturor
 				</v-col>
-
+			</v-row>
+			<!--
 				<v-col>
 					<NuxtLink :to="{
 						name: 'admin-member',
@@ -53,22 +85,47 @@
 						<v-btn>Offers & Wants</v-btn>
 					</NuxtLink>
 				</v-col>
+
 			</v-row>
+			-->
 		</v-container>
--->
+
 	</div>
 </template>
 
 
 
 <script>
-// import { EXPRESS_URL } from '@/serverFetch'
 
 export default {
+
+
 	data() {
 		return {
 			id: this.$route.params.id,
-			name: this.$route.params.name
+			name: this.$route.params.name,
+
+			transactions: [
+				{ status: "Finished", date: "2023-09-12", counterpart: "Ben Johnson", description: "Shoes", amount: "110" },
+				{ status: "Pending", date: "2023-09-12", counterpart: "John Benson", description: "Hat", amount: "22" },
+				{ status: "Pending", date: "2020-01-10", counterpart: "Sune Mangs", description: "Shirt", amount: "220" }
+			],
+
+			barterkronorTabVisible: true,
+			kronorTabVisible: false
+
+		}
+	},
+
+	methods: {
+		toggleToBarterTab() {
+			this.kronorTabVisible = false;
+			this.barterkronorTabVisible = true;
+		},
+
+		toggleToKronorTab() {
+			this.kronorTabVisible = true;
+			this.barterkronorTabVisible = false;
 		}
 	}
 }
@@ -142,6 +199,34 @@ h4 {
 
 h5 {
 	margin: 0rem;
+}
+
+.tab_barterkronor {
+	background-color: red;
+	padding: 5px;
+	margin-right: 0%;
+}
+
+.tab_barterkronor_dimmed {
+	background-color: red;
+	padding: 5px;
+	margin-right: 0%;
+	opacity: 50%;
+}
+
+.tab_sek {
+	color: white;
+	background-color: blue;
+	padding: 5px;
+	margin-left: 0%;
+}
+
+.tab_sek_dimmed {
+	color: white;
+	background-color: blue;
+	padding: 5px;
+	margin-left: 0%;
+	opacity: 50%;
 }
 
 .button {
