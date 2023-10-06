@@ -1,20 +1,54 @@
 
 <template>
-    <div class="container_all_listings">
-        <ul>
+    <div>
+        <v-container>
+            <v-row v-for="member in members">
+                <v-col class="name_col">
+                    {{ member.name }}
+                </v-col>
+                <v-col>
+                    {{ member.balance }} SEK
+                </v-col>
 
-            <div v-for="member in  members ">
-                <li>
-                    <NuxtLink :to="{ name: 'admin-member', params: { id: member.id, name: member.name } }"> Member: {{
-                        member.name }}</NuxtLink> <a v-bind:href="`mailto:${member.email}`">Email</a>
-                    <br>
-                    <v-btn @click="initTransaction(member.name)">Init transaction</v-btn>
+                <v-col>
+                    {{ member.status }}
+                </v-col>
+
+                <v-col>
+                    {{ member.phone }}
+                </v-col>
+
+                <v-col>
+                    <NuxtLink :to="{
+                        name: 'admin-member',
+                        params: { id: member.id, name: member.name }
+                    }">
+                        <v-btn>Account</v-btn>
+                    </NuxtLink>
+                </v-col>
+
+                <v-col>
+                    <NuxtLink :to="{
+                        name: 'admin-member',
+                        params: { id: member.id, name: member.name }
+                    }">
+                        <v-btn>Transact</v-btn>
+                    </NuxtLink>
+                </v-col>
+
+                <v-col>
+                    <a v-bind:href="`mailto:${member.email}`">
+                        <v-btn>Email</v-btn>
+                    </a>
+                </v-col>
+
+                <v-col>
                     <NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.name } }">
                         <v-btn>Offers & Wants</v-btn>
                     </NuxtLink>
-                </li>
-            </div>
-        </ul>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
@@ -28,8 +62,35 @@ export default {
 
     data() {
         return {
-            members:[]
-
+            members: []
+            /*
+            members: [
+                {
+                    id: 1,
+                    name: "John Doe",
+                    balance: 100,
+                    status: "Online",
+                    phone: 33333,
+                    email: "john.doe@example.com"
+                },
+                {
+                    id: 2,
+                    name: "Jane Smith",
+                    balance: 200,
+                    status: "Offline",
+                    phone: 33333,
+                    email: "jane.smith@example.com"
+                },
+                {
+                    id: 3,
+                    name: "Bob Brown",
+                    balance: 300,
+                    status: "Away",
+                    phone: 50302,
+                    email: "bob.brown@example.com"
+                }
+            ]
+            */
         }
     },
 
@@ -41,12 +102,12 @@ export default {
         gotoOffersWants(member) {
             this.$router.push("/admin/offers_wants");
         },
-        async updateMembers(){
+        async updateMembers() {
             this.members = await getMembers()
         }
 
     },
-    mounted: function(){
+    mounted: function () {
         this.updateMembers()
     }
 
@@ -66,6 +127,10 @@ ul {
     padding: 0;
     margin: auto;
 
+}
+
+.name_col {
+    width: 500px;
 }
 
 .container_all_listings>* {

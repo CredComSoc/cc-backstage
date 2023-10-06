@@ -1,38 +1,60 @@
-<!--
-This page may cause weird errors in the console if the variable-names from listingObj
-do not match the equivalent of the database.
--->
 <template>
 	<div>
-		Hello, user {{ name }}!
+		<h1>{{ name }}</h1>
+		<v-btn>Barterkronor</v-btn>
+		<v-btn>Kronor</v-btn>
 
+		<v-container>
+			<v-row>
+				<v-col>
 
+				</v-col>
+			</v-row>
+		</v-container>
 		<!--
-		<div class="button">
-			<div class="element-container" @click="enterProfile">
-				<div class="imgContainer">
-	 --> <!-- <img v-if="this.listingObj.logo !== ''" :src='getImgURL()' /> -->
-		<!-- <img v-if="this.listingObj.logo == ''" src='@/assets/list_images/user.png' /> -->
-		<!-- 				</div>
-				<h4 class="element-title"> {{ listingObj.accountName }} </h4>
-				<h5 class="element-text one">Balance: <br />{{ '0Kr' }}</h5>
-				<h5 class="element-text two">Online: <br />{{ getOnlineStatus() }}</h5>
-				<h5 class="element-text tre"> {{ listingObj.phone }} </h5>
-				<div class="button-container">
-					<button @click="userselected">{{ $t('user.profile') }}</button>
-					<button @click="null">{{ $t('transactions') }}</button>
-					<button @click="null">{{ $t('user.email') }}</button>
-					<button @click="null">{{ $t('user.purchase_requests') }}</button>
-				</div>
-			</div>
+				<v-col>
+					{{ member.balance }} SEK
+				</v-col>
 
-		</div>
-	-->
+				<v-col>
+					{{ member.status }}
+				</v-col>
 
-		<!--
-  <router-link :to="{ name: 'MemberUserprofile', params: { userprofile: listingObj.accountName }} ">
+				<v-col>
+					{{ member.phone }}
+				</v-col>
 
-    </router-link>
+				<v-col>
+					<NuxtLink :to="{
+						name: 'admin-member',
+						params: { id: member.id, name: member.name }
+					}">
+						<v-btn>Account</v-btn>
+					</NuxtLink>
+				</v-col>
+
+				<v-col>
+					<NuxtLink :to="{
+						name: 'admin-member',
+						params: { id: member.id, name: member.name }
+					}">
+						<v-btn>Transact</v-btn>
+					</NuxtLink>
+				</v-col>
+
+				<v-col>
+					<a v-bind:href="`mailto:${member.email}`">
+						<v-btn>Email</v-btn>
+					</a>
+				</v-col>
+
+				<v-col>
+					<NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.name } }">
+						<v-btn>Offers & Wants</v-btn>
+					</NuxtLink>
+				</v-col>
+			</v-row>
+		</v-container>
 -->
 	</div>
 </template>
