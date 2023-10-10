@@ -1,4 +1,5 @@
 const { buildSchema } = require("graphql")
+import {CC_BACKEND_URL} from './config.js'
 /*In the schema below, objects can be defined for GraphQL to use in queries or mutations*/
 let schema = buildSchema(`
 
@@ -101,8 +102,30 @@ async function getMember({id, name}) { // Get a single member, selected by eithe
 }
 
 async function getAllMembers(){ // Get a list of all the members
-    //Now from array, later from Credit Coop backend
-    const member_arr = await fetch("http://localhost:3000" + '/data', {
+    //Now from Credit Coop backend
+    // This call necessarily fetches a lot of information
+    // I've been unable  to find a call which fetches solely the allMembers
+    // Either we can find a way to call seperately to get only what we need
+    // or find a way to utilize this large amount of data (Some clever system or caching? Perhaps it is possible for the data recieved to "follow" the user to whichever page it goes to using something in vue)
+    //What the fetch actually returns:
+    /*
+      user: {},
+      myArticles: [],
+      myCart: [],
+
+      allMembers: [],
+      allArticles: [],
+
+      saldo: 0,
+      creditLine: 0,
+
+      requests: [],
+      pendingPurchases: [],
+      completedTransactions: [],
+      allEvents: []
+    */
+
+    const member_arr = await fetch(CC_BACKEND_URL + '/data', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -113,12 +136,16 @@ async function getAllMembers(){ // Get a list of all the members
       }).catch(() => {
         return false
       })
-      console.log(member_arr)
-      console.log("2")
-      console.log(member_arr.allMembers)
+
       return member_arr.allMembers
     //return members
 }
+
+// getOffers calling CCbackend/articles with user as input
+// Get offers related to a specific user from the CC-backend
+
+//getTransactions - calling backend or better to call the node directly?
+// Get transactions related to a specific user from the CC-node
 
 async function addNewMember(input){
     members.push(input)
