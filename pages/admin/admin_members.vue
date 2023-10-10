@@ -1,15 +1,16 @@
 
 <template>
     <div class="container_all_listings">
+         <button @click="updateMembers">Object</button>
         <ul>
 
             <div v-for="member in  members ">
                 <li>
-                    <NuxtLink :to="{ name: 'admin-member', params: { id: member.id, name: member.name } }"> Member: {{
-                        member.name }}</NuxtLink> <a v-bind:href="`mailto:${member.email}`">Email</a>
+                    <NuxtLink :to="{ name: 'admin-member', params: { id: member.id, name: member.accountName } }"> Member: {{
+                        member.accountName }}</NuxtLink> <a v-bind:href="`mailto:${member.email}`">Email</a>
                     <br>
-                    <v-btn @click="initTransaction(member.name)">Init transaction</v-btn>
-                    <NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.name } }">
+                    <v-btn @click="initTransaction(member.accountName)">Init transaction</v-btn>
+                    <NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.accountName } }">
                         <v-btn>Offers & Wants</v-btn>
                     </NuxtLink>
                 </li>

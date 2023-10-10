@@ -10,9 +10,10 @@ export async function getMembers(){
     "Content-Type": "application/json",
     Accept: "application/json",
     },
-    body: JSON.stringify({ query: "{ allMembers{ id, name, balance, status, phone, email}  }" }),
+    body: JSON.stringify({ query: "{ allMembers{ id, accountName, is_admin, email, description, address, city, phone, last_online}  }" }),
     }).then(r => r.json())
     .then(data => member_arr = data)
     member_arr = member_arr.data.allMembers
+    console.log(member_arr)
     return member_arr
 }

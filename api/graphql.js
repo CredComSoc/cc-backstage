@@ -7,13 +7,23 @@ let schema = buildSchema(`
         balance: Int
         transactions:[String]
     }
+    type Billing{
+        name: String
+        box: String
+        address: String
+        orgNumber: String
+    }
     type Member{
         id: Int
-        name: String
-        balance: Int
-        status: String
-        phone: Int
+        accountName: String
+        is_admin: Boolean
         email: String
+        description: String
+        address: String
+        city: String
+        phone: String
+        billing: Billing
+        last_online: String
     }
     type Entry{
         payer: Int
@@ -92,7 +102,22 @@ async function getMember({id, name}) { // Get a single member, selected by eithe
 
 async function getAllMembers(){ // Get a list of all the members
     //Now from array, later from Credit Coop backend
-    return members
+    const member_arr = await fetch("http://localhost:3000" + '/data', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      }).then((response) =>{
+        return response.json()
+      }).catch(() => {
+        return false
+      })
+      console.log(member_arr)
+      console.log("2")
+      console.log(member_arr.allMembers)
+      return member_arr.allMembers
+    //return members
 }
 
 async function addNewMember(input){
