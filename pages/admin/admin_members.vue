@@ -44,7 +44,6 @@ export default {
         async updateMembers(){
             this.members = await getMembers()
         }
-
     },
     mounted: function(){
         this.updateMembers()
