@@ -35,7 +35,7 @@
 
 
 <script>
-
+import {getUserArticles} from '/pages/gqlFetch.js'
 export default {
 
 	data() {
@@ -60,6 +60,21 @@ export default {
 		}
 
 	},
+	methods: {
+		async updateOffers(){
+			var articles = await getUserArticles(this.$route.params.name)
+			articles = JSON.parse(articles)
+			this.offers = articles.filter(function (article){
+				return article.status == "offer"
+			})
+			this.wants = articles.filter(function (article){
+				return article.status == "want"
+			})
+		}
+	},
+	mounted: function(){
+		this.updateOffers()
+	}
 
 
 

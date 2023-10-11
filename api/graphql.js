@@ -41,11 +41,25 @@ let schema = buildSchema(`
         type: String
         entries: [Entry]
     }
+    type Article{
+        id: String
+        title: String
+        longDesc: String
+        article: String
+        category: String
+        status: String
+        destination: String
+        price: String
+        uploadDate: String
+        userUploader: String
+        userId: String
+    }
     type Query{
         username: String
         user: User
         member(id: Int, name: String): Member
         allMembers: [Member]
+        allUserArticles(accountName: String!): [Article]
     }
 
 
@@ -141,6 +155,24 @@ async function getAllMembers(){ // Get a list of all the members
     //return members
 }
 
+async function getUserArticles(username){ // Get all article data related to a user
+    console.log(username.accountName)
+    const member_arr = await fetch(CC_BACKEND_URL + '/data', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        user: username.accountName
+      }).then((response) =>{
+        return response.json()
+      }).catch(() => {
+        return false
+      })
+      console.log(member_arr)
+      return member_arr.myArticles
+}
+
 // getOffers calling CCbackend/articles with user as input
 // Get offers related to a specific user from the CC-backend
 
@@ -169,6 +201,9 @@ var root ={
     },
     allMembers: () => { // A Query that returns all members
         return getAllMembers()
+    },
+    allUserArticles: ({accountName}) => {
+        return getUserArticles({accountName})
     },
 
 }
