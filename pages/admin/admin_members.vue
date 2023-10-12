@@ -1,6 +1,7 @@
 
 <template>
     <div>
+        <member_header></member_header>
         <v-container>
             <v-row v-for="member in members">
                 <v-col class="name_col">
@@ -56,13 +57,18 @@
 
 // import Member from '@/pages/admin/member.vue'
 import { getMembers } from '/pages/gqlFetch.js'
+import member_header from '/components/member_header.vue'
 
 
 export default {
 
+    components: {
+        member_header
+    },
+
     data() {
         return {
-            members: []
+            members: [],
         }
     },
 
@@ -87,6 +93,33 @@ export default {
 </script>
 
 <style scoped>
+.member-header {
+    width: 100%;
+}
+.member-header-middle {
+    text-align: center;
+    margin: auto;
+    color: rgb(165, 9, 9);
+    font-size: large;
+    font-weight: bold;;
+}
+.member-header-right {
+    text-align: right;
+    margin: auto;
+}
+form {
+	max-width: 420px;
+	margin: 0px auto;
+	background: #ddd;
+	text-align: left;
+}
+input {
+	display: block;
+	padding: 10px 6px;
+	width: 100%;
+	box-sizing: border-box;
+	color: #000000;
+}
 .container_all_listings {
     display: flex;
     flex-direction: column;
