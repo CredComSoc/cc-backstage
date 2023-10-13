@@ -566,13 +566,6 @@ export default
   color: white;
 }
 
-
-
-
-
-
-
-
 .ImageLoader
 {
   margin: 15px;
