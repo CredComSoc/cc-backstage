@@ -45,7 +45,7 @@ export async function getUserArticles(name){
           variables: { accountName: name }, }),
     }).then(r => r.json())
       .then(data => articles = data)
-      articles.data
+      articles = JSON.stringify(articles.data.allUserArticles)
       console.log(articles)
     return articles
 }

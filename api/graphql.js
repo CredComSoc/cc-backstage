@@ -170,7 +170,7 @@ async function getUserArticles(username){ // Get all article data related to a u
         return false
       })
       console.log(member_arr)
-      return member_arr.myArticles
+      return member_arr.allArticles
 }
 
 // getOffers calling CCbackend/articles with user as input

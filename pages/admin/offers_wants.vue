@@ -3,6 +3,7 @@
 		<h1>Offer & Wants for {{ name }} </h1>
 		<br>
 		<h2>Offers</h2>
+		<button @click="updateOffers">Object</button>
 		<ul>
 			<div v-for="offer in offers">
 				<li>
@@ -40,19 +41,9 @@ export default {
 
 	data() {
 		return {
-			offers:
-				[  // Fake offers
-					{ id: 1, offer: "water buffalo", price: 25 },
-					{ id: 2, offer: "moon rocket", price: 12 },
-					{ id: 3, offer: "heavy water", price: 50 },
-				],
+			offers: [],
 
-			wants:
-				[  // Fake wants
-					{ id: 1001, want: "spring", price: 25 },
-					{ id: 1002, want: "suspension", price: 12 },
-					{ id: 1003, want: "gearbox", price: 50 },
-				],
+			wants: [],
 
 
 			id: this.$route.params.id,
@@ -62,14 +53,17 @@ export default {
 	},
 	methods: {
 		async updateOffers(){
-			var articles = await getUserArticles(this.$route.params.name)
+			var user = this.name
+			var articles = await getUserArticles(this.name)
 			articles = JSON.parse(articles)
+
 			this.offers = articles.filter(function (article){
-				return article.status == "offer"
+				return (article.status == "offer" && article.userUploader == user)
 			})
 			this.wants = articles.filter(function (article){
-				return article.status == "want"
+				return (article.status == "want" && article.userUploader == user)
 			})
+			console.log(articles)
 		}
 	},
 	mounted: function(){
