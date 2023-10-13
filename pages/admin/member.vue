@@ -1,52 +1,135 @@
-<!--
-This page may cause weird errors in the console if the variable-names from listingObj
-do not match the equivalent of the database.
--->
 <template>
 	<div>
-		Hello, user {{ name }}!
+		<member_header></member_header>
+		<v-container>
+			<v-row>
+				<v-col xs="4">
+					<div class="tab_barterkronor" @click="toggleToBarterTab" v-if="barterkronorTabVisible">
+						BARTERKRONOR
+					</div>
+					<div class="tab_barterkronor_dimmed" @click="toggleToBarterTab" v-if="kronorTabVisible">
+						BARTERKRONOR
+					</div>
 
 
-		<!--
-		<div class="button">
-			<div class="element-container" @click="enterProfile">
-				<div class="imgContainer">
-	 --> <!-- <img v-if="this.listingObj.logo !== ''" :src='getImgURL()' /> -->
-		<!-- <img v-if="this.listingObj.logo == ''" src='@/assets/list_images/user.png' /> -->
-		<!-- 				</div>
-				<h4 class="element-title"> {{ listingObj.accountName }} </h4>
-				<h5 class="element-text one">Balance: <br />{{ '0Kr' }}</h5>
-				<h5 class="element-text two">Online: <br />{{ getOnlineStatus() }}</h5>
-				<h5 class="element-text tre"> {{ listingObj.phone }} </h5>
-				<div class="button-container">
-					<button @click="userselected">{{ $t('user.profile') }}</button>
-					<button @click="null">{{ $t('transactions') }}</button>
-					<button @click="null">{{ $t('user.email') }}</button>
-					<button @click="null">{{ $t('user.purchase_requests') }}</button>
-				</div>
-			</div>
 
-		</div>
-	-->
+				</v-col>
+				<v-col>
+					<div class="tab_sek" @click="toggleToKronorTab" v-if="kronorTabVisible">
+						KRONOR
+					</div>
+					<div class="tab_sek_dimmed" @click="toggleToKronorTab" v-if="barterkronorTabVisible">
+						KRONOR
+					</div>
 
-		<!--
-  <router-link :to="{ name: 'MemberUserprofile', params: { userprofile: listingObj.accountName }} ">
+				</v-col>
+			</v-row>
+		</v-container>
 
-    </router-link>
--->
+
+
+		<v-container v-if="barterkronorTabVisible">
+			<v-row v-for="transaction in transactions">
+				<v-col>
+					{{ transaction.status }}
+				</v-col>
+				<v-col>
+					{{ transaction.date }}
+				</v-col>
+				<v-col>
+					{{ transaction.counterpart }}
+				</v-col>
+				<v-col>
+					{{ transaction.description }}
+				</v-col>
+
+				<v-col>
+					{{ transaction.amount }}
+				</v-col>
+			</v-row>
+		</v-container>
+		<v-container v-if="kronorTabVisible">
+			<v-row>
+				<v-col>
+					Fakturor
+				</v-col>
+			</v-row>
+			<!--
+				<v-col>
+					<NuxtLink :to="{
+						name: 'admin-member',
+						params: { id: member.id, name: member.name }
+					}">
+						<v-btn>Account</v-btn>
+					</NuxtLink>
+				</v-col>
+
+				<v-col>
+					<NuxtLink :to="{
+						name: 'admin-member',
+						params: { id: member.id, name: member.name }
+					}">
+						<v-btn>Transact</v-btn>
+					</NuxtLink>
+				</v-col>
+
+				<v-col>
+					<a v-bind:href="`mailto:${member.email}`">
+						<v-btn>Email</v-btn>
+					</a>
+				</v-col>
+
+				<v-col>
+					<NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.name } }">
+						<v-btn>Offers & Wants</v-btn>
+					</NuxtLink>
+				</v-col>
+
+			</v-row>
+			-->
+		</v-container>
+
 	</div>
 </template>
 
 
 
 <script>
-// import { EXPRESS_URL } from '@/serverFetch'
+
+import member_header from '/components/member_header.vue'
 
 export default {
+
+    components: {
+        member_header
+    },
+
 	data() {
 		return {
 			id: this.$route.params.id,
-			name: this.$route.params.name
+			name: this.$route.params.name,
+
+			transactions: [
+				{ status: "Finished", date: "2023-09-12", counterpart: "Ben Johnson", description: "Shoes", amount: "110" },
+				{ status: "Pending", date: "2023-09-12", counterpart: "John Benson", description: "Hat", amount: "22" },
+				{ status: "Pending", date: "2020-01-10", counterpart: "Sune Mangs", description: "Shirt", amount: "220" }
+			],
+
+			barterkronorTabVisible: true,
+			kronorTabVisible: false
+
+		}
+	},
+
+	methods: {
+		toggleToBarterTab() {
+			this.kronorTabVisible = false;
+			this.barterkronorTabVisible = true;
+		},
+
+		toggleToKronorTab() {
+			this.kronorTabVisible = true;
+			this.barterkronorTabVisible = false;
 		}
 	}
 }
@@ -54,14 +137,14 @@ export default {
 
 
 <style scoped>
-* {
-	font-family: Ubuntu;
+/** {
+ 	font-family: Ubuntu;
 	font-style: normal;
 	font-weight: normal;
 	letter-spacing: 0.05em;
 	font-weight: 500;
 	font-size: 12px;
-}
+} */
 
 .element-container {
 	display: flex;
@@ -120,6 +203,39 @@ h4 {
 
 h5 {
 	margin: 0rem;
+}
+
+.tab_barterkronor {
+	background-color: rgb(103, 135, 216);
+	padding: 5px;
+	margin-right: 0%;
+	font-weight: bold;
+}
+
+.tab_barterkronor_dimmed {
+	background-color: rgb(103, 135, 216);
+	padding: 5px;
+	margin-right: 0%;
+	opacity: 30%;
+	color: #000000;
+	font-weight: bold;
+}
+
+.tab_sek {
+	color: black;
+	background-color: rgb(35, 221, 57);
+	padding: 5px;
+	margin-left: 0%;
+	font-weight: bold;
+}
+
+.tab_sek_dimmed {
+	background-color: rgb(35, 221, 57);
+	padding: 5px;
+	margin-left: 0%;
+	opacity: 30%;
+	color: #000000;
+	font-weight: bold;
 }
 
 .button {
