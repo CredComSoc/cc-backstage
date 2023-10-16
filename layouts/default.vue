@@ -25,22 +25,19 @@
         </v-list>
       </v-navigation-drawer>
       <v-app-bar :clipped-left="clipped" fixed app>
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-        <!-- <v-btn icon @click.stop="miniVariant = !miniVariant">
-          <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-        </v-btn>
-        <v-btn icon @click.stop="clipped = !clipped">
-          <v-icon>mdi-application</v-icon>
-        </v-btn>
-        <v-btn icon @click.stop="fixed = !fixed">
-          <v-icon>mdi-minus</v-icon>
-        </v-btn> -->
-        <v-toolbar-title v-text="title" />
-        <v-spacer />
-        <!-- <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-          <v-icon>mdi-menu</v-icon>
-        </v-btn> -->
-      </v-app-bar>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> <!-- Top toolbar code below-->
+
+        
+
+        <!-- <v-toolbar-title v-text="title" /> -->
+          <v-row align="center" justify="center">
+            <v-col cols="2">
+              <img :src="svenskBarter" style="width:200px">
+            </v-col>
+          </v-row>
+
+
+      </v-app-bar>                                            <!-- Top toolbar code above-->
       <v-main>
         <v-container>
           <nuxt />
@@ -63,43 +60,56 @@
   </template>
   
   <script>
+import { space } from 'postcss/lib/list';
+import svenskBarter from './svensk_barter.png';
+
   export default {
     data() {
-      return {
-        clipped: false,
-        drawer: false,
-        fixed: false,
-        items: [
-          {
-            icon: 'mdi-apps',
-            title: 'Welcome',
-            to: '/',
-          },
-          {
-            icon: 'mdi-chart-bubble',
-            title: 'Inspire',
-            to: '/inspire',
-          },
-          {
-            icon: 'mdi-chart-bubble',
-            title: 'Admin Panel',
-            to: '/admin/admin_panel'
-          }
-        ],
-        miniVariant: false,
-        right: false,
-        rightDrawer: false,
-        title: 'Home',
-      }
+        return {
+            svenskBarter,
+            clipped: false,
+            drawer: false,
+            fixed: false,
+            items: [
+                {
+                    icon: 'mdi-apps',
+                    title: 'Welcome',
+                    to: '/',
+                },
+                {
+                    icon: 'mdi-chart-bubble',
+                    title: 'Inspire',
+                    to: '/inspire',
+                },
+                {
+                    icon: 'mdi-chart-bubble',
+                    title: 'Admin Panel',
+                    to: '/admin/admin_panel'
+                }
+            ],
+            miniVariant: false,
+            right: false,
+            rightDrawer: false,
+            title: 'Home',
+        };
     },
-  }
+    components: { space }
+}
   </script>
   
 <style scoped>
 
 .default_background
 {
-  background-color: rgb(237, 237, 237);
+  background-color: rgba(199, 199, 199, 0.819);
+}
+
+.container-toolbar
+{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding-left: 500px;
 }
 
 

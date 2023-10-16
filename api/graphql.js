@@ -72,29 +72,50 @@ let schema = buildSchema(`
     // Send how many members are online
     // Send how many transactions were done on specific days
 const members = [
-   {
-    id:1,
-    name: "John Doe",
-    balance: 100,
-    status: "Online",
-    phone: 33333,
-    email: "john.doe@example.com"},
     {
-    id:2,
-    name: "Jane Smith",
-    balance: 200,
-    status: "Offline",
-    phone: 33333,
-    email: "jane.smith@example.com"},
-    {
-    id:3,
-    name: "Bob Brown",
-    balance: 300,
-    status: "Away",
-    phone: 50302,
-    email: "bob.brown@example.com"
+     id:1,
+     name: "John Doe",
+     balance: 100,
+     status: "Online",
+     phone: 33333,
+     email: "john.doe@example.com"},
+     {
+     id:2,
+     name: "Jane Smith",
+     balance: 200,
+     status: "Offline",
+     phone: 33333,
+     email: "jane.smith@example.com"},
+     {
+     id:3,
+     name: "Bob Brown",
+     balance: 300,
+     status: "Away",
+     phone: 50302,
+     email: "bob.brown@example.com"},
+     {
+     id:4,
+     name: "Lasse Liten",
+     balance: 100,
+     status: "Online",
+     phone: 33333,
+     email: "liten.lars@example.com"},
+     {
+     id:5,
+     name: "Mr Krister",
+     balance: 100,
+     status: "Online",
+     phone: 33333,
+     email: "mr.krister@example.com"},
+     {
+     id:6,
+     name: "Adam Adelsabel",
+     balance: 100,
+     status: "Online",
+     phone: 33333,
+     email: "scuffed.doe@example.com"
     }
-]
+ ]
 
 
 async function getMember({id, name}) { // Get a single member, selected by either id or name
