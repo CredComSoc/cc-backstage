@@ -4,8 +4,8 @@
         <member_header></member_header>
         <v-container>
             <v-row v-for="member in members">
-                <v-col class="name_col">
-                    {{ member.name }}
+                <v-col class="accountName_col">
+                    {{ member.accountName }}
                 </v-col>
                 <v-col>
                     {{ member.balance }} SEK
@@ -22,7 +22,7 @@
                 <v-col>
                     <NuxtLink :to="{
                         name: 'admin-member',
-                        params: { id: member.id, name: member.name }
+                        params: { id: member.id, name: member.accountName }
                     }">
                         <v-btn>Account</v-btn>
                     </NuxtLink>
@@ -31,7 +31,7 @@
                 <v-col>
                     <NuxtLink :to="{
                         name: 'admin-member',
-                        params: { id: member.id, name: member.name }
+                        params: { id: member.id, name: member.accountName }
                     }">
                         <v-btn>Transact</v-btn>
                     </NuxtLink>
@@ -44,7 +44,7 @@
                 </v-col>
 
                 <v-col>
-                    <NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.name } }">
+                    <NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.accountName } }">
                         <v-btn>Offers & Wants</v-btn>
                     </NuxtLink>
                 </v-col>
@@ -134,7 +134,7 @@ ul {
 
 }
 
-.name_col {
+.accountName_col {
     width: 500px;
 }
 

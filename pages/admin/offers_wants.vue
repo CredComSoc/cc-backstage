@@ -10,7 +10,7 @@
 					<!-- < NuxtLink : to = "{ name: 'admin-member', params: { id: member.id, name: member.name } }" > Member: {
 					{
 						member.name }}</NuxtLink> <a v-bind:href="`mailto:${member.email}`">Email</a> -->
-					{{ offer.offer }} - {{ offer.price }} <NuxtLink
+					{{ offer.title }} - {{ offer.price }} <NuxtLink
 						:to="{ name: 'admin-edit_offer_want', params: { id: id } }">
 						<v-btn>Edit</v-btn>
 					</NuxtLink>
@@ -25,7 +25,7 @@
 					<!-- < NuxtLink : to = "{ name: 'admin-member', params: { id: member.id, name: member.name } }" > Member: {
 					{
 						member.name }}</NuxtLink> <a v-bind:href="`mailto:${member.email}`">Email</a> -->
-					{{ want.want }} - {{ want.price }}
+					{{ want.title }} - {{ want.price }}
 				</li>
 			</div>
 		</ul>
@@ -58,10 +58,10 @@ export default {
 			articles = JSON.parse(articles)
 
 			this.offers = articles.filter(function (article){
-				return (article.status == "offer" && article.userUploader == user)
+				return (article.status == "offer")
 			})
 			this.wants = articles.filter(function (article){
-				return (article.status == "want" && article.userUploader == user)
+				return (article.status == "want")
 			})
 			console.log(articles)
 		}

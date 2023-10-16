@@ -1,5 +1,6 @@
 const { buildSchema } = require("graphql")
-import {CC_BACKEND_URL} from './config.js'
+const {MongoClient, ObjectId} = require('mongodb')
+import {CC_BACKEND_URL, DB_FOLDER, DB_URL} from './config.js'
 /*In the schema below, objects can be defined for GraphQL to use in queries or mutations*/
 let schema = buildSchema(`
 
@@ -158,7 +159,7 @@ async function getAllMembers(){ // Get a list of all the members
       pendingPurchases: [],
       completedTransactions: [],
       allEvents: []
-    */
+
 
     const member_arr = await fetch(CC_BACKEND_URL + '/data', {
         method: 'GET',
@@ -173,11 +174,24 @@ async function getAllMembers(){ // Get a list of all the members
       })
 
       return member_arr.allMembers
+      */
+     var allMembers = []
+     const db = await MongoClient.connect(DB_URL)
+     const dbo = db.db(DB_FOLDER)
+     var users = await dbo.collection("users").find({}).toArray()
+     for (const user of users) {
+        let userData = user.profile
+        userData.is_admin = user.is_admin
+        userData.email = user.email
+        allMembers.push(userData)
+    }
+    console.log(allMembers)
+    return allMembers
     //return members
 }
 
 async function getUserArticles(username){ // Get all article data related to a user
-    console.log(username.accountName)
+    /*console.log(username.accountName)
     const member_arr = await fetch(CC_BACKEND_URL + '/data', {
         method: 'GET',
         headers: {
@@ -191,8 +205,14 @@ async function getUserArticles(username){ // Get all article data related to a u
         return false
       })
       console.log(member_arr)
-      return member_arr.allArticles
-}
+      return member_arr.allArticles*/
+        console.log(username)
+        const db = await MongoClient.connect(DB_URL)
+        const dbo = db.db(DB_FOLDER)
+        let articles = await dbo.collection("posts").find({"userUploader": username.accountName}).toArray()
+        console.log(articles)
+        return articles
+    }
 
 // getOffers calling CCbackend/articles with user as input
 // Get offers related to a specific user from the CC-backend
