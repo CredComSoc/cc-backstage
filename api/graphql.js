@@ -61,6 +61,7 @@ let schema = buildSchema(`
         member(id: Int, name: String): Member
         allMembers: [Member]
         allUserArticles(accountName: String!): [Article]
+        userCount: Int
     }
 
 
@@ -183,6 +184,8 @@ async function getAllMembers(){ // Get a list of all the members
         let userData = user.profile
         userData.is_admin = user.is_admin
         userData.email = user.email
+        //Get balance information from CC-node using ID from user._id
+        //As well as necessary logic for this.
         allMembers.push(userData)
     }
     console.log(allMembers)
@@ -208,11 +211,25 @@ async function getUserArticles(username){ // Get all article data related to a u
       return member_arr.allArticles*/
         console.log(username)
         const db = await MongoClient.connect(DB_URL)
-        const dbo = db.db(DB_FOLDER)
+        const dbo = db.db(DB_FOLDER)//Simple query returning all posts that the user has uploaded
         let articles = await dbo.collection("posts").find({"userUploader": username.accountName}).toArray()
         console.log(articles)
         return articles
     }
+
+async function getAllArticles(){ // Get all posts
+    const db = await MongoClient.connect(DB_URL)
+    const dbo = db.db(DB_FOLDER)
+    let articles = await dbo.collection("posts").find({}).toArray()
+    return articles
+}
+
+async function getUserCount(){ // Get how many users that are not admins are in the database
+    const db = await MongoClient.connect(DB_URL)
+    const dbo = db.db(DB_FOLDER)
+    let count = await dbo.collection("users").countDocuments({"is_admin": false})
+    return count
+}
 
 // getOffers calling CCbackend/articles with user as input
 // Get offers related to a specific user from the CC-backend
@@ -245,6 +262,9 @@ var root ={
     },
     allUserArticles: ({accountName}) => {
         return getUserArticles({accountName})
+    },
+    userCount: () => {
+        return getUserCount()
     },
 
 }
