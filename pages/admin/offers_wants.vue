@@ -3,7 +3,7 @@
 		<h1>Offer & Wants for {{ name }} </h1>
 		<br>
 		<h2>Offers</h2>
-		<button @click="updateOffers">Object</button>
+		<button @click="registerUser">Object</button>
 		<ul>
 			<div v-for="offer in offers">
 				<li>
@@ -37,6 +37,7 @@
 
 <script>
 import {getUserArticles} from '/pages/gqlFetch.js'
+import {register} from '/pages/expressFetch.js'
 export default {
 
 	data() {
@@ -64,6 +65,10 @@ export default {
 				return (article.status == "want")
 			})
 			console.log(articles)
+		},
+		async registerUser(){
+			var response = await register(true, "test", "password", "a test user", "teststreet 10", "testcity", "billing", "box", "billingaddress", "org 10", "testorg@test.com", "1912214")
+			console.log(response)
 		}
 	},
 	mounted: function(){

@@ -37,7 +37,7 @@ export async function getMembers() {
         headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        },
+        },                             // When querying graphql without parameters, simply include the type and all members in it that you want to recieve
         body: JSON.stringify({ query: "{ allMembers{ id, accountName, is_admin, email, description, address, city, phone, last_online}  }" }),
     }).then(r => r.json())
       .then(data => member_arr = data)
@@ -54,7 +54,7 @@ export async function getUserArticles(name){
         headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        },
+        },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
         body: JSON.stringify({ query: `query allUserArticles($accountName: String!) {
             allUserArticles(accountName: $accountName) {
               id
@@ -73,7 +73,25 @@ export async function getUserArticles(name){
           variables: { accountName: name }, }),
     }).then(r => r.json())
       .then(data => articles = data)
-      articles = JSON.stringify(articles.data.allUserArticles)
+      articles = JSON.stringify(articles.data.allUserArticles) // Remove the Json "padding" to get the object or array
       console.log(articles)
     return articles
 }
+
+
+export async function getUserCount() {
+    var userCount
+    await fetch("/api/graphql", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        },
+        body: JSON.stringify({ query: "{ userCount }" }),
+    }).then(r => r.json())
+      .then(data => userCount = data)
+      userCount = userCount.data.userCount
+    console.log(userCount)
+    return userCount
+}
+

@@ -1,12 +1,12 @@
 <template>
-<div> 
+<div>
   <div class="center-container">
     <div class="dashboard-text">
       {{ dashBoardText }}
     </div>
 
     <div class="test-main-container">
-    
+
     <button class="test-container test-container--red" @click="updateChart('onlineUsers' , '#b51f1f')">
       <div class="test-container-upper">
         <div class="test-container-lhs">
@@ -79,17 +79,17 @@
 
     <!-- <div class="containers">
     <button class="container container--red" @click="updateChart('onlineUsers' , '#b51f1f')" draggable="false">
-    
-     
-      <img class="ImageLoader" :src="onlineUser" alt="User image" draggable="false">  
-      
-      
+
+
+      <img class="ImageLoader" :src="onlineUser" alt="User image" draggable="false">
+
+
       <div class="white-box">
-        
+
         <div class="section section-top">
           Online Users
         </div>
-        
+
         <div class="section section-bottom">
           {{ onlineUsersCount }}
         </div>
@@ -98,107 +98,107 @@
     </button>
 
     <button class="container container--yellow" @click="updateChart( 'dailyTrades' , '#bcbf0d')" draggable="false">
-      
-      <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">   
-      
-      
+
+      <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">
+
+
       <div class="white-box">
-        
+
         <div class="section section-top">
           Daily trades
         </div>
-        
+
         <div class="section section-bottom">
           23
         </div>
       </div>
-    </button> 
+    </button>
 
 
     <button class="container container--blue" @click="updateChart( 'listedTrades' , '#1248b5')" draggable="false">
-       
-      <img class="ImageLoader" :src="listed" alt="listed image" draggable="false">  
-      
-      
+
+      <img class="ImageLoader" :src="listed" alt="listed image" draggable="false">
+
+
       <div class="white-box">
-        
+
         <div class="section section-top">
           Listed products
         </div>
-        
+
         <div class="section section-bottom">
           562
-        </div> 
-       </div>  
+        </div>
+       </div>
 
     </button>
     <button class="container container--green" draggable="false">
 
-      <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">  
-      
-      
+      <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">
+
+
       <div class="white-box">
-        
+
         <div class="section section-top">
           implement
         </div>
-        
+
         <div class="section section-bottom">
           will.i.am
         </div>
-      </div> 
+      </div>
 
      </button>
     <button class="container container--red" draggable="false">
-       
-       <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">  
-      
-      
+
+       <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">
+
+
       <div class="white-box">
-        
+
         <div class="section section-top">
           Daily trades
         </div>
-        
+
         <div class="section section-bottom">
           23
         </div>
       </div>
     </button>
     </div>   -->
-    
+
     <div class="chart-container">
-    
+
       <div class="chart-buttons">
         <button class="chart-button"> 1w </button>
         <button class="chart-button"> 1m </button>
         <button class="chart-button"> 3m </button>
         <button class="chart-button"> 1y </button>
-      
+
         <div class="chart-text">
           hejje
         </div>
-      
+
 
       </div>
 
       <div class="chart">
         <apexchart type="area" :options="chartOptions" :series="chartSeries">
         </apexchart>
-      </div> 
-      
+      </div>
+
       <!-- <div class="chart-buttons">
         <v-btn class="chart-button"> 1w </v-btn>
         <v-btn class="chart-button"> 1m </v-btn>
         <v-btn class="chart-button"> 3m </v-btn>
         <v-btn class="chart-button"> 1y </v-btn>
       </div>   -->
-    </div> 
+    </div>
   </div>
 
 
   <!-- <div class="test-main-container">
-    
+
     <button class="test-container test-container--red" @click="updateChart('onlineUsers' , '#b51f1f')">
       <div class="test-container-upper">
         <div class="test-container-lhs">
@@ -277,7 +277,7 @@
 <script>
 
 // Icons
-import onlineUser from './admin_icons/user.png';             
+import onlineUser from './admin_icons/user.png';
 import trade from './admin_icons/shoppingcart.png';
 import listed from './admin_icons/listedproduct.png';
 // Icons end
@@ -287,20 +287,20 @@ import VueApexCharts from 'vue-apexcharts';
 // packages end
 
 // fetchFuncs
-import { getMembers } from '/pages/gqlFetch.js'
+import { getMembers, getUserCount } from '/pages/gqlFetch.js'
 
 // fetchFuncs end
 
-export default 
+export default
 {
-  components: 
+  components:
   {
     apexchart: VueApexCharts
   },
 
   data() {
     return {
-      
+
       usersList: [],
       onlineUser,
       trade,
@@ -313,9 +313,9 @@ export default
 
       chartSeries: //Date structure for chart
       [
-        
+
       ],
-      
+
       dataListedTrades:
       [
         {
@@ -323,7 +323,7 @@ export default
           data: [500, 349, 675, 110, 99], // fake data
         }
       ],
-      
+
       dataOnlineUsr:
       [
         {
@@ -332,7 +332,7 @@ export default
         }
       ],
 
-      dataTrades:   
+      dataTrades:
       [
         {
           name: '# of Trades',
@@ -342,20 +342,20 @@ export default
 
       chartOptions:
       {
-        chart: 
+        chart:
         {
           height: '100%',
           width: '100%',
           type: 'area',
-          zoom: 
+          zoom:
           {
             enabled: false
           },
         },
-        fill: 
+        fill:
         {
           type: 'gradient',
-          gradient: 
+          gradient:
           {
             type: 'vertical',
             shadeIntensity: 0.5,
@@ -367,15 +367,15 @@ export default
           }
         },
         colors: ['#5c26ff'],
-        dataLabels: 
+        dataLabels:
         {
           enabled: false
         },
-        stroke: 
+        stroke:
         {
           curve: 'smooth'
         },
-        xaxis: 
+        xaxis:
         {
           categories: ['1/10', '2/10', '3/10', '4/10', '5/10']
         },
@@ -384,13 +384,13 @@ export default
     };
   },
 
-  methods: 
+  methods:
   {
     printDashboardText(targetText)
-    { 
+    {
       for(let i = 0; i < targetText.length; i++)
       {
-        setTimeout(() => 
+        setTimeout(() =>
         {
           this.dashBoardText += targetText.charAt(i);
         }, i *40);
@@ -407,11 +407,11 @@ export default
           break;
 
         case "dailyTrades":
-          this.chartSeries = this.dataTrades;  
+          this.chartSeries = this.dataTrades;
           break;
 
         case "listedTrades":
-          this.chartSeries = this.dataListedTrades;  
+          this.chartSeries = this.dataListedTrades;
           break;
       }
       this.updateChartOptions(color);
@@ -426,17 +426,10 @@ export default
 
     async getOnlineUsers()
     {
-      this.usersList = await getMembers();
-      this.onlineUsersCount = 0;
-      console.log(this.usersList.length);
-      for(let i = 0; i < this.usersList.length; i++)
-      {
-        if(this.usersList[i].status == "Online")
-        {
-          this.onlineUsersCount++;
-        }
-      }
-    }
+      this.onlineUsersCount = await getUserCount()
+
+    },
+
   },
 
   mounted()
@@ -510,7 +503,7 @@ export default
   align-items: flex-start;
   width: 50%;
   height: 100%;
-  
+
 }
 
 .test-container-rhs
@@ -521,7 +514,7 @@ export default
   align-items: center;
   width: 50%;
   height: 100%;
-  
+
 }
 
 .test-container-upper
@@ -619,7 +612,7 @@ export default
 
 
 .chart
-{ 
+{
   /* Change chartsize here!! */
   background-color: white;
   width: 100%;
@@ -669,7 +662,7 @@ export default
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   width: 52vw;
   height: 60vh;
   background-color: #f6f6f6;
@@ -678,26 +671,26 @@ export default
 .container--blue
 {
   background: rgb(2,0,36);
-  background: linear-gradient(297deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 32%, rgba(0,212,255,1) 100%); 
+  background: linear-gradient(297deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 32%, rgba(0,212,255,1) 100%);
 }
 
 .container--yellow
 {
   background: rgb(2,0,36);
-  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(121,115,9,1) 39%, rgba(247,255,0,1) 100%);  
+  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(121,115,9,1) 39%, rgba(247,255,0,1) 100%);
 }
 
 .container--green
 {
   background: rgb(2,0,36);
-  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(9,121,9,1) 39%, rgba(20,255,0,1) 100%); 
+  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(9,121,9,1) 39%, rgba(20,255,0,1) 100%);
 }
 
 .container--red
 {
-  
+
   background: rgb(2,0,36);
-  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(121,9,9,1) 39%, rgba(255,0,0,1) 100%); 
+  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(121,9,9,1) 39%, rgba(255,0,0,1) 100%);
 }
 
 .container:hover
@@ -740,7 +733,7 @@ export default
 {
   display: flex;
   justify-content: center;
-  align-items: center;  
+  align-items: center;
   padding-left: 60px;
 }
 
