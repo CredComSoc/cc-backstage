@@ -16,7 +16,7 @@
     "consola": "^3.2.3",
     "core-js": "^3.25.3",
     "nuxt": "^2.15.8",
-    "vue": "^2.7.10",
+    "vue": "^3.3.6",
     "vue-apexcharts": "^1.6.2",
     "vue-chartjs": "^5.2.0",
     "vue-server-renderer": "^2.7.10",
