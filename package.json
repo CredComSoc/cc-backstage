@@ -14,7 +14,7 @@
     "apexcharts": "^3.42.0",
     "chart.js": "^4.4.0",
     "consola": "^3.2.3",
-    "core-js": "^3.25.3",
+    "core-js": "^3.33.2",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
     "vue-apexcharts": "^1.6.2",
