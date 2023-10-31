@@ -176,7 +176,7 @@
         <button class="chart-button"> 1y </button>
       
         <div class="chart-text">
-          hejje
+          "Graph info"
         </div>
       
 
