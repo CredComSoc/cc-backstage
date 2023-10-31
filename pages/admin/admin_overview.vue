@@ -1,4 +1,4 @@
-<template>
+ <template>
 <div> 
   <div class="center-container">
     <div class="dashboard-text">
@@ -7,7 +7,7 @@
 
     <div class="test-main-container">
     
-    <button class="test-container test-container--red" @click="updateChart('onlineUsers' , '#b51f1f')">
+    <div class="test-container test-container--red">
       <div class="test-container-upper">
         <div class="test-container-lhs">
           <div class="test-container-text-upper"> {{ onlineUsersCount }}</div>
@@ -20,46 +20,56 @@
       </div>
 
       <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> Show Users</div>
+        <button class="test-container-lower-lhs" @click="updateChart('online' , '#b51f1f')">
+          Online
+        </button>
+        <button class="test-container-lower-rhs" @click="updateChart( 'registered' , '#b51f1f')">
+          Registered
+        </button>
       </div>
-    </button>
+    </div>
 
-    <button class="test-container test-container--yellow" @click="updateChart( 'dailyTrades' , '#bcbf0d')">
+    <div class="test-container test-container--yellow">
       <div class="test-container-upper">
         <div class="test-container-lhs">
           <div class="test-container-text-upper"> 5</div>
           <div class="test-container-text-lower"> Trades</div>
         </div>
-
         <div class="test-container-rhs">
           <img class="test-container-img" :src="trade" alt="User image" draggable="false">
         </div>
       </div>
-
       <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> Show Trades</div>
+        <button class="test-container-lower-lhs" @click="updateChart('transactions' , '#bcbf0d')">
+          Transactions
+        </button>
+        <button class="test-container-lower-rhs" @click="updateChart( 'volume' , '#bcbf0d')">
+          Volume
+        </button>
       </div>
-    </button>
+    </div>
 
-    <button class="test-container test-container--blue" @click="updateChart( 'listedTrades' , '#1248b5')">
+    <div class="test-container test-container--blue">
       <div class="test-container-upper">
         <div class="test-container-lhs">
           <div class="test-container-text-upper"> 5</div>
           <div class="test-container-text-lower"> Listed</div>
         </div>
-
         <div class="test-container-rhs">
           <img class="test-container-img" :src="listed" alt="User image" draggable="false">
         </div>
       </div>
-
       <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> Show Products</div>
+        <button class="test-container-lower-lhs" @click="updateChart('offers' , '#1248b5')">
+          Offers
+        </button>
+        <button class="test-container-lower-rhs" @click="updateChart( 'wants' , '#1248b5')">
+          Wants
+        </button>
       </div>
-    </button>
-
-
-    <button class="test-container test-container--green">
+    </div>
+    
+    <div class="test-container test-container--green">
       <div class="test-container-upper">
         <div class="test-container-lhs">
           <div class="test-container-text-upper"> NULL</div>
@@ -72,100 +82,17 @@
       </div>
 
       <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> NULL</div>
+        <button class="test-container-lower-lhs" @click="updateChart('onlineUsers' , '#b51f1f')">
+          NULL
+        </button>
+        <button class="test-container-lower-rhs" @click="updateChart( 'dailyTrades' , '#bcbf0d')">
+          NULL
+        </button>
       </div>
-    </button>
-  </div>
+    </div>
+    </div>
 
-    <!-- <div class="containers">
-    <button class="container container--red" @click="updateChart('onlineUsers' , '#b51f1f')" draggable="false">
-    
-     
-      <img class="ImageLoader" :src="onlineUser" alt="User image" draggable="false">  
-      
-      
-      <div class="white-box">
-        
-        <div class="section section-top">
-          Online Users
-        </div>
-        
-        <div class="section section-bottom">
-          {{ onlineUsersCount }}
-        </div>
-      </div>
-
-    </button>
-
-    <button class="container container--yellow" @click="updateChart( 'dailyTrades' , '#bcbf0d')" draggable="false">
-      
-      <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">   
-      
-      
-      <div class="white-box">
-        
-        <div class="section section-top">
-          Daily trades
-        </div>
-        
-        <div class="section section-bottom">
-          23
-        </div>
-      </div>
-    </button> 
-
-
-    <button class="container container--blue" @click="updateChart( 'listedTrades' , '#1248b5')" draggable="false">
-       
-      <img class="ImageLoader" :src="listed" alt="listed image" draggable="false">  
-      
-      
-      <div class="white-box">
-        
-        <div class="section section-top">
-          Listed products
-        </div>
-        
-        <div class="section section-bottom">
-          562
-        </div> 
-       </div>  
-
-    </button>
-    <button class="container container--green" draggable="false">
-
-      <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">  
-      
-      
-      <div class="white-box">
-        
-        <div class="section section-top">
-          implement
-        </div>
-        
-        <div class="section section-bottom">
-          will.i.am
-        </div>
-      </div> 
-
-     </button>
-    <button class="container container--red" draggable="false">
-       
-       <img class="ImageLoader" :src="trade" alt="Trade image" draggable="false">  
-      
-      
-      <div class="white-box">
-        
-        <div class="section section-top">
-          Daily trades
-        </div>
-        
-        <div class="section section-bottom">
-          23
-        </div>
-      </div>
-    </button>
-    </div>   -->
+  
     
     <div class="chart-container">
     
@@ -176,7 +103,7 @@
         <button class="chart-button"> 1y </button>
       
         <div class="chart-text">
-          hejje
+           UTC:{{  utcTime}}
         </div>
       
 
@@ -187,87 +114,11 @@
         </apexchart>
       </div> 
       
-      <!-- <div class="chart-buttons">
-        <v-btn class="chart-button"> 1w </v-btn>
-        <v-btn class="chart-button"> 1m </v-btn>
-        <v-btn class="chart-button"> 3m </v-btn>
-        <v-btn class="chart-button"> 1y </v-btn>
-      </div>   -->
+    
     </div> 
   </div>
 
 
-  <!-- <div class="test-main-container">
-    
-    <button class="test-container test-container--red" @click="updateChart('onlineUsers' , '#b51f1f')">
-      <div class="test-container-upper">
-        <div class="test-container-lhs">
-          <div class="test-container-text-upper"> {{ onlineUsersCount }}</div>
-          <div class="test-container-text-lower"> Users</div>
-        </div>
-
-        <div class="test-container-rhs">
-          <img class="test-container-img" :src="onlineUser" alt="User image" draggable="false">
-        </div>
-      </div>
-
-      <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> Show Users</div>
-      </div>
-    </button>
-
-    <button class="test-container test-container--yellow" @click="updateChart( 'dailyTrades' , '#bcbf0d')">
-      <div class="test-container-upper">
-        <div class="test-container-lhs">
-          <div class="test-container-text-upper"> 5</div>
-          <div class="test-container-text-lower"> Trades</div>
-        </div>
-
-        <div class="test-container-rhs">
-          <img class="test-container-img" :src="trade" alt="User image" draggable="false">
-        </div>
-      </div>
-
-      <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> Show Users</div>
-      </div>
-    </button>
-
-    <button class="test-container test-container--blue" @click="updateChart( 'listedTrades' , '#1248b5')">
-      <div class="test-container-upper">
-        <div class="test-container-lhs">
-          <div class="test-container-text-upper"> 5</div>
-          <div class="test-container-text-lower"> Listed</div>
-        </div>
-
-        <div class="test-container-rhs">
-          <img class="test-container-img" :src="listed" alt="User image" draggable="false">
-        </div>
-      </div>
-
-      <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> Show Users</div>
-      </div>
-    </button>
-
-
-    <button class="test-container test-container--green">
-      <div class="test-container-upper">
-        <div class="test-container-lhs">
-          <div class="test-container-text-upper"> 5</div>
-          <div class="test-container-text-lower"> Users</div>
-        </div>
-
-        <div class="test-container-rhs">
-          <img class="test-container-img" :src="onlineUser" alt="User image" draggable="false">
-        </div>
-      </div>
-
-      <div class="test-container-lower">
-        <div class="test-container-text-lower-lower"> Show Users</div>
-      </div>
-    </button>
-  </div> -->
 
 
 </div>
@@ -300,7 +151,7 @@ export default
 
   data() {
     return {
-      
+      utcTime: null,
       usersList: [],
       onlineUser,
       trade,
@@ -400,17 +251,25 @@ export default
     updateChart(data, color)
     {
       //const newData = JSON.parse(JSON.stringify(data));
+      // graphql get data for all functions
       switch(data)
       {
-        case "onlineUsers":
+        case "online":
           this.chartSeries = this.dataOnlineUsr;
           break;
-
-        case "dailyTrades":
+        case "registered":
+          this.chartSeries = this.dataTrades;
+          break;
+        case "transactions":
           this.chartSeries = this.dataTrades;  
           break;
-
-        case "listedTrades":
+        case "volume":
+          this.chartSeries = this.dataOnlineUsr;  
+          break;
+        case "offers":
+          this.chartSeries = this.dataTrades;  
+          break;
+        case "wants":
           this.chartSeries = this.dataListedTrades;  
           break;
       }
@@ -422,6 +281,16 @@ export default
       const newChartOptions = Object.assign({}, this.chartOptions);
       newChartOptions.colors = [color]; // Change the color here based on your condition
       this.chartOptions = newChartOptions;
+    },
+
+    getUTCTime(displaySeconds)
+    {
+      const currentDate = new Date();
+      const utcTime = currentDate.toISOString();
+      if(displaySeconds)
+        this.utcTime = utcTime.slice(11, 19)
+      else
+        this.utcTime = utcTime.slice(11, 16) 
     },
 
     async getOnlineUsers()
@@ -443,7 +312,18 @@ export default
   {
     this.getOnlineUsers();
     this.printDashboardText("Dashboard");
-    this.updateChart("onlineUsers" , '#b51f1f')
+    this.updateChart("online" , '#b51f1f');
+    this.getUTCTime(false);
+  
+    this.timer = setInterval(() => {
+      this.getUTCTime(false);
+    }, 1000);
+  
+  
+
+
+  
+  
   },
 }
 
@@ -466,7 +346,6 @@ export default
   width: 50%;
   height: 60%;
 }
-
 .test-container
 {
   display: flex;
@@ -479,7 +358,6 @@ export default
   /* width: 26vw;
   height: 30vh; */
 }
-
 .test-container--red
 {
   background-color: #ff4558;
@@ -489,18 +367,14 @@ export default
 {
   background-color: #00abe0;
 }
-
 .test-container--yellow
 {
   background-color:  #ffc000;
 }
-
 .test-container--green
 {
   background-color: #00d282;
 }
-
-
 .test-container-lhs
 {
   display: flex;
@@ -512,7 +386,6 @@ export default
   height: 100%;
   
 }
-
 .test-container-rhs
 {
   display: flex;
@@ -521,9 +394,7 @@ export default
   align-items: center;
   width: 50%;
   height: 100%;
-  
 }
-
 .test-container-upper
 {
   display: flex;
@@ -534,17 +405,59 @@ export default
   width: 100%;
   height: 70%;
 }
-
 .test-container-lower
 {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   height: 30%;
   background-color: rgba(0, 0, 0, 0.138);
+  
+
 }
+
+.test-container-lower-rhs
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  font-size: 100%;
+  width: 50%;
+  height: 100%;
+  color: rgb(255, 255, 255);
+  border-left: 1px rgba(0, 0, 0, 0.200) solid;
+}
+
+.test-container-lower-rhs:hover
+{
+  background-color: rgba(0, 0, 0, 0.200)
+}
+
+.test-container-lower-lhs:hover
+{
+  background-color: rgba(0, 0, 0, 0.200)
+}
+
+
+
+.test-container-lower-lhs
+{
+
+  flex-direction: row;
+  font-size: 100%;
+  width: 50%;
+  height: 100%;
+  color: rgb(255, 255, 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  border-right: 1px rgba(0, 0, 0, 0.200) solid;
+}
+
 
 
 .test-container-text-upper
@@ -562,22 +475,11 @@ export default
 
 .test-container-text-lower-lower
 {
+  flex-direction: row;
   font-size: 100%;
-  color: white;
-}
-
-
-
-
-
-
-
-
-.ImageLoader
-{
-  margin: 15px;
-  width: 60px;
-  height: 60px;
+  width: 100%;
+  height: 100%;
+  color: rgb(255, 255, 255);
 }
 
 .center-container
@@ -588,35 +490,6 @@ export default
   align-items: center;
   gap: 30px;
 }
-
-.white-box
-{
-  display: flex;          /* Make it a flex container */
-  flex-direction: column; /* Stack children vertically */
-  justify-content: center;/* Vertically center its children */
-  align-items: center;    /* Horizontally center its children */
-  height: inherit;
-  width: 500px;
-  border-radius: 0px 10px 10px 0px;
-  background-color: rgb(255, 255, 255)
-}
-
-.container
-{
-  position: relative;
-  display: flex;
-  align-items: center;  /* Vertically center content */
-  justify-content: flex-start;
-  padding-left: 0px;
-  padding-right: 0px;
-  margin: 0px;
-  margin-right: 50px;
-  height: 160px;
-  width: 180px;
-  border-radius: 10px 50px 50px 10px;
-}
-
-
 
 .chart
 { 
@@ -658,10 +531,6 @@ export default
 {
   padding-left: 23%;
   font-weight: bold;
-
-
-
-
 }
 
 .chart-container
@@ -674,60 +543,6 @@ export default
   height: 60vh;
   background-color: #f6f6f6;
 }
-
-.container--blue
-{
-  background: rgb(2,0,36);
-  background: linear-gradient(297deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 32%, rgba(0,212,255,1) 100%); 
-}
-
-.container--yellow
-{
-  background: rgb(2,0,36);
-  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(121,115,9,1) 39%, rgba(247,255,0,1) 100%);  
-}
-
-.container--green
-{
-  background: rgb(2,0,36);
-  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(9,121,9,1) 39%, rgba(20,255,0,1) 100%); 
-}
-
-.container--red
-{
-  
-  background: rgb(2,0,36);
-  background: linear-gradient(328deg, rgba(2,0,36,1) 0%, rgba(121,9,9,1) 39%, rgba(255,0,0,1) 100%); 
-}
-
-.container:hover
-{
-  transform: scale(1.04);
-}
-
-
-
-.section
-{
-  align-items: center;  /* Vertically center content */
-  text-align: center;
-}
-
-.section-top
-{
-  font: 26px;
-  font-weight: bold;
-  border-bottom: 1px solid rgb(0, 0, 0);  /* Divider between the sections */
-  color: blue;
-}
-
-.section-bottom
-{
-  font-size: 26px;
-  font-weight: bold;
-  color: green
-}
-
 .dashboard-text
 {
   color: black;
@@ -735,13 +550,12 @@ export default
   font-weight: bold;
   text-align: left;
 }
-
-.containers
+.test-switchbox
 {
   display: flex;
   justify-content: center;
-  align-items: center;  
-  padding-left: 60px;
+  align-items: center; 
+  margin: 5px
 }
 
 </style>
