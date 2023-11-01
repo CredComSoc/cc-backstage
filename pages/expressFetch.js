@@ -30,3 +30,25 @@ export async function register(isadmin, username, password, description, address
       return response
     })
 }
+
+export async function login(){
+  var email = "admin@nowhere.com"
+  var password = "testpassword"
+
+  return await fetch("localhost:3000" + '/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email: email, password: password}),
+    credentials: 'include'
+  }).then((response) => {
+    if (!response.ok) {
+      return false
+    } else {
+      return true
+    }
+  }).catch(() => {
+    return false
+  })
+}

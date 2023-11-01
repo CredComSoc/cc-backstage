@@ -148,10 +148,9 @@ app.get("/handshake", async (req, res) => {
 })
 
 app.get("/login", async (req, res) => {
-  var email = req.email
-  var password = req.password
-  email = "admin@nowhere.com"
-  password = "testpassword"
+  var email = "admin@nowhere.com"
+  var password = "testpassword"
+
   return await fetch(CC_BACKEND_URL + '/login', {
     method: 'POST',
     headers: {

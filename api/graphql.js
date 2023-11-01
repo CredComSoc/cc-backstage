@@ -54,6 +54,7 @@ let schema = buildSchema(`
         member(id: Int, accountName: String): Member
         allMembers: [Member]
         allUserArticles(accountName: String!): [Article]
+        allArticles: [Article]
         userCount: Int
     }
 
@@ -192,6 +193,9 @@ var root ={
     },
     allUserArticles: ({accountName}) => {
         return getUserArticles({accountName})
+    },
+    allArticles: () => {
+        return getAllArticles()
     },
     userCount: () => {
         return getUserCount()

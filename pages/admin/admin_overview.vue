@@ -326,6 +326,13 @@
           }
         }
       }
+      // totalregistered userCount()
+      // articles        getAllArticles()
+
+      // transactions     Dependant on CC-node
+      // transaction volume
+
+      //
     },
 
     mounted()
