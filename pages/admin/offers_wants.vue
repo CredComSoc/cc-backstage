@@ -66,6 +66,7 @@ export default {
 			})
 			console.log(articles)
 		},
+		// This should not be here, it was just to test how registration might work from this app
 		async registerUser(){
 			var response = await register(true, "test", "password", "a test user", "teststreet 10", "testcity", "billing", "box", "billingaddress", "org 10", "testorg@test.com", "1912214")
 			console.log(response)

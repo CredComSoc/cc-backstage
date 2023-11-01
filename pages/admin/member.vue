@@ -97,6 +97,7 @@
 <script>
 
 import member_header from '/components/member_header.vue'
+import {getMember} from '/pages/gqlFetch.js'
 
 export default {
 
@@ -108,7 +109,7 @@ export default {
 		return {
 			id: this.$route.params.id,
 			name: this.$route.params.name,
-
+			member: {},
 			transactions: [
 				{ status: "Finished", date: "2023-09-12", counterpart: "Ben Johnson", description: "Shoes", amount: "110" },
 				{ status: "Pending", date: "2023-09-12", counterpart: "John Benson", description: "Hat", amount: "22" },
@@ -130,7 +131,15 @@ export default {
 		toggleToKronorTab() {
 			this.kronorTabVisible = true;
 			this.barterkronorTabVisible = false;
+		},
+		async updateMember(){
+			var response = await getMember(this.name)
+			console.log(response)
 		}
+
+	},
+	mounted: function(){
+		this.updateMember()
 	}
 }
 </script>

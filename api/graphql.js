@@ -51,7 +51,7 @@ let schema = buildSchema(`
         userId: String
     }
     type Query{
-        member(id: Int, name: String): Member
+        member(id: Int, accountName: String): Member
         allMembers: [Member]
         allUserArticles(accountName: String!): [Article]
         userCount: Int
@@ -113,12 +113,12 @@ const members = [
  ]
 
 
-async function getMember({id, name}) { // Get a single member, selected by either id or name
+async function getMember({id, accountName}) { // Get a single member, selected by either id or name
     //Now from array, later from Credit Coop backend
-    console.log(name)
+    console.log(accountName)
     const db = await MongoClient.connect(DB_URL) //Connect to the mongoDB
     const dbo = db.db(DB_FOLDER)    // state the correct folder in the DB
-    var user = await dbo.collection("users").findOne({"profile.accountName": name}) //Get the data from the mongoDB based on the collection name and the query in findOne/find
+    var user = await dbo.collection("users").findOne({"profile.accountName": accountName}) //Get the data from the mongoDB based on the collection name and the query in findOne/find
     let userData = user.profile //For users, unecessary information such as Password is not to be sent back to the frontend
     userData.is_admin = user.is_admin
     userData.email = user.email
@@ -184,8 +184,8 @@ async function addNewMember(input){
 }
 
 var root ={
-    member: ({id, name}) => { // A query that should try to match what information the app needs about a single member
-        return getMember({id, name})
+    member: ({id, accountName}) => { // A query that should try to match what information the app needs about a single member
+        return getMember({id, accountName})
     },
     allMembers: () => { // A Query that returns all members
         return getAllMembers()
