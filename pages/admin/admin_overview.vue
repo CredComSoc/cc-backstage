@@ -190,11 +190,39 @@
       dummytransactions:
       [
         // Transactions between pairs
-        {from: "janne", to: "william"},
-        {from: "janne", to:"adam"},
-        {from: "adam", to:"astrid"},
-        {from: "adam", to: "william"},
-        {from: "willam", to: "janne"}
+        { from: "janne", to: "william" },
+        { from: "janne", to: "adam" },
+        { from: "adam", to: "astrid" },
+        { from: "adam", to: "william" },
+        { from: "william", to: "janne" },
+        { from: "astrid", to: "john" },
+        { from: "john", to: "adam" },
+        { from: "adam", to: "william" },
+        { from: "janne", to: "john" },
+        { from: "john", to: "astrid" },
+        { from: "william", to: "astrid" },
+        { from: "janne", to: "emma" },
+        { from: "emma", to: "william" },
+        { from: "janne", to: "oliver" },
+        { from: "oliver", to: "adam" },
+        { from: "astrid", to: "william" },
+        { from: "john", to: "emma" },
+        { from: "oliver", to: "william" },
+        { from: "william", to: "emma" },
+        { from: "oliver", to: "dennis" },
+        { from: "oliver", to: "tester1" },
+        { from: "oliver", to: "tester2" },
+        { from: "oliver", to: "tester3" },
+        { from: "oliver", to: "tester4" },
+        { from: "oliver", to: "tester5" },
+        { from: "tester1", to: "tester6" },
+        { from: "tester1", to: "tester7" },
+        { from: "tester1", to: "tester8" },
+        { from: "tester1", to: "tester9" },
+        { from: "tester1", to: "tester10" },
+        { from: "tester1", to: "tester11" },
+        { from: "tester1", to: "tester12" },
+        { from: "tester1", to: "tester13" },
       ],
 
       nodes: 
@@ -317,15 +345,26 @@
 
         if (!isToNodeInArray) 
         {
+          console.log("warning");
           this.nodes.push(toNode);
         }
 
         const edge = 
         {
-        from: this.dummytransactions[i].from,
-        to: this.dummytransactions[i].to,
+          from: this.dummytransactions[i].from,
+          to: this.dummytransactions[i].to,
         };
-        this.edges.push(edge);
+
+        const isEdgeInArray = this.edges.some(existingEdge =>
+        (existingEdge.from === edge.from && existingEdge.to === edge.to) ||
+        (existingEdge.from === edge.to && existingEdge.to === edge.from));
+
+
+        if(!isEdgeInArray)
+        {
+          this.edges.push(edge);
+        }
+        
       
         }
       },
