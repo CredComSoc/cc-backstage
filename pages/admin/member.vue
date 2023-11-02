@@ -1,31 +1,7 @@
 <template>
 	<div>
-		<member_header></member_header>
-		<v-container>
-			<v-row>
-				<v-col xs="4">
-					<div class="tab_barterkronor" @click="toggleToBarterTab" v-if="barterkronorTabVisible">
-						BARTERKRONOR
-					</div>
-					<div class="tab_barterkronor_dimmed" @click="toggleToBarterTab" v-if="kronorTabVisible">
-						BARTERKRONOR
-					</div>
-
-
-
-				</v-col>
-				<v-col>
-					<div class="tab_sek" @click="toggleToKronorTab" v-if="kronorTabVisible">
-						KRONOR
-					</div>
-					<div class="tab_sek_dimmed" @click="toggleToKronorTab" v-if="barterkronorTabVisible">
-						KRONOR
-					</div>
-
-				</v-col>
-			</v-row>
-		</v-container>
-
+		<member_header />
+		<member_tabs @click="setTabStatus" />
 
 
 		<v-container v-if="barterkronorTabVisible">
@@ -95,14 +71,13 @@
 
 
 <script>
-
 import member_header from '/components/member_header.vue'
+import member_tabs from '/components/member_tabs.vue'
 
 export default {
-
-    components: {
-        member_header
-    },
+	components: {
+		member_header, member_tabs
+	},
 
 	data() {
 		return {
@@ -116,8 +91,8 @@ export default {
 			],
 
 			barterkronorTabVisible: true,
-			kronorTabVisible: false
-
+			kronorTabVisible: false,
+			onBarterKronorTab: true
 		}
 	},
 
@@ -130,6 +105,13 @@ export default {
 		toggleToKronorTab() {
 			this.kronorTabVisible = true;
 			this.barterkronorTabVisible = false;
+		},
+		setTabStatus(onBarterKronorTab) {
+			if (onBarterKronorTab) {
+				this.toggleToBarterTab();
+			} else {
+				this.toggleToKronorTab();
+			}
 		}
 	}
 }

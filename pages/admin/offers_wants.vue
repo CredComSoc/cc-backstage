@@ -4,6 +4,10 @@
 		<br>
 		<h2>Offers</h2>
 		<button @click="registerUser">Object</button>
+
+		Offers: {{ offers.length }}
+		Wants: {{ wants.length }}
+
 		<ul>
 			<div v-for="offer in offers">
 				<li>
@@ -36,8 +40,8 @@
 
 
 <script>
-import {getUserArticles} from '/pages/gqlFetch.js'
-import {register} from '/pages/expressFetch.js'
+import { getUserArticles } from '/pages/gqlFetch.js'
+//import {register} from '/pages/expressFetch.js'
 export default {
 
 	data() {
@@ -53,25 +57,25 @@ export default {
 
 	},
 	methods: {
-		async updateOffers(){
+		async updateOffers() {
 			var user = this.name
 			var articles = await getUserArticles(this.name)
 			articles = JSON.parse(articles)
 
-			this.offers = articles.filter(function (article){
+			this.offers = articles.filter(function (article) {
 				return (article.status == "offer")
 			})
-			this.wants = articles.filter(function (article){
+			this.wants = articles.filter(function (article) {
 				return (article.status == "want")
 			})
 			console.log(articles)
-		},
-		async registerUser(){
+		} /*,
+		async registerUser() {
 			var response = await register(true, "test", "password", "a test user", "teststreet 10", "testcity", "billing", "box", "billingaddress", "org 10", "testorg@test.com", "1912214")
 			console.log(response)
-		}
+		}*/
 	},
-	mounted: function(){
+	mounted: function () {
 		this.updateOffers()
 	}
 
