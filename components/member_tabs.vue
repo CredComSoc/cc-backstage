@@ -2,22 +2,22 @@
 	<v-container>
 		<v-row>
 			<v-col xs="4">
-				<div class="tab_barterkronor" @click="toggleToBarterTab" v-if="barterkronorTabVisible">
-					BARTERKRONOR
+				<div class="blue_tab" @click="toggleToBlueTab" v-if="blueTabVisible">
+					{{ blueTabTitle }}
 				</div>
-				<div class="tab_barterkronor_dimmed" @click="toggleToBarterTab" v-if="kronorTabVisible">
-					BARTERKRONOR
+				<div class="blue_tab_dimmed" @click="toggleToBlueTab" v-if="greenTabVisible">
+					{{ blueTabTitle }}
 				</div>
 
 
 
 			</v-col>
 			<v-col>
-				<div class="tab_sek" @click="toggleToKronorTab" v-if="kronorTabVisible">
-					KRONOR
+				<div class="green_tab" @click="toggleToGreenTab" v-if="greenTabVisible">
+					{{ greenTabTitle }}
 				</div>
-				<div class="tab_sek_dimmed" @click="toggleToKronorTab" v-if="barterkronorTabVisible">
-					KRONOR
+				<div class="green_tab_dimmed" @click="toggleToGreenTab" v-if="blueTabVisible">
+					{{ greenTabTitle }}
 				</div>
 
 			</v-col>
@@ -29,21 +29,23 @@
 export default {
 	data() {
 		return {
-			barterkronorTabVisible: true,
-			kronorTabVisible: false
+			blueTabVisible: true,
+			greenTabVisible: false
 		}
 	},
 
+	props: ['blueTabTitle', 'greenTabTitle'],
+
 	methods: {
-		toggleToBarterTab() {
-			this.kronorTabVisible = false;
-			this.barterkronorTabVisible = true;
+		toggleToBlueTab() {
+			this.greenTabVisible = false;
+			this.blueTabVisible = true;
 			this.$emit('click', true);
 		},
 
-		toggleToKronorTab() {
-			this.kronorTabVisible = true;
-			this.barterkronorTabVisible = false;
+		toggleToGreenTab() {
+			this.greenTabVisible = true;
+			this.blueTabVisible = false;
 			this.$emit('click', false);
 		}
 	}
@@ -51,14 +53,14 @@ export default {
 </script>
 
 <style scoped>
-.tab_barterkronor {
+.blue_tab {
 	background-color: rgb(103, 135, 216);
 	padding: 5px;
 	margin-right: 0%;
 	font-weight: bold;
 }
 
-.tab_barterkronor_dimmed {
+.blue_tab_dimmed {
 	background-color: rgb(103, 135, 216);
 	padding: 5px;
 	margin-right: 0%;
@@ -67,7 +69,7 @@ export default {
 	font-weight: bold;
 }
 
-.tab_sek {
+.green_tab {
 	color: black;
 	background-color: rgb(35, 221, 57);
 	padding: 5px;
@@ -75,7 +77,7 @@ export default {
 	font-weight: bold;
 }
 
-.tab_sek_dimmed {
+.green_tab_dimmed {
 	background-color: rgb(35, 221, 57);
 	padding: 5px;
 	margin-left: 0%;

@@ -7,12 +7,17 @@
                 </form>
             </v-col>
             <v-col class="member-header-middle"> {{ title }} </v-col>
-            <v-col class="member-header-right">Settings</v-col>
+            <v-col class="member-header-right">
+                <NuxtLink :to="{ name: 'admin-admin_network' }">
+						<div class="settings">Settings</div>
+				</NuxtLink>
+            </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script>
+
 export default {
 
     data() {
@@ -41,6 +46,12 @@ export default {
 .member-header-right {
     text-align: right;
     margin: auto;
+}
+
+.settings {
+    color: black;
+    font-weight: bold;
+    font-size: 120%;
 }
 
 form {

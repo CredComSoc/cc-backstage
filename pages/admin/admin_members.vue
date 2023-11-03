@@ -1,10 +1,36 @@
 <template>
     <div>
-        <member_header :title="title" />
-        <v-container>
+        <member_header :title='"ALL MEMBERS"' />
+		<member_tabs 
+			@click="setTabStatus" 
+			:blueTabTitle='"MEMBERS"'
+			:greenTabTitle='"TRANSACTIONS"'
+		/>
+        <v-container v-if="memberTabVisible">
             <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
                 :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
         </v-container>
+		<v-container v-if="transactionTabVisible">
+			<v-row v-for="transaction in transactions">
+				<v-col>
+					{{ transaction.date }}
+				</v-col>
+				<v-col>
+					{{ transaction.payer }}
+				</v-col>
+				<v-col>
+					{{ transaction.receiver }}
+				</v-col>
+				<v-col>
+					{{ transaction.amount }}
+				</v-col>
+				<v-col>
+                    <NuxtLink :to="{ name: '', params: {  } }">
+						<v-btn>Reverse</v-btn>
+					</NuxtLink>
+				</v-col>
+			</v-row>
+		</v-container>
     </div>
 </template>
 
@@ -14,17 +40,25 @@
 import { getMembers } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
+import member_tabs from '/components/member_tabs.vue'
 
 export default {
 
     components: {
-        member_header, member_row
+        member_header, member_row, member_tabs
     },
 
     data() {
         return {
             members: [],
-            title: "ALL MEMBERS"
+            memberTabVisible: true,
+
+			transactions: [
+				{ date: "2023-09-12", payer:"Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
+				{ date: "2023-09-12", payer:"Patrik Olsson", receiver: "John Benson", amount: "22" },
+				{ date: "2020-01-10", payer:"Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
+			],
+
         }
     },
 
@@ -36,9 +70,28 @@ export default {
         gotoOffersWants(member) {
             this.$router.push("/admin/offers_wants");
         },
+
         async updateMembers() {
             this.members = await getMembers()
-        }
+        },
+
+		toggleToMemberTab() {
+			this.transactionTabVisible = false;
+			this.memberTabVisible = true;
+		},
+
+		toggleToTransactionTab() {
+			this.transactionTabVisible = true;
+			this.memberTabVisible = false;
+		},
+		
+		setTabStatus(onMemberTab) {
+			if (onMemberTab) {
+				this.toggleToMemberTab();
+			} else {
+				this.toggleToTransactionTab();
+			}
+		}
     },
     mounted: function () {
         this.updateMembers()

@@ -4,6 +4,8 @@
 .gitignore
 .vscode/*
 
+api/config.js
+
 # Logs
 /logs
 *.log
