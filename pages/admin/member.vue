@@ -1,31 +1,11 @@
 <template>
 	<div>
-		<member_header></member_header>
-		<v-container>
-			<v-row>
-				<v-col xs="4">
-					<div class="tab_barterkronor" @click="toggleToBarterTab" v-if="barterkronorTabVisible">
-						BARTERKRONOR
-					</div>
-					<div class="tab_barterkronor_dimmed" @click="toggleToBarterTab" v-if="kronorTabVisible">
-						BARTERKRONOR
-					</div>
-
-
-
-				</v-col>
-				<v-col>
-					<div class="tab_sek" @click="toggleToKronorTab" v-if="kronorTabVisible">
-						KRONOR
-					</div>
-					<div class="tab_sek_dimmed" @click="toggleToKronorTab" v-if="barterkronorTabVisible">
-						KRONOR
-					</div>
-
-				</v-col>
-			</v-row>
-		</v-container>
-
+		<member_header :title="memberName" />
+		<member_tabs
+			@click="setTabStatus"
+			:blueTabTitle='"BARTERKRONOR"'
+			:greenTabTitle='"KRONOR"'
+		/>
 
 
 		<v-container v-if="barterkronorTabVisible">
@@ -46,47 +26,36 @@
 				<v-col>
 					{{ transaction.amount }}
 				</v-col>
+				<v-col>
+                    <NuxtLink :to="{ name: '', params: {  } }">
+						<v-btn>Revert</v-btn>
+					</NuxtLink>
+				</v-col>
 			</v-row>
 		</v-container>
 		<v-container v-if="kronorTabVisible">
-			<v-row>
+			<v-row v-for="transaction in transactions">
 				<v-col>
-					Fakturor
+					{{ transaction.status }}
+				</v-col>
+				<v-col>
+					{{ transaction.date }}
+				</v-col>
+				<v-col>
+					{{ transaction.type }}
+				</v-col>
+				<v-col>
+					{{ transaction.description }}
+				</v-col>
+				<v-col>
+					{{ transaction.amount_kr }}
+				</v-col>
+				<v-col>
+                    <NuxtLink :to="{ name: '', params: {  } }">
+						<v-btn>Revert</v-btn>
+					</NuxtLink>
 				</v-col>
 			</v-row>
-			<!--
-				<v-col>
-					<NuxtLink :to="{
-						name: 'admin-member',
-						params: { id: member.id, name: member.name }
-					}">
-						<v-btn>Account</v-btn>
-					</NuxtLink>
-				</v-col>
-
-				<v-col>
-					<NuxtLink :to="{
-						name: 'admin-member',
-						params: { id: member.id, name: member.name }
-					}">
-						<v-btn>Transact</v-btn>
-					</NuxtLink>
-				</v-col>
-
-				<v-col>
-					<a v-bind:href="`mailto:${member.email}`">
-						<v-btn>Email</v-btn>
-					</a>
-				</v-col>
-
-				<v-col>
-					<NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.name } }">
-						<v-btn>Offers & Wants</v-btn>
-					</NuxtLink>
-				</v-col>
-
-			</v-row>
-			-->
 		</v-container>
 
 	</div>
@@ -95,30 +64,31 @@
 
 
 <script>
-
 import member_header from '/components/member_header.vue'
 import {getMember} from '/pages/gqlFetch.js'
+import member_tabs from '/components/member_tabs.vue'
 
 export default {
-
-    components: {
-        member_header
-    },
+	components: {
+		member_header, member_tabs
+	},
 
 	data() {
 		return {
 			id: this.$route.params.id,
-			name: this.$route.params.name,
+			memberName: this.$route.params.name,
 			member: {},
+
+
 			transactions: [
-				{ status: "Finished", date: "2023-09-12", counterpart: "Ben Johnson", description: "Shoes", amount: "110" },
-				{ status: "Pending", date: "2023-09-12", counterpart: "John Benson", description: "Hat", amount: "22" },
-				{ status: "Pending", date: "2020-01-10", counterpart: "Sune Mangs", description: "Shirt", amount: "220" }
+				{ status: "Finished", date: "2023-09-12", counterpart: "Ben Johnson", description: "Shoes", amount: "110", amount_kr: "400", type: "invoice" },
+				{ status: "Pending", date: "2023-09-12", counterpart: "John Benson", description: "Hat", amount: "22", amount_kr: "100", type: "credit" },
+				{ status: "Pending", date: "2020-01-10", counterpart: "Sune Mangs", description: "Shirt", amount: "220", amount_kr: "640", type: "credit" }
 			],
 
 			barterkronorTabVisible: true,
-			kronorTabVisible: false
-
+			kronorTabVisible: false,
+			onBarterKronorTab: true
 		}
 	},
 
@@ -133,8 +103,15 @@ export default {
 			this.barterkronorTabVisible = false;
 		},
 		async updateMember(){
-			var response = await getMember(this.name)
+			var response = await getMember(this.memberName)
 			console.log(response)
+		},
+		setTabStatus(onBarterKronorTab) {
+			if (onBarterKronorTab) {
+				this.toggleToBarterTab();
+			} else {
+				this.toggleToKronorTab();
+			}
 		}
 
 	},

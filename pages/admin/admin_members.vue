@@ -1,55 +1,36 @@
-
 <template>
     <div>
-        <member_header></member_header>
-        <v-container>
-            <v-row v-for="member in members">
-                <v-col class="accountName_col">
-                    {{ member.accountName }}
-                </v-col>
-                <v-col>
-                    {{ member.balance }} SEK
-                </v-col>
-
-                <v-col>
-                    {{ member.status }}
-                </v-col>
-
-                <v-col>
-                    {{ member.phone }}
-                </v-col>
-
-                <v-col>
-                    <NuxtLink :to="{
-                        name: 'admin-member',
-                        params: { id: member.id, name: member.accountName }
-                    }">
-                        <v-btn>Account</v-btn>
-                    </NuxtLink>
-                </v-col>
-
-                <v-col>
-                    <NuxtLink :to="{
-                        name: 'admin-member',
-                        params: { id: member.id, name: member.accountName }
-                    }">
-                        <v-btn>Transact</v-btn>
-                    </NuxtLink>
-                </v-col>
-
-                <v-col>
-                    <a v-bind:href="`mailto:${member.email}`">
-                        <v-btn>Email</v-btn>
-                    </a>
-                </v-col>
-
-                <v-col>
-                    <NuxtLink :to="{ name: 'admin-offers_wants', params: { id: member.id, name: member.accountName } }">
-                        <v-btn>Offers & Wants</v-btn>
-                    </NuxtLink>
-                </v-col>
-            </v-row>
+        <member_header :title='"ALL MEMBERS"' />
+		<member_tabs 
+			@click="setTabStatus" 
+			:blueTabTitle='"MEMBERS"'
+			:greenTabTitle='"TRANSACTIONS"'
+		/>
+        <v-container v-if="memberTabVisible">
+            <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
+                :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
         </v-container>
+		<v-container v-if="transactionTabVisible">
+			<v-row v-for="transaction in transactions">
+				<v-col>
+					{{ transaction.date }}
+				</v-col>
+				<v-col>
+					{{ transaction.payer }}
+				</v-col>
+				<v-col>
+					{{ transaction.receiver }}
+				</v-col>
+				<v-col>
+					{{ transaction.amount }}
+				</v-col>
+				<v-col>
+                    <NuxtLink :to="{ name: '', params: {  } }">
+						<v-btn>Reverse</v-btn>
+					</NuxtLink>
+				</v-col>
+			</v-row>
+		</v-container>
     </div>
 </template>
 
@@ -58,17 +39,26 @@
 // import Member from '@/pages/admin/member.vue'
 import { getMembers } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
-
+import member_row from '/components/member_row.vue'
+import member_tabs from '/components/member_tabs.vue'
 
 export default {
 
     components: {
-        member_header
+        member_header, member_row, member_tabs
     },
 
     data() {
         return {
             members: [],
+            memberTabVisible: true,
+
+			transactions: [
+				{ date: "2023-09-12", payer:"Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
+				{ date: "2023-09-12", payer:"Patrik Olsson", receiver: "John Benson", amount: "22" },
+				{ date: "2020-01-10", payer:"Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
+			],
+
         }
     },
 
@@ -80,9 +70,28 @@ export default {
         gotoOffersWants(member) {
             this.$router.push("/admin/offers_wants");
         },
+
         async updateMembers() {
             this.members = await getMembers()
-        }
+        },
+
+		toggleToMemberTab() {
+			this.transactionTabVisible = false;
+			this.memberTabVisible = true;
+		},
+
+		toggleToTransactionTab() {
+			this.transactionTabVisible = true;
+			this.memberTabVisible = false;
+		},
+		
+		setTabStatus(onMemberTab) {
+			if (onMemberTab) {
+				this.toggleToMemberTab();
+			} else {
+				this.toggleToTransactionTab();
+			}
+		}
     },
     mounted: function () {
         this.updateMembers()
@@ -95,30 +104,36 @@ export default {
 .member-header {
     width: 100%;
 }
+
 .member-header-middle {
     text-align: center;
     margin: auto;
     color: rgb(165, 9, 9);
     font-size: large;
-    font-weight: bold;;
+    font-weight: bold;
+    ;
 }
+
 .member-header-right {
     text-align: right;
     margin: auto;
 }
+
 form {
-	max-width: 420px;
-	margin: 0px auto;
-	background: #ddd;
-	text-align: left;
+    max-width: 420px;
+    margin: 0px auto;
+    background: #ddd;
+    text-align: left;
 }
+
 input {
-	display: block;
-	padding: 10px 6px;
-	width: 100%;
-	box-sizing: border-box;
-	color: #000000;
+    display: block;
+    padding: 10px 6px;
+    width: 100%;
+    box-sizing: border-box;
+    color: #000000;
 }
+
 .container_all_listings {
     display: flex;
     flex-direction: column;
