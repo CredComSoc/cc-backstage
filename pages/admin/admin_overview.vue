@@ -72,31 +72,37 @@
       <div class="test-container test-container--green">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> NULL</div>
-            <div class="test-container-text-lower"> NULL</div>
+            <div class="test-container-text-upper"> Network graph</div>
           </div>
 
           <div class="test-container-rhs">
-            <img class="test-container-img" :src="onlineUser" alt="User image" draggable="false">
+            <img class="test-container-img" :src="nodeGraph" alt="Graph image" draggable="false">
           </div>
         </div>
 
-        <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="updateChart('onlineUsers' , '#b51f1f')">
-            NULL
-          </button>
-          <button class="test-container-lower-rhs" @click="updateChart( 'dailyTrades' , '#bcbf0d')">
-            NULL
-          </button>
-        </div>
+        <button class="test-container-lower-graph" @click="hideGraph()">
+            Display
+        </button>
       </div>
-      </div>
+    </div>
 
 
 
       <div class="chart-container">
 
-        <div class="chart-buttons">
+        <div class="node-graph-container" v-if="!showChart">
+           <network class="network" ref="network" v-if="!showChart"
+            :nodes="nodes"
+            :edges="edges"
+            :options="options"
+            :events="['selectNode', 'hoverNode']"
+            @select-node="onNodeSelected"
+            @hover-node="onNodeHovered">
+          </network>
+        </div>
+
+
+        <div class="chart-buttons" v-if="showChart">
           <button class="chart-button"> 1w </button>
           <button class="chart-button"> 1m </button>
           <button class="chart-button"> 3m </button>
@@ -107,7 +113,7 @@
           </div>
 
 
-          <div class="chart-text-box">
+          <div class="chart-text-box" v-if="showChart">
             <div class="chart-text">
               UTC:{{  utcTime}}
             </div>
@@ -116,7 +122,7 @@
 
         </div>
 
-        <div class="chart">
+        <div class="chart" v-if="showChart">
           <apexchart type="area" :options="chartOptions" :series="chartSeries">
           </apexchart>
         </div>
@@ -138,12 +144,14 @@
   import onlineUser from './admin_icons/user.png';
   import trade from './admin_icons/shoppingcart.png';
   import listed from './admin_icons/listedproduct.png';
+  import nodeGraph from './admin_icons/nodegraph.png';
   // Icons end
 
   // packages
   import VueApexCharts from 'vue-apexcharts';
   import 'vue-datepicker-ui/lib/vuedatepickerui.css';
   import VueDatepickerUi from 'vue-datepicker-ui';
+  import "vue-vis-network/node_modules/vis-network/dist/vis-network.css";
   /* import "v-network-graph/lib/style.css";
   import VNetworkGraph from "v-network-graph";  */
 
@@ -151,6 +159,7 @@
   // packages end
 
   // fetchFuncs
+  import { Network } from "vue-vis-network";
   import { getMembers } from '/pages/gqlFetch.js'
 
   // fetchFuncs end
@@ -160,8 +169,8 @@
     components:
     {
       Datepicker: VueDatepickerUi,
-      apexchart: VueApexCharts
-
+      apexchart: VueApexCharts,
+      network: Network
     },
 
     data() {
@@ -171,12 +180,66 @@
         onlineUser,
         trade,
         listed,
+        nodeGraph,
         onlineUsersCount: 0,
         activeTrades: 23,
         registerdUsers: 232,
         dashBoardText: "",
+        showChart: true,
 
+      dummytransactions:
+      [
+        // Transactions between pairs
+        { from: "janne", to: "william" },
+        { from: "janne", to: "adam" },
+        { from: "adam", to: "astrid" },
+        { from: "adam", to: "william" },
+        { from: "william", to: "janne" },
+        { from: "astrid", to: "john" },
+        { from: "john", to: "adam" },
+        { from: "adam", to: "william" },
+        { from: "janne", to: "john" },
+        { from: "john", to: "astrid" },
+        { from: "william", to: "astrid" },
+        { from: "janne", to: "emma" },
+        { from: "emma", to: "william" },
+        { from: "janne", to: "oliver" },
+        { from: "oliver", to: "adam" },
+        { from: "astrid", to: "william" },
+        { from: "john", to: "emma" },
+        { from: "oliver", to: "william" },
+        { from: "william", to: "emma" },
+        { from: "oliver", to: "dennis" },
+        { from: "oliver", to: "tester1" },
+        { from: "oliver", to: "tester2" },
+        { from: "oliver", to: "tester3" },
+        { from: "oliver", to: "tester4" },
+        { from: "oliver", to: "tester5" },
+        { from: "tester1", to: "tester6" },
+        { from: "tester1", to: "tester7" },
+        { from: "tester1", to: "tester8" },
+        { from: "tester1", to: "tester9" },
+        { from: "tester1", to: "tester10" },
+        { from: "tester1", to: "tester11" },
+        { from: "tester1", to: "tester12" },
+        { from: "tester1", to: "tester13" },
+      ],
 
+      nodes:
+      [],
+
+      edges:
+      [],
+
+      options: {
+         nodes: {
+          borderWidth: 4,
+          color: '#00d282'
+         },
+         edges: {
+          color: 'lightgray'
+        }
+      },
         selectedDate: [
           new Date(),
           new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)],
@@ -250,13 +313,77 @@
             categories: ['1/10', '2/10', '3/10', '4/10', '5/10']
           },
         }
-
-
       };
     },
 
     methods:
     {
+
+      createNodes()
+      {
+        for (let i = 0; i < this.dummytransactions.length; i++)
+        {
+          const fromNode =
+          {
+            id: this.dummytransactions[i].from,
+            label: this.dummytransactions[i].from,
+          };
+
+          const toNode =
+          {
+            id: this.dummytransactions[i].to,
+            label: this.dummytransactions[i].to,
+          };
+
+        const isFromNodeInArray = this.nodes.some(node => node.id === fromNode.id);
+        const isToNodeInArray = this.nodes.some(node => node.id === toNode.id);
+
+        if (!isFromNodeInArray)
+        {
+          this.nodes.push(fromNode);
+        }
+
+        if (!isToNodeInArray)
+        {
+          console.log("warning");
+          this.nodes.push(toNode);
+        }
+
+        const edge =
+        {
+          from: this.dummytransactions[i].from,
+          to: this.dummytransactions[i].to,
+        };
+
+        const isEdgeInArray = this.edges.some(existingEdge =>
+        (existingEdge.from === edge.from && existingEdge.to === edge.to) ||
+        (existingEdge.from === edge.to && existingEdge.to === edge.from));
+
+
+        if(!isEdgeInArray)
+        {
+          this.edges.push(edge);
+        }
+
+
+        }
+      },
+      displayGraph()
+      {
+        if(this.showChart == false)
+        {
+          this.showChart = true;
+        }
+      },
+
+      hideGraph()
+      {
+        if(this.showChart == true)
+        {
+          this.showChart = false;
+        }
+      },
+
       printDashboardText(targetText)
       {
         for(let i = 0; i < targetText.length; i++)
@@ -270,6 +397,7 @@
 
       updateChart(data, color)
       {
+        this.displayGraph();
         //const newData = JSON.parse(JSON.stringify(data));
         // graphql get data for all functions
         switch(data)
@@ -317,7 +445,6 @@
       {
         this.usersList = await getMembers();
         this.onlineUsersCount = 0;
-        console.log(this.usersList.length);
         for(let i = 0; i < this.usersList.length; i++)
         {
           if(this.usersList[i].status == "Online")
@@ -342,23 +469,17 @@
       this.updateChart("online" , '#b51f1f');
       this.getUTCTime(false);
 
+      this.createNodes();
+
       this.timer = setInterval(() => {
         this.getUTCTime(false);
       }, 1000);
-
-
-
-
-
-
     },
   }
 
   </script>
 
   <style scoped>
-
-
   .test-main-container
   {
     display: flex;
@@ -367,7 +488,6 @@
     flex-direction: row;
     gap: 2%;
   }
-
   .test-container-img
   {
     width: 50%;
@@ -441,23 +561,35 @@
     width: 100%;
     height: 30%;
     background-color: rgba(0, 0, 0, 0.138);
-
-
+    font-size: 100%;
+    color: rgb(255, 255, 255);
   }
-
+  .test-container-lower-graph
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    height: 30%;
+    background-color: rgba(0, 0, 0, 0.138);
+    font-size: 100%;
+    color: rgb(255, 255, 255);
+  }
   .test-container-lower-rhs
   {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    font-size: 100%;
     width: 50%;
     height: 100%;
-    color: rgb(255, 255, 255);
     border-left: 1px rgba(0, 0, 0, 0.200) solid;
   }
-
+  .test-container-lower-graph:hover
+  {
+    background-color: rgba(0, 0, 0, 0.200)
+  }
   .test-container-lower-rhs:hover
   {
     background-color: rgba(0, 0, 0, 0.200)
@@ -467,9 +599,6 @@
   {
     background-color: rgba(0, 0, 0, 0.200)
   }
-
-
-
   .test-container-lower-lhs
   {
 
@@ -481,12 +610,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
     border-right: 1px rgba(0, 0, 0, 0.200) solid;
   }
-
-
-
   .test-container-text-upper
   {
     font-size: 110%;
@@ -494,7 +619,6 @@
     color: white;
     user-select: none;
   }
-
   .test-container-text-lower
   {
     font-size: 110%;
@@ -595,6 +719,17 @@
 
   }
 
+  .node-graph-container
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+
+
   .datepicker
   {
 
@@ -618,7 +753,11 @@
     --v-calendar-select-bg-color: #e0e0e0;
 
   }
-
+  .network
+  {
+    width: 100%;
+    height: 100%;
+  }
 
   .test-switchbox
   {
