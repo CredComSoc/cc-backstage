@@ -123,7 +123,7 @@
         </div>
 
         <div class="chart" v-if="showChart">
-          <apexchart type="area" :options="chartOptions" :series="chartSeries">
+          <apexchart ref="chart" type="area" :options="chartOptions" :series="chartSeries">
           </apexchart>
         </div>
       </div>
@@ -172,6 +172,7 @@
       apexchart: VueApexCharts,
       network: Network
     },
+
 
     data() {
       return {
@@ -370,9 +371,22 @@
       },
       displayGraph()
       {
-        if(this.showChart == false)
+        if (this.showChart === false) 
         {
           this.showChart = true;
+
+          // Force ApexCharts to recalculate its dimensions when shown
+          this.$nextTick(() => 
+          {
+            this.$refs.chart.updateOptions( 
+            {
+              chart: 
+              {
+                width: '100%', // You can set the width you want here
+                height: '100%' // You can set the height you want here
+              }
+            });
+          });
         }
       },
 
