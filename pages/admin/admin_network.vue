@@ -1,17 +1,46 @@
 <template>
     <div>
         <member_header :title='"NETWORK ADMINISTRATION"' />
-		<member_tabs 
-			@click="setTabStatus" 
-			:blueTabTitle='"NETWORK POLICIES"'
-			:greenTabTitle='"MEMBER ADMINISTRATION"'
-		/>
-        <v-container v-if="networkTabVisible">
+        <member_tabs @click="setTabStatus" :blueTabTitle='"NETWORK POLICIES"' :greenTabTitle='"MEMBER ADMINISTRATION"' />
+        <div class="mainContainer">
+            <v-container v-if="onBlueTab">
+                <form action="submit">
+                    <label>Transaction Fee</label>
+                    <v-container>
+                        <v-row>
+                            <v-col>
+                                <input type="text" placeholder="seller percentage">
+                            </v-col>
+                            <v-col>
+                                <input type="text" placeholder="buyer percentage">
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                    <label>Interest on BSEK</label>
+                    <v-container>
+                        <v-row>
+                            <v-col>
+                                <input type="text" placeholder="percentage">
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                    <label>Default Balance Limits</label>
+                    <v-container>
+                        <v-row>
+                            <v-col>
+                                <input type="text" placeholder="Maximium">
+                            </v-col>
+                            <v-col>
+                                <input type="text" placeholder="Minimum">
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </form>
+            </v-container>
+            <v-container v-else>
 
-        </v-container>
-		<v-container v-if="memberTabVisible">
-
-		</v-container>
+            </v-container>
+        </div>
     </div>
 </template>
 
@@ -32,29 +61,14 @@ export default {
     data() {
         return {
             members: [],
-            networkTabVisible: true,
+            onBlueTab: true,
         }
     },
 
     methods: {
-
-		toggleToMemberTab() {
-			this.memberTabVisible = false;
-			this.networkTabVisible = true;
-		},
-
-		toggleToNetworkTab() {
-			this.memberTabVisible = true;
-			this.networkTabVisible = false;
-		},
-		
-		setTabStatus(onNetworkTab) {
-			if (onNetworkTab) {
-				this.toggleToNetworkTab();
-			} else {
-				this.toggleToMemberTab();
-			}
-		}
+        setTabStatus(onBlueTab) {
+            this.onBlueTab = onBlueTab
+        }
     },
 
 }
@@ -79,12 +93,19 @@ export default {
     margin: auto;
 }
 
-form {
-    max-width: 420px;
-    margin: 0px auto;
-    background: #ddd;
-    text-align: left;
+div.mainContainer {
+    height: 70vh;
+    /* border: 1px solid black; */
+    margin: 0px;
 }
+
+form {
+    margin: 0px auto;
+    background: #fff;
+    text-align: left;
+    padding: 25px;
+}
+
 
 input {
     display: block;
@@ -92,7 +113,11 @@ input {
     width: 100%;
     box-sizing: border-box;
     color: #000000;
+    border: 1px solid gray;
+    border-radius: 5px;
+
 }
+
 
 .container_all_listings {
     display: flex;

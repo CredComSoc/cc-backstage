@@ -1,14 +1,10 @@
 <template>
 	<div>
 		<member_header :title="memberName" />
-		<member_tabs 
-			@click="setTabStatus" 
-			:blueTabTitle='"BARTERKRONOR"'
-			:greenTabTitle='"KRONOR"'
-		/>
+		<member_tabs @click="setTabStatus" :blueTabTitle='"BARTERKRONOR"' :greenTabTitle='"KRONOR"' />
 
 
-		<v-container v-if="barterkronorTabVisible">
+		<v-container v-if="onBlueTab">
 			<v-row v-for="transaction in transactions">
 				<v-col>
 					{{ transaction.status }}
@@ -27,13 +23,13 @@
 					{{ transaction.amount }}
 				</v-col>
 				<v-col>
-                    <NuxtLink :to="{ name: '', params: {  } }">
+					<NuxtLink :to="{ name: '', params: {} }">
 						<v-btn>Revert</v-btn>
 					</NuxtLink>
 				</v-col>
 			</v-row>
 		</v-container>
-		<v-container v-if="kronorTabVisible">
+		<v-container v-else>
 			<v-row v-for="transaction in transactions">
 				<v-col>
 					{{ transaction.status }}
@@ -51,7 +47,7 @@
 					{{ transaction.amount_kr }}
 				</v-col>
 				<v-col>
-                    <NuxtLink :to="{ name: '', params: {  } }">
+					<NuxtLink :to="{ name: '', params: {} }">
 						<v-btn>Revert</v-btn>
 					</NuxtLink>
 				</v-col>
@@ -83,29 +79,13 @@ export default {
 				{ status: "Pending", date: "2020-01-10", counterpart: "Sune Mangs", description: "Shirt", amount: "220", amount_kr: "640", type: "credit" }
 			],
 
-			barterkronorTabVisible: true,
-			kronorTabVisible: false,
-			onBarterKronorTab: true
+			onBlueTab: true
 		}
 	},
 
 	methods: {
-		toggleToBarterTab() {
-			this.kronorTabVisible = false;
-			this.barterkronorTabVisible = true;
-		},
-
-		toggleToKronorTab() {
-			this.kronorTabVisible = true;
-			this.barterkronorTabVisible = false;
-		},
-
-		setTabStatus(onBarterKronorTab) {
-			if (onBarterKronorTab) {
-				this.toggleToBarterTab();
-			} else {
-				this.toggleToKronorTab();
-			}
+		setTabStatus(onBlueTab) {
+			this.onBlueTab = onBlueTab
 		}
 	}
 }

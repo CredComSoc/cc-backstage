@@ -1,36 +1,32 @@
 <template>
     <div>
         <member_header :title='"ALL MEMBERS"' />
-		<member_tabs 
-			@click="setTabStatus" 
-			:blueTabTitle='"MEMBERS"'
-			:greenTabTitle='"TRANSACTIONS"'
-		/>
-        <v-container v-if="memberTabVisible">
+        <member_tabs @click="setTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
+        <v-container v-if="onBlueTab">
             <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
                 :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
         </v-container>
-		<v-container v-if="transactionTabVisible">
-			<v-row v-for="transaction in transactions">
-				<v-col>
-					{{ transaction.date }}
-				</v-col>
-				<v-col>
-					{{ transaction.payer }}
-				</v-col>
-				<v-col>
-					{{ transaction.receiver }}
-				</v-col>
-				<v-col>
-					{{ transaction.amount }}
-				</v-col>
-				<v-col>
-                    <NuxtLink :to="{ name: '', params: {  } }">
-						<v-btn>Reverse</v-btn>
-					</NuxtLink>
-				</v-col>
-			</v-row>
-		</v-container>
+        <v-container v-else>
+            <v-row v-for="transaction in transactions">
+                <v-col>
+                    {{ transaction.date }}
+                </v-col>
+                <v-col>
+                    {{ transaction.payer }}
+                </v-col>
+                <v-col>
+                    {{ transaction.receiver }}
+                </v-col>
+                <v-col>
+                    {{ transaction.amount }}
+                </v-col>
+                <v-col>
+                    <NuxtLink :to="{ name: '', params: {} }">
+                        <v-btn>Reverse</v-btn>
+                    </NuxtLink>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>
 
@@ -51,13 +47,13 @@ export default {
     data() {
         return {
             members: [],
-            memberTabVisible: true,
+            onBlueTab: true,
 
-			transactions: [
-				{ date: "2023-09-12", payer:"Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
-				{ date: "2023-09-12", payer:"Patrik Olsson", receiver: "John Benson", amount: "22" },
-				{ date: "2020-01-10", payer:"Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
-			],
+            transactions: [
+                { date: "2023-09-12", payer: "Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
+                { date: "2023-09-12", payer: "Patrik Olsson", receiver: "John Benson", amount: "22" },
+                { date: "2020-01-10", payer: "Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
+            ],
 
         }
     },
@@ -74,24 +70,9 @@ export default {
         async updateMembers() {
             this.members = await getMembers()
         },
-
-		toggleToMemberTab() {
-			this.transactionTabVisible = false;
-			this.memberTabVisible = true;
-		},
-
-		toggleToTransactionTab() {
-			this.transactionTabVisible = true;
-			this.memberTabVisible = false;
-		},
-		
-		setTabStatus(onMemberTab) {
-			if (onMemberTab) {
-				this.toggleToMemberTab();
-			} else {
-				this.toggleToTransactionTab();
-			}
-		}
+        setTabStatus(onBlueTab) {
+            this.onBlueTab = onBlueTab
+        }
     },
     mounted: function () {
         this.updateMembers()
