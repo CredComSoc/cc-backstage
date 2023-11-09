@@ -10,7 +10,8 @@
       <div class="test-container test-container--red">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> {{ onlineUsersCount }}</div>
+            <div class="test-container-text-upper" v-if="showOnline"> {{ onlineUsersCount }}</div>
+            <div class="test-container-text-upper" v-if="!showOnline"> {{ registerdUsersCount }}</div>
             <div class="test-container-text-lower"> Users</div>
           </div>
 
@@ -20,10 +21,17 @@
         </div>
 
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="updateChart('online' , '#b51f1f')">
+          <button class="test-container-lower-lhs" v-if="!showOnline" @click="updateChart('online' , '#b51f1f')">
             Online
           </button>
-          <button class="test-container-lower-rhs" @click="updateChart( 'registered' , '#b51f1f')">
+          <button class="test-container-lower-lhs-pressed" v-if="showOnline" @click="updateChart('online' , '#b51f1f')">
+            Online
+          </button>
+          
+          <button class="test-container-lower-rhs" v-if="showOnline" @click="updateChart( 'registered' , '#b51f1f')">
+            Registered
+          </button>
+          <button class="test-container-lower-rhs-pressed" v-if="!showOnline" @click="updateChart( 'registered' , '#b51f1f')">
             Registered
           </button>
         </div>
@@ -52,7 +60,8 @@
       <div class="test-container test-container--blue">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> 5</div>
+            <div class="test-container-text-upper" v-if="showOffers"> {{offerCount}}</div>
+            <div class="test-container-text-upper" v-if="!showOffers"> {{wantCount}}</div>
             <div class="test-container-text-lower"> Listed</div>
           </div>
           <div class="test-container-rhs">
@@ -60,10 +69,16 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="updateChart('offers' , '#1248b5')">
+          <button class="test-container-lower-lhs-pressed" v-if="showOffers" @click="updateChart('offers' , '#1248b5')">
             Offers
           </button>
-          <button class="test-container-lower-rhs" @click="updateChart( 'wants' , '#1248b5')">
+          <button class="test-container-lower-lhs" v-if="!showOffers" @click="updateChart('offers' , '#1248b5')">
+            Offers
+          </button>
+          <button class="test-container-lower-rhs" v-if="showOffers" @click="updateChart( 'wants' , '#1248b5')">
+            Wants
+          </button>
+          <button class="test-container-lower-rhs-pressed" v-if="!showOffers" @click="updateChart( 'wants' , '#1248b5')">
             Wants
           </button>
         </div>
@@ -103,10 +118,10 @@
 
 
         <div class="chart-buttons" v-if="showChart">
-          <button class="chart-button"> 1w </button>
-          <button class="chart-button"> 1m </button>
-          <button class="chart-button"> 3m </button>
-          <button class="chart-button"> 1y </button>
+          <button class="chart-button" @click="weekGraph()"> 1w</button>
+          <button class="chart-button" @click="monthGraph()"> 1m </button>
+          <button class="chart-button" @click="ThreemonthGraph()"> 3m </button>
+          <button class="chart-button" @click="yearGraph()"> 1y </button>
 
           <div class="datepicker-container">
             <Datepicker range circle class="datepicker"  placeholder="Custom date" lang="en"/>
@@ -160,7 +175,9 @@
 
   // fetchFuncs
   import { Network } from "vue-vis-network";
-  import { getMembers } from '/pages/gqlFetch.js'
+  import { getUserCount } from '/pages/gqlFetch.js';
+  import { getAllArticles } from '/pages/gqlFetch.js';
+
 
   // fetchFuncs end
 
@@ -176,15 +193,40 @@
 
     data() {
       return {
-        utcTime: null,
-        usersList: [],
+        // Picture references
         onlineUser,
         trade,
         listed,
         nodeGraph,
+        // ------------------
+        chartKey: 0,
+        // Dates 
+        utcTime: null,
+        currentDate: null,
+        from: null,
+        to: null,
+        // ------------------        
+
+        // Usr
+        usersList: [],
         onlineUsersCount: 0,
+        registerdUsersCount: 0,
+        showOnline: true,
+        // ------------------        
+        
+        // Trades
+        offers: [],
+        offerCount: 0,
+        wants: [],
+        wantCount: 0,
+        listedCount: 0,
         activeTrades: 23,
-        registerdUsers: 232,
+        showOffers: true,
+        // ------------------  
+
+        // Maps
+        registeredUserMap: new Map(),
+
         dashBoardText: "",
         showChart: true,
 
@@ -262,7 +304,7 @@
         [
           {
             name: '# of Online',
-            data: [5, 7, 3, 11, 1], // fake data
+            data: [5, 7, 3, 11, 1, 99], // fake data
           }
         ],
 
@@ -308,10 +350,6 @@
           stroke:
           {
             curve: 'smooth'
-          },
-          xaxis:
-          {
-            categories: ['1/10', '2/10', '3/10', '4/10', '5/10']
           },
         }
       };
@@ -382,8 +420,8 @@
             {
               chart: 
               {
-                width: '100%', // You can set the width you want here
-                height: '100%' // You can set the height you want here
+                width: '100%',
+                height: '100%'
               }
             });
           });
@@ -418,9 +456,11 @@
         {
           case "online":
             this.chartSeries = this.dataOnlineUsr;
+            this.showOnline = true;
             break;
           case "registered":
             this.chartSeries = this.dataTrades;
+            this.showOnline = false;
             break;
           case "transactions":
             this.chartSeries = this.dataTrades;
@@ -430,9 +470,11 @@
             break;
           case "offers":
             this.chartSeries = this.dataTrades;
+            this.showOffers = true;
             break;
           case "wants":
             this.chartSeries = this.dataListedTrades;
+            this.showOffers = false;
             break;
         }
         this.updateChartOptions(color);
@@ -455,33 +497,114 @@
           this.utcTime = utcTime.slice(11, 16)
       },
 
+      getCurrentDate()
+      {
+        const currentDate = new Date();
+        this.registeredUserMap.set(currentDate.toDateString().slice(4), 0);
+
+        for(let i = 0; i < 365; i++)
+        {
+          currentDate.setDate(currentDate.getDate() -1);
+          this.registeredUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+        }
+        // console.log(this.registeredUserMap.size);
+        // this.registeredUserMap.forEach((values, keys) => {
+        // console.log("values: ", values +
+        // ", keys: ", keys)
+        // })
+      },
+
+      weekGraph()
+      {
+        this.getDataRange(7);
+      },
+
+      monthGraph()
+      {
+        this.getDataRange(30);
+      },
+
+      ThreemonthGraph()
+      {
+        this.getDataRange(90);
+      },
+
+      yearGraph()
+      {
+        this.getDataRange(365);
+      },
+
+      getDataRange(range)
+      {
+        const currentDate = new Date();
+        
+        let newDate = [];
+        let newData = [];
+        for(let i = 0; i < range; i++)
+        {
+          const fromDate = new Date(); // Create a new Date object for each iteration
+          fromDate.setDate(currentDate.getDate() - i);
+    
+          console.log(fromDate.toDateString());
+          newData.push(this.registeredUserMap.get(fromDate.toDateString().slice(4)));
+          newDate.push(fromDate.toDateString().slice(4));
+        }
+        this.updateChartData(newDate, newData);
+      },
+      
+      updateChartData(newDate, newData)
+      {
+        let newChart = 
+        [
+          {
+            name: '# of Online',
+            data: newData, // fake data
+          }
+        ];
+        
+        this.$nextTick(() => 
+          {
+            this.$refs.chart.updateOptions( 
+            {
+              xaxis:
+              { 
+                categories: newDate
+              } 
+            });
+          });
+          this.chartSeries = newChart;
+      },
+
+
       async getOnlineUsers()
       {
-        this.usersList = await getMembers();
-        this.onlineUsersCount = 0;
-        for(let i = 0; i < this.usersList.length; i++)
-        {
-          if(this.usersList[i].status == "Online")
-          {
-            this.onlineUsersCount++;
-          }
-        }
-      }
-      // totalregistered userCount()
-      // articles        getAllArticles()
+        this.registerdUsersCount = await getUserCount();
+      },
+    
+      async getTrades() {
+        var articles = await getAllArticles();
+        articles = JSON.parse(articles);
 
-      // transactions     Dependant on CC-node
-      // transaction volume
-
-      //
+        this.offers = articles.filter(function (article) {
+            return (article.status == "offer")
+        });
+        this.wants = articles.filter(function (article) {
+            return (article.status == "want")
+         });
+        this.offerCount = this.offers.length;
+        this.wantCount = this.wants.length;
+        this.listedCount = this.offerCount + this.wantCount;
+      },
     },
 
     mounted()
     {
       this.getOnlineUsers();
+      this.getTrades();
       this.printDashboardText("Dashboard");
       this.updateChart("online" , '#b51f1f');
       this.getUTCTime(false);
+      this.getCurrentDate();
 
       this.createNodes();
 
@@ -613,9 +736,32 @@
   {
     background-color: rgba(0, 0, 0, 0.200)
   }
+  .test-container-lower-lhs-pressed
+  {
+    flex-direction: row;
+    font-size: 100%;
+    width: 50%;
+    height: 100%;
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px rgba(0, 0, 0, 0.200) solid;
+    background-color: rgba(0, 0, 0, 0.200)
+  }
+  .test-container-lower-rhs-pressed
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 50%;
+    height: 100%;
+    border-left: 1px rgba(0, 0, 0, 0.200) solid;
+    background-color: rgba(0, 0, 0, 0.200)
+  }
   .test-container-lower-lhs
   {
-
     flex-direction: row;
     font-size: 100%;
     width: 50%;
@@ -721,7 +867,6 @@
     text-align: left;
     user-select: none;
   }
-
   .datepicker-container
   {
     display: flex;
@@ -732,7 +877,6 @@
 
 
   }
-
   .node-graph-container
   {
     display: flex;
@@ -741,13 +885,8 @@
     width: 100%;
     height: 100%;
   }
-
-
-
   .datepicker
   {
-
-
     /* Background color  */
     --v-calendar-input-bg-color: #e0e0e0;
 
@@ -759,8 +898,6 @@
     --v-calendar-input-font-size: 1.0rem;
     --v-calendar-input-font-weight: 500;
     --v-calendar-input-text-color: #000000;
-
-
 
     /* Inne i kalendern header */
     --v-calendar-view-button-font-size: 1rem;
