@@ -78,6 +78,75 @@ export async function getUserArticles(name){
     return articles
 }
 
+export async function getAllArticles(){
+    var articles
+
+    await fetch("/api/graphql", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+        body: JSON.stringify({ query: `query allArticles{
+            allArticles{
+              id
+              title
+              longDesc
+              article
+              category
+              status
+              destination
+              price
+              uploadDate
+              userUploader
+              userId
+            }
+          }`,
+         }),
+    }).then(r => r.json())
+      .then(data => articles = data)
+      articles = JSON.stringify(articles.data.allArticles) // Remove the Json "padding" to get the object or array
+      console.log(articles)
+    return articles
+}
+
+export async function getMember(name){
+    var member
+    console.log(name)
+    await fetch("/api/graphql", {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+        body: JSON.stringify({ query: `query member($accountName: String!) {
+            member(accountName: $accountName) {
+                id
+                accountName
+                is_admin
+                email
+                description
+                address
+                city
+                phone
+                billing {
+                    name
+                    box
+                    address
+                    orgNumber
+                }
+                last_online
+            }
+          }`,
+          variables: { accountName: name }, }),
+    }).then(r => r.json())
+      .then(data => member = data)
+      console.log(member)
+      member = JSON.stringify(member.data.member) // Remove the Json "padding" to get the object or array
+      console.log(member)
+    return member
+}
+
 
 export async function getUserCount() {
     var userCount

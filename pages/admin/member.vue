@@ -3,7 +3,6 @@
 		<member_header :title="memberName" />
 		<member_tabs @click="setTabStatus" :blueTabTitle='"BARTERKRONOR"' :greenTabTitle='"KRONOR"' />
 
-
 		<v-container v-if="onBlueTab">
 			<v-row v-for="transaction in transactions">
 				<v-col>
@@ -61,6 +60,7 @@
 
 <script>
 import member_header from '/components/member_header.vue'
+import { getMember } from '/pages/gqlFetch.js'
 import member_tabs from '/components/member_tabs.vue'
 
 export default {
@@ -72,6 +72,8 @@ export default {
 		return {
 			id: this.$route.params.id,
 			memberName: this.$route.params.name,
+			member: {},
+
 
 			transactions: [
 				{ status: "Finished", date: "2023-09-12", counterpart: "Ben Johnson", description: "Shoes", amount: "110", amount_kr: "400", type: "invoice" },
@@ -86,7 +88,14 @@ export default {
 	methods: {
 		setTabStatus(onBlueTab) {
 			this.onBlueTab = onBlueTab
+		},
+		async updateMember() {
+			var response = await getMember(this.memberName)
+			console.log(response)
 		}
+	},
+	mounted: function () {
+		this.updateMember()
 	}
 }
 </script>

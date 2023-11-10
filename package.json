@@ -20,11 +20,16 @@
     "graphql": "^16.8.1",
     "mongodb": "^6.2.0",
     "nuxt": "^2.15.8",
+    "vis-data": "^7.1.7",
+    "vis-network": "^9.1.8",
+    "vis-util": "^5.0.5",
     "vue": "^2.7.10",
     "vue-apexcharts": "^1.6.2",
     "vue-chartjs": "^5.2.0",
+    "vue-datepicker-ui": "^2.3.0",
     "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10"
+    "vue-template-compiler": "^2.7.10",
+    "vue-vis-network": "^1.0.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",

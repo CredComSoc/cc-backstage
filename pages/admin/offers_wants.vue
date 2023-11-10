@@ -3,7 +3,7 @@
 		<h1>Offer & Wants for {{ name }} </h1>
 		<br>
 		<h2>Offers</h2>
-		<button @click="registerUser">Object</button>
+
 
 		Offers: {{ offers.length }}
 		Wants: {{ wants.length }}
@@ -69,11 +69,8 @@ export default {
 				return (article.status == "want")
 			})
 			console.log(articles)
-		} /*,
-		async registerUser() {
-			var response = await register(true, "test", "password", "a test user", "teststreet 10", "testcity", "billing", "box", "billingaddress", "org 10", "testorg@test.com", "1912214")
-			console.log(response)
-		}*/
+		},
+
 	},
 	mounted: function () {
 		this.updateOffers()
