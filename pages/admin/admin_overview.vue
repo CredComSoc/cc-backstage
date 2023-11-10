@@ -21,17 +21,17 @@
         </div>
 
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" v-if="!showOnline" @click="weekGraph('online')">
+          <button class="test-container-lower-lhs" v-if="!showOnline" @click="displayGraph('online')">
             Online
           </button>
-          <button class="test-container-lower-lhs-pressed" v-if="showOnline" @click="weekGraph('online')">
+          <button class="test-container-lower-lhs-pressed" v-if="showOnline" @click="displayGraph('online')">
             Online
           </button>
           
-          <button class="test-container-lower-rhs" v-if="showOnline" @click="weekGraph('registered')">
+          <button class="test-container-lower-rhs" v-if="showOnline" @click="displayGraph('registered')">
             Registered
           </button>
-          <button class="test-container-lower-rhs-pressed" v-if="!showOnline" @click="weekGraph('registered')">
+          <button class="test-container-lower-rhs-pressed" v-if="!showOnline" @click="displayGraph('registered')">
             Registered
           </button>
         </div>
@@ -48,10 +48,10 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="weekGraph('transactions')">
+          <button class="test-container-lower-lhs" @click="displayGraph('transactions')">
             Transactions
           </button>
-          <button class="test-container-lower-rhs" @click="weekGraph('volume')">
+          <button class="test-container-lower-rhs" @click="displayGraph('volume')">
             Volume
           </button>
         </div>
@@ -69,16 +69,16 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs-pressed" v-if="showOffers" @click="weekGraph('offers')">
+          <button class="test-container-lower-lhs-pressed" v-if="showOffers" @click="displayGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-lhs" v-if="!showOffers" @click="weekGraph('offers')">
+          <button class="test-container-lower-lhs" v-if="!showOffers" @click="displayGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-rhs" v-if="showOffers" @click="weekGraph('wants')">
+          <button class="test-container-lower-rhs" v-if="showOffers" @click="displayGraph('wants')">
             Wants
           </button>
-          <button class="test-container-lower-rhs-pressed" v-if="!showOffers" @click="weekGraph('wants')">
+          <button class="test-container-lower-rhs-pressed" v-if="!showOffers" @click="displayGraph('wants')">
             Wants
           </button>
         </div>
@@ -415,25 +415,13 @@
 
         }
       },
-      displayGraph()
+      displayGraph(currentChart)
       {
-        if (this.showChart === false) 
-        {
+        if (this.showChart === false)
+        { 
           this.showChart = true;
-
-          // Force ApexCharts to recalculate its dimensions when shown
-          this.$nextTick(() => 
-          {
-            this.$refs.chart.updateOptions( 
-            {
-              chart: 
-              {
-                width: '100%',
-                height: '100%'
-              }
-            });
-          });
         }
+        this.weekGraph(currentChart);
       },
 
       hideGraph()
@@ -529,9 +517,10 @@
         // })
       },
 
+
+
       weekGraph(currentChart)
       {
-        console.log(currentChart);
         this.getDataRange(7, currentChart);
       },
 
@@ -561,14 +550,14 @@
           case "online":
             this.currentChart = "online";
             map = this.onlineUserMap;
-            color = '#b51f1f'; 
             this.showOnline = true;
+            color = '#b51f1f'; 
             break;
           case "registered":
-          this.currentChart = "registered";
+            this.currentChart = "registered";
             map = this.registeredUserMap;
-            color = '#b51f1f';
             this.showOnline = false;
+            color = '#b51f1f';
             break;
           case "transactions":
             this.currentChart = "transactions";
@@ -602,7 +591,6 @@
           const fromDate = new Date(); // Create a new Date object for each iteration
           fromDate.setDate(currentDate.getDate() - i);
     
-          console.log(fromDate.toDateString());
           newData.push(map.get(fromDate.toDateString().slice(4)));
           newDate.push(fromDate.toDateString().slice(4));
         }
@@ -620,10 +608,8 @@
             data: newData, // fake data
           }
         ];
-
-            
-        // this.$nextTick(() => 
-        //   {
+         this.$nextTick(() => 
+           {
             this.$refs.chart.updateOptions( 
             {
               colors: [color],
@@ -639,8 +625,9 @@
                 categories: newDate
               } 
             });
-          //});
+          });
           this.chartSeries = newChart;
+          this.showChart = true;
       },
 
 
