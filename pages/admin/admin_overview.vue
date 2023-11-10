@@ -21,17 +21,17 @@
         </div>
 
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" v-if="!showOnline" @click="updateChart('online' , '#b51f1f')">
+          <button class="test-container-lower-lhs" v-if="!showOnline" @click="weekGraph('online')">
             Online
           </button>
-          <button class="test-container-lower-lhs-pressed" v-if="showOnline" @click="updateChart('online' , '#b51f1f')">
+          <button class="test-container-lower-lhs-pressed" v-if="showOnline" @click="weekGraph('online')">
             Online
           </button>
           
-          <button class="test-container-lower-rhs" v-if="showOnline" @click="updateChart( 'registered' , '#b51f1f')">
+          <button class="test-container-lower-rhs" v-if="showOnline" @click="weekGraph('registered')">
             Registered
           </button>
-          <button class="test-container-lower-rhs-pressed" v-if="!showOnline" @click="updateChart( 'registered' , '#b51f1f')">
+          <button class="test-container-lower-rhs-pressed" v-if="!showOnline" @click="weekGraph('registered')">
             Registered
           </button>
         </div>
@@ -48,10 +48,10 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="updateChart('transactions' , '#bcbf0d')">
+          <button class="test-container-lower-lhs" @click="weekGraph('transactions')">
             Transactions
           </button>
-          <button class="test-container-lower-rhs" @click="updateChart( 'volume' , '#bcbf0d')">
+          <button class="test-container-lower-rhs" @click="weekGraph('volume')">
             Volume
           </button>
         </div>
@@ -69,16 +69,16 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs-pressed" v-if="showOffers" @click="updateChart('offers' , '#1248b5')">
+          <button class="test-container-lower-lhs-pressed" v-if="showOffers" @click="weekGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-lhs" v-if="!showOffers" @click="updateChart('offers' , '#1248b5')">
+          <button class="test-container-lower-lhs" v-if="!showOffers" @click="weekGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-rhs" v-if="showOffers" @click="updateChart( 'wants' , '#1248b5')">
+          <button class="test-container-lower-rhs" v-if="showOffers" @click="weekGraph('wants')">
             Wants
           </button>
-          <button class="test-container-lower-rhs-pressed" v-if="!showOffers" @click="updateChart( 'wants' , '#1248b5')">
+          <button class="test-container-lower-rhs-pressed" v-if="!showOffers" @click="weekGraph('wants')">
             Wants
           </button>
         </div>
@@ -118,10 +118,10 @@
 
 
         <div class="chart-buttons" v-if="showChart">
-          <button class="chart-button" @click="weekGraph()"> 1w</button>
-          <button class="chart-button" @click="monthGraph()"> 1m </button>
-          <button class="chart-button" @click="ThreemonthGraph()"> 3m </button>
-          <button class="chart-button" @click="yearGraph()"> 1y </button>
+          <button class="chart-button" @click="weekGraph(currentChart)"> 1w</button>
+          <button class="chart-button" @click="monthGraph(currentChart)"> 1m </button>
+          <button class="chart-button" @click="ThreemonthGraph(currentChart)"> 3m </button>
+          <button class="chart-button" @click="yearGraph(currentChart)"> 1y </button>
 
           <div class="datepicker-container">
             <Datepicker range circle class="datepicker"  placeholder="Custom date" lang="en"/>
@@ -199,7 +199,9 @@
         listed,
         nodeGraph,
         // ------------------
-        chartKey: 0,
+        
+        currentChart: "online",
+
         // Dates 
         utcTime: null,
         currentDate: null,
@@ -222,10 +224,16 @@
         listedCount: 0,
         activeTrades: 23,
         showOffers: true,
-        // ------------------  
-
+        // ------------------
+        
         // Maps
         registeredUserMap: new Map(),
+        onlineUserMap : new Map(),
+        transactionsMap: new Map(),
+        volumeMap: new Map(),
+
+
+        // ------------------  
 
         dashBoardText: "",
         showChart: true,
@@ -449,35 +457,39 @@
 
       updateChart(data, color)
       {
-        this.displayGraph();
-        //const newData = JSON.parse(JSON.stringify(data));
-        // graphql get data for all functions
-        switch(data)
-        {
-          case "online":
-            this.chartSeries = this.dataOnlineUsr;
-            this.showOnline = true;
-            break;
-          case "registered":
-            this.chartSeries = this.dataTrades;
-            this.showOnline = false;
-            break;
-          case "transactions":
-            this.chartSeries = this.dataTrades;
-            break;
-          case "volume":
-            this.chartSeries = this.dataOnlineUsr;
-            break;
-          case "offers":
-            this.chartSeries = this.dataTrades;
-            this.showOffers = true;
-            break;
-          case "wants":
-            this.chartSeries = this.dataListedTrades;
-            this.showOffers = false;
-            break;
-        }
-        this.updateChartOptions(color);
+      //   this.displayGraph();
+      //   //const newData = JSON.parse(JSON.stringify(data));
+      //   // graphql get data for all functions
+      //   switch(data)
+      //   {
+      //     case "online":
+      //       this.currentChart = "online";
+      //       this.showOnline = true;
+      //       break;
+      //     case "registered":
+      //       this.chartSeries = this.dataTrades;
+      //       this.showOnline = false;
+      //       break;
+      //     case "transactions":
+      //       this.chartSeries = this.dataTrades;
+      //       break;
+      //     case "volume":
+      //     this.currentChart = "volume";  
+      //     this.chartSeries = this.dataOnlineUsr;
+      //       break;
+      //     case "offers":
+      //       this.currentChart = "offers";
+      //       this.chartSeries = this.dataTrades;
+      //       this.showOffers = true;
+      //       break;
+      //     case "wants":
+      //       this.currentChart = "wants";  
+      //       this.chartSeries = this.dataListedTrades;
+      //       this.showOffers = false;
+      //       break;
+      //   }
+      //   this.updateChartOptions(color);
+      
       },
 
       updateChartOptions(color)
@@ -497,45 +509,90 @@
           this.utcTime = utcTime.slice(11, 16)
       },
 
-      getCurrentDate()
+      fetchDataToMaps()
       {
         const currentDate = new Date();
         this.registeredUserMap.set(currentDate.toDateString().slice(4), 0);
+        this.onlineUserMap.set(currentDate.toDateString().slice(4), 0);
+
 
         for(let i = 0; i < 365; i++)
         {
           currentDate.setDate(currentDate.getDate() -1);
           this.registeredUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.onlineUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
         }
         // console.log(this.registeredUserMap.size);
-        // this.registeredUserMap.forEach((values, keys) => {
+        // this.onlineUserMap.forEach((values, keys) => {
         // console.log("values: ", values +
         // ", keys: ", keys)
         // })
       },
 
-      weekGraph()
+      weekGraph(currentChart)
       {
-        this.getDataRange(7);
+        console.log(currentChart);
+        this.getDataRange(7, currentChart);
       },
 
-      monthGraph()
+      monthGraph(currentChart)
       {
-        this.getDataRange(30);
+        this.getDataRange(30, currentChart);
       },
 
-      ThreemonthGraph()
+      ThreemonthGraph(currentChart)
       {
-        this.getDataRange(90);
+        this.getDataRange(90, currentChart);
       },
 
-      yearGraph()
+      yearGraph(currentChart)
       {
-        this.getDataRange(365);
+        this.getDataRange(365, currentChart);
       },
 
-      getDataRange(range)
+      getDataRange(range, currentChart)
       {
+        let map;
+        let color;
+        console.log(currentChart);
+
+        switch(currentChart)
+        {
+          case "online":
+            this.currentChart = "online";
+            map = this.onlineUserMap;
+            color = '#b51f1f'; 
+            this.showOnline = true;
+            break;
+          case "registered":
+          this.currentChart = "registered";
+            map = this.registeredUserMap;
+            color = '#b51f1f';
+            this.showOnline = false;
+            break;
+          case "transactions":
+            this.currentChart = "transactions";
+            map = this.onlineUserMap;
+            color = '#bcbf0d'; 
+            break;
+          case "volume":
+            this.currentChart = "volume";  
+            map = this.registeredUserMap;
+            color = '#bcbf0d';
+            break;
+          case "offers":
+            this.showOffers = true;
+            map = this.onlineUserMap;
+            this.currentChart = "offers";
+            color = '#1248b5';
+            break;
+          case "wants":
+            this.showOffers = false;
+            map = this.registeredUserMap;
+            this.currentChart = "wants";
+            color = '#1248b5';
+            break;
+        }
         const currentDate = new Date();
         
         let newDate = [];
@@ -546,13 +603,15 @@
           fromDate.setDate(currentDate.getDate() - i);
     
           console.log(fromDate.toDateString());
-          newData.push(this.registeredUserMap.get(fromDate.toDateString().slice(4)));
+          newData.push(map.get(fromDate.toDateString().slice(4)));
           newDate.push(fromDate.toDateString().slice(4));
         }
-        this.updateChartData(newDate, newData);
+        
+        this.updateChartData(newDate, newData, color);
+
       },
       
-      updateChartData(newDate, newData)
+      updateChartData(newDate, newData, color)
       {
         let newChart = 
         [
@@ -561,17 +620,26 @@
             data: newData, // fake data
           }
         ];
-        
-        this.$nextTick(() => 
-          {
+
+            
+        // this.$nextTick(() => 
+        //   {
             this.$refs.chart.updateOptions( 
             {
+              colors: [color],
+
+              chart: 
+              {
+                width: '100%',
+                height: '100%'
+              },
+
               xaxis:
               { 
                 categories: newDate
               } 
             });
-          });
+          //});
           this.chartSeries = newChart;
       },
 
@@ -602,9 +670,11 @@
       this.getOnlineUsers();
       this.getTrades();
       this.printDashboardText("Dashboard");
-      this.updateChart("online" , '#b51f1f');
+      //this.updateChart("online" , '#b51f1f');
+      this.fetchDataToMaps();
+      this.weekGraph('online');
       this.getUTCTime(false);
-      this.getCurrentDate();
+      
 
       this.createNodes();
 
