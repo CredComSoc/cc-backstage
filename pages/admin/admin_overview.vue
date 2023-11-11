@@ -124,7 +124,8 @@
           <button class="chart-button" @click="yearGraph(currentChart)"> 1y </button>
 
           <div class="datepicker-container">
-            <Datepicker range circle class="datepicker"  placeholder="Custom date" lang="en"/>
+            <Datepicker range showClearButton v-model="selectedDate" circle class="datepicker"  placeholder="Custom date" lang="en"
+            @change="datePickRange(currentChart)"/>
           </div>
 
 
@@ -231,12 +232,22 @@
         onlineUserMap : new Map(),
         transactionsMap: new Map(),
         volumeMap: new Map(),
-
-
+        offersMap: new Map(),
+        wantsMap: new Map(),
         // ------------------  
-
         dashBoardText: "",
         showChart: true,
+        
+        // DatePicker
+        selectedDate: 
+        [
+          new Date(),
+          new Date(),
+          //new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)
+        ],
+        // ------------------
+
+
 
       dummytransactions:
       [
@@ -499,16 +510,29 @@
 
       fetchDataToMaps()
       {
+
+        // SHOULD FETCH FROM DATABASE!
+
+
+        
         const currentDate = new Date();
         this.registeredUserMap.set(currentDate.toDateString().slice(4), 0);
         this.onlineUserMap.set(currentDate.toDateString().slice(4), 0);
+        this.transactionsMap.set(currentDate.toDateString().slice(4), 0);
+        this.volumeMap.set(currentDate.toDateString().slice(4), 0);
+        this.offersMap.set(currentDate.toDateString().slice(4), 0);
+        this.wantsMap.set(currentDate.toDateString().slice(4), 0);
 
-
+        // Filling dates with dummy data.
         for(let i = 0; i < 365; i++)
         {
           currentDate.setDate(currentDate.getDate() -1);
-          this.registeredUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
           this.onlineUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.registeredUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.transactionsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.volumeMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.offersMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.wantsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
         }
         // console.log(this.registeredUserMap.size);
         // this.onlineUserMap.forEach((values, keys) => {
@@ -518,28 +542,66 @@
       },
 
 
+      updateStartEndDate(startDate, endDate)
+      {
+        this.selectedDate[0] = startDate;
+        this.selectedDate[1] = endDate;
+        
+        // Triggers rerender and update dates but removes transition.
+        //this.selectedDate = [new Date(startDate), new Date(endDate)];
+      },
+
+
 
       weekGraph(currentChart)
       {
-        this.getDataRange(7, currentChart);
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setDate(endDate.getDate() - 6);
+
+        this.updateStartEndDate(startDate, endDate);
+        this.getDataRange(currentChart);
+        
       },
 
       monthGraph(currentChart)
       {
-        this.getDataRange(30, currentChart);
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setMonth(endDate.getMonth() - 1);
+
+        this.updateStartEndDate(startDate, endDate);
+        this.getDataRange(currentChart);
       },
 
       ThreemonthGraph(currentChart)
       {
-        this.getDataRange(90, currentChart);
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setMonth(endDate.getMonth() - 3);
+
+        this.updateStartEndDate(startDate, endDate);
+        this.getDataRange(currentChart);
       },
 
       yearGraph(currentChart)
       {
-        this.getDataRange(365, currentChart);
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        this.updateStartEndDate(startDate, endDate);
+
+        this.getDataRange(currentChart);
+
       },
 
-      getDataRange(range, currentChart)
+      datePickRange(currentChart)
+      {
+        console.log("hheeej");
+        this.getDataRange(currentChart);
+      },
+
+      getDataRange(currentChart)
       {
         let map;
         let color;
@@ -561,42 +623,46 @@
             break;
           case "transactions":
             this.currentChart = "transactions";
-            map = this.onlineUserMap;
+            map = this.transactionsMap;
             color = '#bcbf0d'; 
             break;
           case "volume":
             this.currentChart = "volume";  
-            map = this.registeredUserMap;
+            map = this.volumeMap;
             color = '#bcbf0d';
             break;
           case "offers":
             this.showOffers = true;
-            map = this.onlineUserMap;
+            map = this.offersMap;
             this.currentChart = "offers";
             color = '#1248b5';
             break;
           case "wants":
             this.showOffers = false;
-            map = this.registeredUserMap;
+            map = this.wantsMap;
             this.currentChart = "wants";
             color = '#1248b5';
             break;
         }
-        const currentDate = new Date();
         
         let newDate = [];
         let newData = [];
-        for(let i = 0; i < range; i++)
+        
+        let from = this.selectedDate[0];
+        let to = this.selectedDate[1];
+
+        if(from <= to)
         {
-          const fromDate = new Date(); // Create a new Date object for each iteration
-          fromDate.setDate(currentDate.getDate() - i);
-    
-          newData.push(map.get(fromDate.toDateString().slice(4)));
-          newDate.push(fromDate.toDateString().slice(4));
+          let current = new Date(from);
+          while (current <= to) 
+          {
+            newData.push(map.get(current.toDateString().slice(4)));
+            newDate.push(current.toDateString().slice(4));
+            current.setDate(current.getDate() + 1);
+          }
         }
         
         this.updateChartData(newDate, newData, color);
-
       },
       
       updateChartData(newDate, newData, color)
@@ -608,6 +674,8 @@
             data: newData, // fake data
           }
         ];
+
+        
          this.$nextTick(() => 
            {
             this.$refs.chart.updateOptions( 
@@ -626,9 +694,10 @@
               } 
             });
           });
-          this.chartSeries = newChart;
+          
           this.showChart = true;
-      },
+          this.chartSeries = newChart;
+       },
 
 
       async getOnlineUsers()
@@ -657,9 +726,8 @@
       this.getOnlineUsers();
       this.getTrades();
       this.printDashboardText("Dashboard");
-      //this.updateChart("online" , '#b51f1f');
       this.fetchDataToMaps();
-      this.weekGraph('online');
+      this.weekGraph(this.currentChart);
       this.getUTCTime(false);
       
 
