@@ -21,17 +21,10 @@
         </div>
 
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" v-if="!showOnline" @click="displayGraph('online')">
+          <button class="test-container-lower-lhs" @click="displayGraph('online')">
             Online
           </button>
-          <button class="test-container-lower-lhs-pressed" v-if="showOnline" @click="displayGraph('online')">
-            Online
-          </button>
-          
-          <button class="test-container-lower-rhs" v-if="showOnline" @click="displayGraph('registered')">
-            Registered
-          </button>
-          <button class="test-container-lower-rhs-pressed" v-if="!showOnline" @click="displayGraph('registered')">
+          <button class="test-container-lower-rhs" @click="displayGraph('registered')">
             Registered
           </button>
         </div>
@@ -69,16 +62,10 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs-pressed" v-if="showOffers" @click="displayGraph('offers')">
+          <button class="test-container-lower-lhs" @click="displayGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-lhs" v-if="!showOffers" @click="displayGraph('offers')">
-            Offers
-          </button>
-          <button class="test-container-lower-rhs" v-if="showOffers" @click="displayGraph('wants')">
-            Wants
-          </button>
-          <button class="test-container-lower-rhs-pressed" v-if="!showOffers" @click="displayGraph('wants')">
+          <button class="test-container-lower-rhs" @click="displayGraph('wants')">
             Wants
           </button>
         </div>
@@ -100,11 +87,8 @@
         </button>
       </div>
     </div>
-
-
-
+    
       <div class="chart-container">
-
         <div class="node-graph-container" v-if="!showChart">
            <network class="network" ref="network" v-if="!showChart"
             :nodes="nodes"
@@ -115,7 +99,6 @@
             @hover-node="onNodeHovered">
           </network>
         </div>
-
 
         <div class="chart-buttons" v-if="showChart">
           <button class="chart-button" @click="weekGraph(currentChart)"> 1w</button>
@@ -128,16 +111,13 @@
             @change="datePickRange(currentChart)"/>
           </div>
 
-
           <div class="chart-text-box" v-if="showChart">
             <div class="chart-text">
               UTC:{{  utcTime}}
             </div>
           </div>
 
-
         </div>
-
         <div class="chart" v-if="showChart">
           <apexchart ref="chart" type="area" :options="chartOptions" :series="chartSeries">
           </apexchart>
@@ -178,6 +158,7 @@
   import { Network } from "vue-vis-network";
   import { getUserCount } from '/pages/gqlFetch.js';
   import { getAllArticles } from '/pages/gqlFetch.js';
+import { tSMethodSignature } from '@babel/types';
 
 
   // fetchFuncs end
@@ -428,6 +409,8 @@
       },
       displayGraph(currentChart)
       {
+        
+
         if (this.showChart === false)
         { 
           this.showChart = true;
@@ -541,14 +524,14 @@
         // })
       },
 
+    
 
       updateStartEndDate(startDate, endDate)
       {
-        this.selectedDate[0] = startDate;
-        this.selectedDate[1] = endDate;
-        
-        // Triggers rerender and update dates but removes transition.
-        //this.selectedDate = [new Date(startDate), new Date(endDate)];
+          this.$nextTick(() => 
+          {
+            this.selectedDate = [new Date(startDate), new Date(endDate)];
+          });
       },
 
 
@@ -561,7 +544,6 @@
 
         this.updateStartEndDate(startDate, endDate);
         this.getDataRange(currentChart);
-        
       },
 
       monthGraph(currentChart)
@@ -676,8 +658,8 @@
         ];
 
         
-         this.$nextTick(() => 
-           {
+         //this.$nextTick(() => 
+          // {
             this.$refs.chart.updateOptions( 
             {
               colors: [color],
@@ -693,12 +675,11 @@
                 categories: newDate
               } 
             });
-          });
+          //});
           
           this.showChart = true;
-          this.chartSeries = newChart;
+          this.chartSeries = newChart; 
        },
-
 
       async getOnlineUsers()
       {
