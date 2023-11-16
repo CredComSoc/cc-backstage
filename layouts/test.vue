@@ -97,14 +97,12 @@ import svenskBarter from './svensk_barter.png';
 }
   </script>
   
-
-
-
 <style scoped>
 
 .default_background
 {
-  background-color: rgba(199, 199, 199, 0.819);
+  background-color: #eeeeee;
+  /* background-color: rgba(199, 199, 199, 0.819)*/
 }
 
 .container-toolbar
@@ -115,26 +113,6 @@ import svenskBarter from './svensk_barter.png';
   padding-left: 500px;
 }
 
+
+
 </style>
-
-<style>
-  .fixed-box {
-    position:fixed;
-    margin-top: 20px;
-    width: 80%;
-    padding-right: 20px;
-    overflow: auto;
-    height: 70%;
-  }
-  
-  .top-border {
-    border-top: 1px solid #ffffff;
-  }
-
-  .row-text {
-	  flex-basis: 16%;
-	  margin: auto;
-  }
-  
-</style>
-

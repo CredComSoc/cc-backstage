@@ -4,53 +4,57 @@
 		<member_tabs @click="setTabStatus" :blueTabTitle='"BARTERKRONOR"' :greenTabTitle='"KRONOR"' />
 
 		<v-container v-if="onBlueTab">
-			<v-row v-for="transaction in transactions">
-				<v-col>
+			<div class="fixed-box">
+			<v-row class="top-border" v-for="transaction in transactions">
+				<v-col class="row-text">
 					{{ transaction.status }}
 				</v-col>
-				<v-col>
+				<v-col class="row-text">
 					{{ transaction.date }}
 				</v-col>
-				<v-col>
+				<v-col cols="3" class="row-text">
 					{{ transaction.counterpart }}
 				</v-col>
-				<v-col>
+				<v-col cols="3" class="row-text">
 					{{ transaction.description }}
 				</v-col>
 
-				<v-col>
+				<v-col class="row-text">
 					{{ transaction.amount }}
 				</v-col>
-				<v-col>
+				<v-col class="button-row">
 					<NuxtLink :to="{ name: '', params: {} }">
-						<v-btn>Revert</v-btn>
+						<div class="member-button">Revert</div>
 					</NuxtLink>
 				</v-col>
 			</v-row>
+			</div>
 		</v-container>
 		<v-container v-else>
-			<v-row v-for="transaction in transactions">
-				<v-col>
+			<div class="fixed-box">
+			<v-row class="top-border" v-for="transaction in transactions">
+				<v-col class="row-text">
 					{{ transaction.status }}
 				</v-col>
-				<v-col>
+				<v-col class="row-text">
 					{{ transaction.date }}
 				</v-col>
-				<v-col>
+				<v-col class="row-text">
 					{{ transaction.type }}
 				</v-col>
-				<v-col>
+				<v-col cols="3" class="row-text">
 					{{ transaction.description }}
 				</v-col>
-				<v-col>
+				<v-col class="row-text">
 					{{ transaction.amount_kr }}
 				</v-col>
-				<v-col>
+				<v-col class="button-row">
 					<NuxtLink :to="{ name: '', params: {} }">
-						<v-btn>Revert</v-btn>
+						<div class="member-button">Revert</div>
 					</NuxtLink>
 				</v-col>
 			</v-row>
+			</div>
 		</v-container>
 
 	</div>
@@ -102,14 +106,30 @@ export default {
 
 
 <style scoped>
-/** {
- 	font-family: Ubuntu;
-	font-style: normal;
-	font-weight: normal;
-	letter-spacing: 0.05em;
-	font-weight: 500;
-	font-size: 12px;
-} */
+
+.button-row {
+	text-align: right;
+	flex-basis: 16%;
+}
+
+.member-button {
+	background-color: #f5f5f5;
+	height: 36px;
+  	/*min-width: 64px;*/
+  	padding: 0 10px;
+	margin: 0 10px 0 10px;
+	font-size: 0.875rem;
+	color: rgba(0, 0, 0, 0.87);
+	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  	border-radius: 4px;
+	align-items: center;
+  	display: inline-flex;
+  	flex: 0 0 auto;
+  	font-weight: 500;
+  	letter-spacing: 0.0892857143em;
+	text-transform: uppercase;
+  	/*justify-content: center;*/
+}
 
 .element-container {
 	display: flex;

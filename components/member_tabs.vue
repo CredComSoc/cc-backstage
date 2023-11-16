@@ -1,7 +1,7 @@
 <template>
-	<v-container>
+<!--	<v-container>-->
 		<v-row>
-			<v-col xs="4">
+			<v-col cols="6">
 				<div class="blue_tab" @click="toggleToBlueTab" v-if="blueTabVisible">
 					{{ blueTabTitle }}
 				</div>
@@ -12,7 +12,7 @@
 
 
 			</v-col>
-			<v-col>
+			<v-col cols="6">
 				<div class="green_tab" @click="toggleToGreenTab" v-if="greenTabVisible">
 					{{ greenTabTitle }}
 				</div>
@@ -22,7 +22,7 @@
 
 			</v-col>
 		</v-row>
-	</v-container>
+<!--	</v-container>-->
 </template>
 
 <script>
@@ -54,35 +54,41 @@ export default {
 
 <style scoped>
 .blue_tab {
-	background-color: rgb(103, 135, 216);
-	padding: 5px;
-	margin-right: 0%;
+	background-color: #00abe0;
+	padding: 8px 10px;
+	margin: 10px 0 20px 0;
+	color: #ffffff;
 	font-weight: bold;
+	border-radius: 8px;
 }
 
 .blue_tab_dimmed {
-	background-color: rgb(103, 135, 216);
-	padding: 5px;
-	margin-right: 0%;
+	background-color: #00ace0da;
+	padding: 8px 10px;
+	margin: 10px 0 20px 0;
 	opacity: 30%;
-	color: #000000;
+	color: #ffffff;
 	font-weight: bold;
+	border-radius: 8px;
 }
 
 .green_tab {
 	color: black;
-	background-color: rgb(35, 221, 57);
-	padding: 5px;
-	margin-left: 0%;
+	background-color: #00d282;
+	padding: 8px 10px;
+	color: #ffffff;
+	margin: 10px 0 20px 0;
 	font-weight: bold;
+	border-radius: 8px;
 }
 
 .green_tab_dimmed {
-	background-color: rgb(35, 221, 57);
-	padding: 5px;
-	margin-left: 0%;
+	background-color: #00d282dc;
+	padding: 8px 10px;
+	margin: 10px 0 20px 0;
 	opacity: 30%;
-	color: #000000;
+	color: #ffffff;
 	font-weight: bold;
+	border-radius: 8px;
 }
 </style>
