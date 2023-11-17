@@ -1,5 +1,5 @@
 <template>
-	<v-row class="top-border">
+	<v-row>
 		<v-col cols="2" class="member-row-text">
 			{{ accountName }}
 		</v-col>
@@ -7,13 +7,6 @@
 			{{ balance }} SEK
 		</v-col>
 
-		<v-col cols="1" class="member-row-text">
-			status {{ status }}
-		</v-col>
-
-		<v-col cols="2" class="member-row-text">
-			{{ phone }}
-		</v-col>
 		<v-col class="button-row">
 			<NuxtLink :to="{
 				name: 'admin-member',
@@ -28,10 +21,6 @@
 			}">
 				<div class="member-button">Transact</div>
 			</NuxtLink>
-
-			<a v-bind:href="`mailto:${email}`">
-				<div class="member-button">Email</div>
-			</a>
 
 			<NuxtLink :to="{ name: 'admin-offers_wants', params: { id: id, name: accountName } }">
 				<div class="member-button">Offers & Wants</div>
@@ -50,7 +39,7 @@ export default {
 		}
 	},
 
-	props: ["id", "accountName", "balance", "status", "phone", "email"]
+	props: ["id", "accountName", "balance"]
 }
 </script>
 

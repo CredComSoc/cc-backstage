@@ -1,28 +1,26 @@
 <template>
-<!--	<v-container>-->
-		<v-row>
-			<v-col cols="6">
-				<div class="blue_tab" @click="toggleToBlueTab" v-if="blueTabVisible">
-					{{ blueTabTitle }}
-				</div>
-				<div class="blue_tab_dimmed" @click="toggleToBlueTab" v-if="greenTabVisible">
-					{{ blueTabTitle }}
-				</div>
+	<v-row>
+		<v-col cols="6">
+			<div class="blue_tab" @click="toggleToBlueTab" v-if="blueTabVisible">
+				{{ blueTabTitle }}
+			</div>
+			<div class="blue_tab_dimmed" @click="toggleToBlueTab" v-if="greenTabVisible">
+				{{ blueTabTitle }}
+			</div>
 
 
 
-			</v-col>
-			<v-col cols="6">
-				<div class="green_tab" @click="toggleToGreenTab" v-if="greenTabVisible">
-					{{ greenTabTitle }}
-				</div>
-				<div class="green_tab_dimmed" @click="toggleToGreenTab" v-if="blueTabVisible">
-					{{ greenTabTitle }}
-				</div>
+		</v-col>
+		<v-col cols="6">
+			<div class="green_tab" @click="toggleToGreenTab" v-if="greenTabVisible">
+				{{ greenTabTitle }}
+			</div>
+			<div class="green_tab_dimmed" @click="toggleToGreenTab" v-if="blueTabVisible">
+				{{ greenTabTitle }}
+			</div>
 
-			</v-col>
-		</v-row>
-<!--	</v-container>-->
+		</v-col>
+	</v-row>
 </template>
 
 <script>

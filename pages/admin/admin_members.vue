@@ -2,7 +2,7 @@
     <div>
         <member_header :title='"ALL MEMBERS"' />
         <member_tabs @click="setTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
-        <v-container v-if="onBlueTab">
+        <div v-if="onBlueTab">
             <v-row class="member-row-headings">
                 <v-col cols="2">
                     <h1>Member</h1>
@@ -18,11 +18,11 @@
                 </v-col>
             </v-row>
             <div class="fixed-box">
-            <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
-                :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
+                <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
+                    :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
             </div>
-        </v-container>
-        <v-container v-else>
+        </div>
+        <div v-else>
             <v-row v-for="transaction in transactions">
                 <v-col>
                     {{ transaction.date }}
@@ -42,8 +42,10 @@
                     </NuxtLink>
                 </v-col>
             </v-row>
-        </v-container>
-        <div class="admin-box"></div>
+        </div>
+        <div class="admin-box">
+            <admin_row :id="admin.id" :accountName="admin.accountName" :balance="admin.balance" />
+        </div>
     </div>
 </template>
 
@@ -54,18 +56,20 @@ import { getMembers } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
+import admin_row from '/components/admin_row.vue'
 
 export default {
 
     layout: 'test',
 
     components: {
-        member_header, member_row, member_tabs
+        member_header, member_row, member_tabs, admin_row
     },
 
     data() {
         return {
             members: [],
+            admin: { id: 0, accountName: "SB ADMIN", balance: 1999 },
             onBlueTab: true,
 
             transactions: [
@@ -101,10 +105,8 @@ export default {
 </script>
 
 <style scoped>
-
-
 .member-row-headings {
-	flex-basis: 16%;
+    flex-basis: 16%;
     font-weight: bold;
     border-bottom: 1px solid #ffffff;
 }
@@ -131,11 +133,11 @@ export default {
     position: absolute;
     bottom: 0px;
     /*margin-top: 20px;*/
-    width: 80%;
+    width: 89%;
     padding-right: 20px;
-    background-color: #000000;
-    height: 20px;
-  }
+    background-color: burlywood;
+    height: 40px;
+}
 
 form {
     max-width: 420px;
