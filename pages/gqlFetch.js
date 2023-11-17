@@ -164,3 +164,99 @@ export async function getUserCount() {
     return userCount
 }
 
+
+export async function getUserTransactions(id){
+  var transactions
+  console.log(id)
+  await fetch("/api/graphql", {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+      body: JSON.stringify({ query: `query userTransactions($id: String!) {
+          userTransactions(id: $id) {
+            uuid
+            written
+            state
+            type
+            version
+            entries {
+              payer
+              payee
+              quantity
+              description
+              metadata {
+                id
+                quantity
+              }
+            }
+
+          }
+        }`,
+        variables: { id: id }, }),
+  }).then(r => r.json())
+    .then(data => transactions = data)
+    transactions = JSON.stringify(transactions.data.userTransactions) // Remove the Json "padding" to get the object or array
+    console.log(transactions)
+  return transactions
+}
+
+export async function getAllTransactions(id){
+  var transactions
+  console.log(id)
+  await fetch("/api/graphql", {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+      body: JSON.stringify({ query: `query allTransactions{
+          allTransactions{
+            uuid
+            written
+            state
+            type
+            version
+            entries {
+              payer
+              payee
+              quantity
+              description
+              metadata {
+                id
+                quantity
+              }
+            }
+
+          }
+        }`,
+        }),
+  }).then(r => r.json())
+    .then(data => transactions = data)
+    transactions = JSON.stringify(transactions.data.allTransactions) // Remove the Json "padding" to get the object or array
+    console.log(transactions)
+  return transactions
+}
+
+
+
+// type EntryMeta{
+//   id: String
+//   quantity: Int
+// }
+// type Entry{
+//   payer: String
+//   payee: String
+//   quantity: String
+//   description: String
+//   metadata: EntryMeta
+// }
+// type Transaction{
+//   uuid: String
+//   written: String
+//   state: String
+//   type: String
+//   version: Int
+//   entries: [Entry]
+// }

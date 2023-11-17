@@ -11,7 +11,7 @@ let schema = buildSchema(`
         orgNumber: String
     }
     type Member{
-        id: Int
+        id: String
         accountName: String
         is_admin: Boolean
         email: String
@@ -22,19 +22,23 @@ let schema = buildSchema(`
         billing: Billing
         last_online: String
     }
+    type EntryMeta{
+        id: String
+        quantity: Int
+    }
     type Entry{
-        payer: Int
-        payee: Int
-        amount: Int
+        payer: String
+        payee: String
+        quantity: String
         description: String
-        author: String
-        metadata: String
+        metadata: EntryMeta
     }
     type Transaction{
-        id: Int
-        version: Int
+        uuid: String
+        written: String
         state: String
         type: String
+        version: Int
         entries: [Entry]
     }
     type Article{
@@ -55,6 +59,8 @@ let schema = buildSchema(`
         allMembers: [Member]
         allUserArticles(accountName: String!): [Article]
         allArticles: [Article]
+        allTransactions: [Transaction]
+        userTransactions(id: String!): [Transaction]
         userCount: Int
     }
 
@@ -67,51 +73,85 @@ let schema = buildSchema(`
     // Transactions involving one specific member.
     // Send how many members are online
     // Send how many transactions were done on specific days
-const members = [
+const transactions = [
+
     {
-     id:1,
-     name: "John Doe",
-     balance: 100,
-     status: "Online",
-     phone: 33333,
-     email: "john.doe@example.com"},
-     {
-     id:2,
-     name: "Jane Smith",
-     balance: 200,
-     status: "Offline",
-     phone: 33333,
-     email: "jane.smith@example.com"},
-     {
-     id:3,
-     name: "Bob Brown",
-     balance: 300,
-     status: "Away",
-     phone: 50302,
-     email: "bob.brown@example.com"},
-     {
-     id:4,
-     name: "Lasse Liten",
-     balance: 100,
-     status: "Online",
-     phone: 33333,
-     email: "liten.lars@example.com"},
-     {
-     id:5,
-     name: "Mr Krister",
-     balance: 100,
-     status: "Online",
-     phone: 33333,
-     email: "mr.krister@example.com"},
-     {
-     id:6,
-     name: "Adam Adelsabel",
-     balance: 100,
-     status: "Online",
-     phone: 33333,
-     email: "scuffed.doe@example.com"
+        uuid: "633c3960-4c65-46ed-be1a-19c70aeb114f",
+        written: "2023-10-25 19:00:05",
+        state: "completed",
+        type: "credit",
+        version: 2,
+        entries: [
+            {
+                payee: "650c32356af5b95ceb1935ea",
+                payer: "650c251a911cc0132256925b",
+                quant: "$300",
+                description: "",
+                metadata: {
+                    id: "0",
+                    quantity: 1
+                }
+            }
+        ]
+    },
+    {
+        uuid: "74b267cc-6d01-4314-b542-645addde305f",
+        written: "2023-10-25 18:49:02",
+        state: "completed",
+        type: "credit",
+        version: 2,
+        entries: [
+            {
+                payee: "651285ae87ae5ff2d0d16e13",
+                payer: "650c251a911cc0132256925b",
+                quant: "$500",
+                description: "",
+                metadata: {
+                    id: "0",
+                    quantity: 1
+                }
+            }
+        ]
+    },
+    {
+        uuid: "6087bbad-8ec1-4962-983b-0d0a1f302a2b",
+        written: "2023-10-25 18:46:16",
+        state: "completed",
+        type: "credit",
+        version: 2,
+        entries: [
+            {
+                payee: "651285ae87ae5ff2d0d16e13",
+                payer: "650c2519911cc01322569258",
+                quant: "$100",
+                description: "",
+                metadata: {
+                    id: "0",
+                    quantity: 1
+                }
+            }
+        ]
+    },
+    {
+        uuid: "0a5cb858-4342-47b4-a00e-f4faac265bda",
+        written: "2023-10-25 18:45:45",
+        state: "completed",
+        type: "credit",
+        version: 2,
+        entries: [
+            {
+                payee: "650c2519911cc01322569258",
+                payer: "651285ae87ae5ff2d0d16e13",
+                quant: "$200",
+                description: "",
+                metadata: {
+                    id: "0",
+                    quantity: 1
+                }
+            }
+        ]
     }
- ]
+]
 
 
 async function getMember({id, accountName}) { // Get a single member, selected by either id or name
@@ -137,9 +177,11 @@ async function getAllMembers(){ // Get a list of all the members
      const dbo = db.db(DB_FOLDER)
      var users = await dbo.collection("users").find({}).toArray()
      for (const user of users) {
+        //console.log(user.profile.accountName + " "+user._id.getTimestamp())
         let userData = user.profile
         userData.is_admin = user.is_admin
         userData.email = user.email
+        userData.id = user._id
         //Get balance information from CC-node using ID from user._id
         //As well as necessary logic for this.
         let date = new Date(userData.last_online)
@@ -179,6 +221,20 @@ async function getUserCount(){ // Get how many users that are not admins are in 
 
 //getTransactions - calling backend or better to call the node directly?
 // Get transactions related to a specific user from the CC-node
+async function getAllTransactions(){
+    return transactions
+}
+async function getUserTransactions({id}){
+    //let allTransaction = JSON.parse(transactions)
+    //console.log("id sent:" + id)
+    let userTransactions = transactions.filter(function (transaction) {
+        // This only checks the main entry of the transaction
+        // If this is used in a system where there can be multiple entries another way is needed
+        return (transaction.entries[0].payee == id || transaction.entries[0].payer == id)
+    })
+    return userTransactions
+}
+
 
 async function addNewMember(input){
     members.push(input)
@@ -200,6 +256,12 @@ var root ={
     userCount: () => {
         return getUserCount()
     },
+    allTransactions: () => {
+        return getAllTransactions()
+    },
+    userTransactions: ({id}) => {
+        return getUserTransactions({id})
+    }
 
 }
 
