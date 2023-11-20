@@ -69,7 +69,7 @@ export default {
 }
 
 .buttonStyle:hover {
-  background-color: gray;
+  background-color: rgb(209, 209, 209);
   transform: scale(1.05);
 }
 </style>

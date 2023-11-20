@@ -7,7 +7,7 @@
 
       <div class="test-main-container">
 
-      <div class="test-container test-container--red">
+      <div class="test-container" style="background-color: #ff4558;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
             <div class="test-container-text-upper" v-if="showOnline"> {{ onlineUsersCount }}</div>
@@ -21,19 +21,25 @@
         </div>
 
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="displayGraph('online')">
+          <button class="test-container-lower-lhs" v-if="showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('online')">
             Online
           </button>
-          <button class="test-container-lower-rhs" @click="displayGraph('registered')">
+          <button class="test-container-lower-lhs" v-if="!showOnline" @click="displayGraph('online')">
+            Online
+          </button>
+          <button class="test-container-lower-rhs" v-if="showOnline" @click="displayGraph('registered')">
+            Registered
+          </button>
+          <button class="test-container-lower-rhs" v-if="!showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('registered')">
             Registered
           </button>
         </div>
       </div>
 
-      <div class="test-container test-container--yellow">
+      <div class="test-container" style="background-color:  #ffc000;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> 5</div>
+            <div class="test-container-text-upper"> {{ testData }}</div>
             <div class="test-container-text-lower"> Trades</div>
           </div>
           <div class="test-container-rhs">
@@ -50,7 +56,7 @@
         </div>
       </div>
 
-      <div class="test-container test-container--blue">
+      <div class="test-container" style="background-color: #00abe0;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
             <div class="test-container-text-upper" v-if="showOffers"> {{offerCount}}</div>
@@ -62,16 +68,22 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="displayGraph('offers')">
+          <button class="test-container-lower-lhs" v-if="showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-rhs" @click="displayGraph('wants')">
+          <button class="test-container-lower-lhs" v-if="!showOffers" @click="displayGraph('offers')">
+            Offers
+          </button>
+          <button class="test-container-lower-rhs" v-if="showOffers" @click="displayGraph('wants')">
+            Wants
+          </button>
+          <button class="test-container-lower-rhs" v-if="!showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('wants')">
             Wants
           </button>
         </div>
       </div>
 
-      <div class="test-container test-container--green">
+      <div class="test-container" style="background-color: #00d282;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
             <div class="test-container-text-upper"> Network graph</div>
@@ -82,7 +94,10 @@
           </div>
         </div>
 
-        <button class="test-container-lower-graph" @click="hideGraph()">
+        <button class="test-container-lower-graph" v-if="!showChart" style="background-color: rgba(0, 0, 0, 0.300) ;" @click="hideGraph()">
+            Display
+        </button>
+        <button class="test-container-lower-graph" v-if="showChart" @click="hideGraph()">
             Display
         </button>
       </div>
@@ -107,7 +122,7 @@
           <button class="chart-button" @click="yearGraph(currentChart)"> 1y </button>
 
           <div class="datepicker-container">
-            <Datepicker range showClearButton v-model="selectedDate" circle class="datepicker"  placeholder="Custom date" lang="en"
+            <Datepicker ref="dpicker" range showClearButton v-model="selectedDate" circle class="datepicker"  placeholder="Custom date" lang="en"
             @change="datePickRange(currentChart)"/>
           </div>
 
@@ -199,6 +214,7 @@ import { tSMethodSignature } from '@babel/types';
         // ------------------        
         
         // Trades
+        testData : 5,
         offers: [],
         offerCount: 0,
         wants: [],
@@ -528,22 +544,26 @@ import { tSMethodSignature } from '@babel/types';
 
       updateStartEndDate(startDate, endDate)
       {
-          this.$nextTick(() => 
-          {
-            this.selectedDate = [new Date(startDate), new Date(endDate)];
-          });
+          this.selectedDate[0] = startDate;
+          this.selectedDate[1] = endDate;
+          // this.$nextTick(() => 
+          // {
+          //   this.selectedDate = [new Date(startDate), new Date(endDate)];
+          // });
       },
 
 
 
       weekGraph(currentChart)
       {
+        //this.$refs.dpicker.resetDate();
         const endDate = new Date();
         const startDate = new Date(endDate);
         startDate.setDate(endDate.getDate() - 6);
-
+        
         this.updateStartEndDate(startDate, endDate);
         this.getDataRange(currentChart);
+        
       },
 
       monthGraph(currentChart)
@@ -579,7 +599,6 @@ import { tSMethodSignature } from '@babel/types';
 
       datePickRange(currentChart)
       {
-        console.log("hheeej");
         this.getDataRange(currentChart);
       },
 
@@ -592,23 +611,25 @@ import { tSMethodSignature } from '@babel/types';
         switch(currentChart)
         {
           case "online":
+            this.showOnline = true;
             this.currentChart = "online";
             map = this.onlineUserMap;
-            this.showOnline = true;
             color = '#b51f1f'; 
             break;
           case "registered":
+            this.showOnline = false;
             this.currentChart = "registered";
             map = this.registeredUserMap;
-            this.showOnline = false;
             color = '#b51f1f';
             break;
           case "transactions":
+            this.testData = 20;
             this.currentChart = "transactions";
             map = this.transactionsMap;
             color = '#bcbf0d'; 
             break;
           case "volume":
+            this.testData = 5;
             this.currentChart = "volume";  
             map = this.volumeMap;
             color = '#bcbf0d';
@@ -632,7 +653,7 @@ import { tSMethodSignature } from '@babel/types';
         
         let from = this.selectedDate[0];
         let to = this.selectedDate[1];
-
+        
         if(from <= to)
         {
           let current = new Date(from);
@@ -643,8 +664,10 @@ import { tSMethodSignature } from '@babel/types';
             current.setDate(current.getDate() + 1);
           }
         }
-        
-        this.updateChartData(newDate, newData, color);
+        this.$nextTick(() => 
+        {
+          this.updateChartData(newDate, newData, color);
+        });
       },
       
       updateChartData(newDate, newData, color)
@@ -658,8 +681,8 @@ import { tSMethodSignature } from '@babel/types';
         ];
 
         
-         //this.$nextTick(() => 
-          // {
+         this.$nextTick(() => 
+           {
             this.$refs.chart.updateOptions( 
             {
               colors: [color],
@@ -675,7 +698,7 @@ import { tSMethodSignature } from '@babel/types';
                 categories: newDate
               } 
             });
-          //});
+          });
           
           this.showChart = true;
           this.chartSeries = newChart; 
@@ -747,23 +770,6 @@ import { tSMethodSignature } from '@babel/types';
     height: 15vh;
     /* width: 26vw;
     height: 30vh; */
-  }
-  .test-container--red
-  {
-    background-color: #ff4558;
-  }
-
-  .test-container--blue
-  {
-    background-color: #00abe0;
-  }
-  .test-container--yellow
-  {
-    background-color:  #ffc000;
-  }
-  .test-container--green
-  {
-    background-color: #00d282;
   }
   .test-container-lhs
   {
@@ -842,30 +848,6 @@ import { tSMethodSignature } from '@babel/types';
   {
     background-color: rgba(0, 0, 0, 0.200)
   }
-  .test-container-lower-lhs-pressed
-  {
-    flex-direction: row;
-    font-size: 100%;
-    width: 50%;
-    height: 100%;
-    color: rgb(255, 255, 255);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-right: 1px rgba(0, 0, 0, 0.200) solid;
-    background-color: rgba(0, 0, 0, 0.200)
-  }
-  .test-container-lower-rhs-pressed
-  {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    width: 50%;
-    height: 100%;
-    border-left: 1px rgba(0, 0, 0, 0.200) solid;
-    background-color: rgba(0, 0, 0, 0.200)
-  }
   .test-container-lower-lhs
   {
     flex-direction: row;
@@ -891,16 +873,6 @@ import { tSMethodSignature } from '@babel/types';
     color: white;
     user-select: none;
   }
-
-  .test-container-text-lower-lower
-  {
-    flex-direction: row;
-    font-size: 100%;
-    width: 100%;
-    height: 100%;
-    color: rgb(255, 255, 255);
-  }
-
   .center-container
   {
     display: flex;
@@ -909,7 +881,6 @@ import { tSMethodSignature } from '@babel/types';
     align-items: center;
     gap: 30px;
   }
-
   .chart
   {
     /* Change chartsize here!! */
@@ -980,8 +951,6 @@ import { tSMethodSignature } from '@babel/types';
     align-items: center;
     width: 30%;
     height: 70%;
-
-
   }
   .node-graph-container
   {
@@ -1015,13 +984,4 @@ import { tSMethodSignature } from '@babel/types';
     width: 100%;
     height: 100%;
   }
-
-  .test-switchbox
-  {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 5px
-  }
-
   </style>

@@ -3,8 +3,8 @@
       <v-app-bar fixed app >
         <v-col></v-col>
         <v-col></v-col>
-        <v-col align="right"></v-col>
-        <v-col align="left"><members></members></v-col>
+        <v-col align="right"><members></members></v-col>
+        <v-col></v-col>
         <v-col align="center">
           <button @click="homeRoute()">
             <img :src="svenskBarter" style="width:200px" alt="SvenskBarter" draggable="false">
@@ -49,7 +49,6 @@ import notice from '/components/topbar_notice.vue';
       {
         this.$router.push('/admin/admin_overview');
       }
-
     },
 
     components: 
