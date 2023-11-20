@@ -1,18 +1,19 @@
 <template>
     <div class="main">
       <button @click="membersClicked()" class="buttonStyle" draggable="false">
-        <img class="icon" :src="memeberIcon" alt="Members" draggable="false">
+        <img class="icon" :src="memberIcon" alt="Members" draggable="false">
       </button>
 
     </div>
 </template>
   
 <script>
-  import memeberIcon from "./component_icons/memberlist.png";
+  import memberIcon from "./component_icons/memberlist.png";
+  
   export default {
     data() {
       return {
-        memeberIcon,        
+        memberIcon,
       };
     },
     methods:
@@ -22,7 +23,8 @@
         this.$router.push('/admin/admin_members');
 
       }
-    }
+    },
+   
 
   };
 </script>
