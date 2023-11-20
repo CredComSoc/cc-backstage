@@ -1,19 +1,17 @@
 <template>
-<!--    <v-container>-->
-        <v-row class="member-header">
-            <v-col>
-                <form>
-                    <input type="text" v-model="search" placeholder="Search">
-                </form>
-            </v-col>
-            <v-col class="member-header-middle"> {{ title }} </v-col>
-            <v-col class="member-header-right">
-                <NuxtLink :to="{ name: 'admin-admin_network' }">
-						<div class="settings">Settings</div>
-				</NuxtLink>
-            </v-col>
-        </v-row>
-<!--    </v-container>-->
+    <v-row class="member-header">
+        <v-col>
+            <form>
+                <input type="text" v-model="search" placeholder="Search">
+            </form>
+        </v-col>
+        <v-col class="member-header-middle"> {{ title }} </v-col>
+        <v-col class="member-header-right">
+            <NuxtLink :to="{ name: 'admin-admin_network' }">
+                <div class="settings">Settings</div>
+            </NuxtLink>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
@@ -31,6 +29,7 @@ export default {
 
 <style scoped>
 .member-header {
+    height: 68px;
     width: 100%;
     margin-top: 6px;
 }

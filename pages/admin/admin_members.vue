@@ -1,13 +1,13 @@
 <template>
-    <div>
+    <div class="outer-div">
         <member_header :title='"ALL MEMBERS"' />
         <member_tabs @click="setTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
-        <div v-if="onBlueTab">
+        <div class="flex-tab" v-if="onBlueTab">
             <v-row class="member-row-headings">
                 <v-col cols="2">
                     <h1>Member</h1>
                 </v-col>
-                <v-col cols="1">
+                <v-col cols="2">
                     <h1>Balance</h1>
                 </v-col>
                 <v-col cols="1">
@@ -105,6 +105,16 @@ export default {
 </script>
 
 <style scoped>
+.outer-div {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.flex-tab {
+    flex-grow: 1;
+}
+
 .member-row-headings {
     flex-basis: 16%;
     font-weight: bold;
@@ -121,7 +131,6 @@ export default {
     color: rgb(165, 9, 9);
     font-size: large;
     font-weight: bold;
-    ;
 }
 
 .member-header-right {
@@ -130,13 +139,10 @@ export default {
 }
 
 .admin-box {
-    position: absolute;
     bottom: 0px;
-    /*margin-top: 20px;*/
-    width: 89%;
-    padding-right: 20px;
-    background-color: burlywood;
-    height: 40px;
+    margin-top: 20px;
+    width: 100%;
+    padding: 5px;
 }
 
 form {

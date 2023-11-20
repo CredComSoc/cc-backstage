@@ -1,12 +1,11 @@
 <template>
 	<v-row>
-		<v-col cols="2" class="member-row-text">
+		<v-col cols="2" class="admin-row-text">
 			{{ accountName }}
 		</v-col>
-		<v-col cols="1" class="member-row-text">
+		<v-col cols="2" class="admin-row-text">
 			{{ balance }} SEK
 		</v-col>
-
 		<v-col class="button-row">
 			<NuxtLink :to="{
 				name: 'admin-member',
@@ -54,8 +53,9 @@ export default {
 	flex-basis: 16%;
 }
 
-.member-row-text {
+.admin-row-text {
 	margin: auto;
+	font-weight: bolder;
 }
 
 .member-button {

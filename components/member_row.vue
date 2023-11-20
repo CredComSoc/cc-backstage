@@ -3,7 +3,7 @@
 		<v-col cols="2" class="member-row-text">
 			{{ accountName }}
 		</v-col>
-		<v-col cols="1" class="member-row-text">
+		<v-col cols="2" class="member-row-text">
 			{{ balance }} SEK
 		</v-col>
 
@@ -11,7 +11,7 @@
 			status {{ status }}
 		</v-col>
 
-		<v-col cols="2" class="member-row-text">
+		<v-col cols="1" class="member-row-text">
 			{{ phone }}
 		</v-col>
 		<v-col class="button-row">
@@ -21,7 +21,6 @@
 			}">
 				<div class="member-button">Account</div>
 			</NuxtLink>
-
 			<NuxtLink :to="{
 				name: 'admin-member',
 				params: { id: id, name: accountName }
@@ -75,7 +74,7 @@ export default {
 	height: 36px;
 	/*min-width: 64px;*/
 	padding: 0 10px;
-	margin: 0 10px 0 10px;
+	margin: 0 5px 0 0px;
 	font-size: 0.875rem;
 	color: rgba(0, 0, 0, 0.87);
 	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
