@@ -115,7 +115,11 @@ export default {
 }
 
 .row-text {
-  flex-basis: 16%;
   margin: auto;
+}
+
+.button-row {
+  text-align: right;
+  flex-basis: 16%;
 }
 </style>
