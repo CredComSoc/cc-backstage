@@ -74,7 +74,6 @@ export default {
 }
 
 .green_tab {
-	color: black;
 	background-color: #00d282;
 }
 

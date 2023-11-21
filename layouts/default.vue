@@ -105,7 +105,9 @@ export default {
 .fixed-box {
   margin-top: 20px;
   width: 100%;
-  overflow: auto;
+  height: calc(100vh - 405px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .top-border {

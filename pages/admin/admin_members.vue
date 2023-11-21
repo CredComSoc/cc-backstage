@@ -106,15 +106,18 @@ export default {
 
 <style scoped>
 .outer-div {
+    /*
     display: flex;
     flex-flow: column;
+    */
     height: 100%;
 }
 
+/*
 .flex-tab {
     flex-grow: 1;
 }
-
+*/
 .member-row-headings {
     flex-basis: 16%;
     font-weight: bold;
