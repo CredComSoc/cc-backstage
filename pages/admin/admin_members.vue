@@ -3,7 +3,7 @@
         <member_header :title='"ALL MEMBERS"' />
         <member_tabs @click="setTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
         <div v-if="onBlueTab">
-            <v-row class="member-row-headings">
+            <v-row class="row-headings">
                 <v-col cols="2">
                     <h1>Member</h1>
                 </v-col>
@@ -17,35 +17,52 @@
                     <h1>Phone number</h1>
                 </v-col>
             </v-row>
-            <div class="fixed-box">
+            <div class="fixed-box fixed-box-with-admin">
                 <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
                     :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
             </div>
+            <div class="admin-box">
+                <admin_row :id="admin.id" :accountName="admin.accountName" :balance="admin.balance" />
+            </div>
         </div>
         <div v-else>
-            <v-row v-for="transaction in transactions">
-                <v-col>
-                    {{ transaction.date }}
+            <v-row class="row-headings">
+                <v-col cols="1">
+                    <h1>Date</h1>
                 </v-col>
-                <v-col>
-                    {{ transaction.payer }}
+                <v-col cols="2">
+                    <h1>Payer</h1>
                 </v-col>
-                <v-col>
-                    {{ transaction.receiver }}
+                <v-col cols="2">
+                    <h1>Receiver</h1>
                 </v-col>
-                <v-col>
-                    {{ transaction.amount }}
-                </v-col>
-                <v-col>
-                    <NuxtLink :to="{ name: '', params: {} }">
-                        <v-btn>Reverse</v-btn>
-                    </NuxtLink>
+                <v-col cols="2">
+                    <h1>Amount</h1>
                 </v-col>
             </v-row>
+            <div class="fixed-box fixed-box-no-admin">
+                <v-row v-for="transaction in transactions">
+                    <v-col cols="1">
+                        {{ transaction.date }}
+                    </v-col>
+                    <v-col cols="2">
+                        {{ transaction.payer }}
+                    </v-col>
+                    <v-col cols="2">
+                        {{ transaction.receiver }}
+                    </v-col>
+                    <v-col cols="2">
+                        {{ transaction.amount }}
+                    </v-col>
+                    <v-col class="button-row">
+                        <NuxtLink :to="{ name: '', params: {} }">
+                            <div class="white-button">Reverse</div>
+                        </NuxtLink>
+                    </v-col>
+                </v-row>
+            </div>
         </div>
-        <div class="admin-box">
-            <admin_row :id="admin.id" :accountName="admin.accountName" :balance="admin.balance" />
-        </div>
+
     </div>
 </template>
 
@@ -102,12 +119,6 @@ export default {
 </script>
 
 <style scoped>
-.member-row-headings {
-    flex-basis: 16%;
-    font-weight: bold;
-    border-bottom: 1px solid #ffffff;
-}
-
 .admin-box {
     bottom: 0px;
     margin-top: 20px;

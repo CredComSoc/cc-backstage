@@ -3,25 +3,42 @@
 		<member_header :title="memberName" />
 		<member_tabs @click="setTabStatus" :blueTabTitle='"BARTERKRONOR"' :greenTabTitle='"KRONOR"' />
 
-		<v-container v-if="onBlueTab">
-			<div class="fixed-box">
+		<div v-if="onBlueTab">
+			<v-row class="row-headings">
+				<v-col cols="1">
+					<h1>Status</h1>
+				</v-col>
+				<v-col cols="1">
+					<h1>Date</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Counterpart</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Amount</h1>
+				</v-col>
+
+				<v-col cols="3">
+					<h1>Description</h1>
+				</v-col>
+			</v-row>
+			<div class="fixed-box fixed-box-no-admin">
 				<v-row class="top-border" v-for="transaction in transactions">
-					<v-col class="row-text">
+					<v-col cols="1" class="row-text">
 						{{ transaction.status }}
 					</v-col>
-					<v-col class="row-text">
+					<v-col cols="1" class="row-text">
 						{{ transaction.date }}
 					</v-col>
-					<v-col cols="3" class="row-text">
+					<v-col cols="2" class="row-text">
 						{{ transaction.counterpart }}
 					</v-col>
-					<v-col cols="3" class="row-text">
-						{{ transaction.description }}
-					</v-col>
-
-					<v-col class="row-text">
+					<v-col cols="2" class="row-text">
 						{{ transaction.amount }}
 					</v-col>
+					<v-col cols="3" class="row-text">
+						{{ transaction.description }}
+					</v-col>
 					<v-col class="button-row">
 						<NuxtLink :to="{ name: '', params: {} }">
 							<div class="white-button">Revert</div>
@@ -29,33 +46,54 @@
 					</v-col>
 				</v-row>
 			</div>
-		</v-container>
-		<v-container v-else>
-			<div class="fixed-box">
+		</div>
+		<div v-else>
+			<v-row class="row-headings">
+				<v-col cols="1">
+					<h1>Status</h1>
+				</v-col>
+				<v-col cols="1">
+					<h1>Date</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Counterpart</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Amount</h1>
+				</v-col>
+
+				<v-col cols="3">
+					<h1>Description</h1>
+				</v-col>
+			</v-row>
+
+			<div class="fixed-box fixed-box-no-admin">
 				<v-row class="top-border" v-for="transaction in transactions">
-					<v-col class="row-text">
+					<v-col cols="1" class="row-text">
 						{{ transaction.status }}
 					</v-col>
-					<v-col class="row-text">
+					<v-col cols="1" class="row-text">
 						{{ transaction.date }}
 					</v-col>
-					<v-col class="row-text">
-						{{ transaction.type }}
+					<v-col cols="2" class="row-text">
+						{{ transaction.counterpart }}
+					</v-col>
+					<v-col cols="2" class="row-text">
+						{{ transaction.amount_kr }}
 					</v-col>
 					<v-col cols="3" class="row-text">
 						{{ transaction.description }}
 					</v-col>
-					<v-col class="row-text">
-						{{ transaction.amount_kr }}
-					</v-col>
 					<v-col class="button-row">
 						<NuxtLink :to="{ name: '', params: {} }">
 							<div class="white-button">Revert</div>
 						</NuxtLink>
 					</v-col>
 				</v-row>
+
+
 			</div>
-		</v-container>
+		</div>
 
 	</div>
 </template>
