@@ -5,6 +5,7 @@
 .vscode/*
 
 api/config.js
+api/config.js*
 
 # Logs
 /logs

@@ -61,8 +61,41 @@ import notice from '/components/topbar_notice.vue';
   </script>
 <style scoped>
 
-.default_background
-{
+
+
+
+<style scoped>
+.default_background {
   background-color: rgba(199, 199, 199, 0.819);
+}
+
+.container-toolbar {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding-left: 500px;
+}
+</style>
+
+<style>
+.fixed-box {
+  margin-top: 20px;
+  width: 100%;
+  height: calc(100vh - 405px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.top-border {
+  border-top: 1px solid #ffffff;
+}
+
+.row-text {
+  margin: auto;
+}
+
+.button-row {
+  text-align: right;
+  flex-basis: 16%;
 }
 </style>

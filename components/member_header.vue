@@ -1,19 +1,17 @@
 <template>
-    <v-container class="member-header">
-        <v-row>
-            <v-col>
-                <form>
-                    <input type="text" v-model="search" placeholder="Search">
-                </form>
-            </v-col>
-            <v-col class="member-header-middle"> {{ title }} </v-col>
-            <v-col class="member-header-right">
-                <NuxtLink :to="{ name: 'admin-admin_network' }">
-						<div class="settings">Settings</div>
-				</NuxtLink>
-            </v-col>
-        </v-row>
-    </v-container>
+    <v-row class="member-header">
+        <v-col>
+            <form>
+                <input type="text" v-model="search" placeholder="Search">
+            </form>
+        </v-col>
+        <v-col class="member-header-middle"> {{ title }} </v-col>
+        <v-col class="member-header-right">
+            <NuxtLink :to="{ name: 'admin-admin_network' }">
+                <div class="settings">Settings</div>
+            </NuxtLink>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
@@ -31,16 +29,18 @@ export default {
 
 <style scoped>
 .member-header {
+    height: 68px;
     width: 100%;
+    margin-top: 6px;
 }
 
 .member-header-middle {
     text-align: center;
     margin: auto;
-    color: rgb(165, 9, 9);
-    font-size: large;
+    margin-left: 30px;
+    color: #f53447;
+    font-size: larger;
     font-weight: bold;
-    ;
 }
 
 .member-header-right {
@@ -57,8 +57,9 @@ export default {
 form {
     max-width: 420px;
     margin: 0px auto;
-    background: #ddd;
+    background: #ffffff;
     text-align: left;
+    border-radius: 8px;
 }
 
 input {
