@@ -59,15 +59,12 @@ import notice from '/components/topbar_notice.vue';
     }
 }
   </script>
-<style scoped>
-
-
-
 
 <style scoped>
 .default_background {
-  background-color: rgba(199, 199, 199, 0.819);
+  background-color: rgb(238,238,238);
 }
+
 
 .container-toolbar {
   display: flex;
@@ -97,5 +94,21 @@ import notice from '/components/topbar_notice.vue';
 .button-row {
   text-align: right;
   flex-basis: 16%;
+}
+.white-button {
+  background-color: #f5f5f5;
+  height: 36px;
+  padding: 0 10px;
+  margin: 0 5px 0 0px;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-weight: 500;
+  letter-spacing: 0.0892857143em;
+  text-transform: uppercase;
 }
 </style>

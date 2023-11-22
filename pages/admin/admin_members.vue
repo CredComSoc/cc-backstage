@@ -59,8 +59,6 @@ import admin_row from '/components/admin_row.vue'
 
 export default {
 
-    layout: 'test',
-
     components: {
         member_header, member_row, member_tabs, admin_row
     },
