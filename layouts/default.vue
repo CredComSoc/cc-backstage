@@ -81,7 +81,6 @@ export default {
 
 <style>
 .fixed-box {
-  margin-top: 20px;
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -89,24 +88,33 @@ export default {
 
 .fixed-box-with-admin {
   height: calc(100vh - 405px);
+  margin-top: 20px;
 }
 
 .fixed-box-no-admin {
   height: calc(100vh - 340px);
+  margin-top: 20px;
+}
+
+.chatbox {
+  height: calc(100vh - 293px);
 }
 
 .top-border {
   border-top: 1px solid #ffffff;
 }
 
+
 .row-headings {
   flex-basis: 16%;
   font-weight: bold;
+  font-size: 95%;
   border-bottom: 1px solid #ffffff;
 }
 
 .row-text {
   margin: auto;
+  font-size: 90%;
 }
 
 .button-row {
@@ -116,10 +124,10 @@ export default {
 
 .white-button {
   background-color: #f5f5f5;
-  height: 36px;
-  padding: 0 10px;
+  height: 30px;
+  padding: 0 5px;
   margin: 0 5px 0 0px;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   color: rgba(0, 0, 0, 0.87);
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   border-radius: 4px;
