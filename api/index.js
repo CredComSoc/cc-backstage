@@ -1,5 +1,5 @@
 const express = require('express')
-const { graphqlHTTP } = require("express-graphql")
+import { createHandler } from "graphql-http/lib/use/express" // https://www.npmjs.com/package/graphql-http
 const bodyParser = require('body-parser')
 const {MongoClient, ObjectId} = require('mongodb')
 const {axios} = require ('axios')
@@ -16,7 +16,7 @@ const {schema, root} = require('./graphql.js')
 
 app.use(
     "/graphql",
-    graphqlHTTP({
+    createHandler({
         schema: schema,
         rootValue: root,
         graphiql: true, // Disable when no longer developing
