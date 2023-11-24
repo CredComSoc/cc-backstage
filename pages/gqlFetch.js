@@ -74,7 +74,7 @@ export async function getUserArticles(name){
     }).then(r => r.json())
       .then(data => articles = data)
       articles = JSON.stringify(articles.data.allUserArticles) // Remove the Json "padding" to get the object or array
-      console.log(articles)
+      //console.log(articles)
     return articles
 }
 
@@ -106,7 +106,7 @@ export async function getAllArticles(){
     }).then(r => r.json())
       .then(data => articles = data)
       articles = JSON.stringify(articles.data.allArticles) // Remove the Json "padding" to get the object or array
-      console.log(articles)
+      //console.log(articles)
     return articles
 }
 
@@ -141,9 +141,9 @@ export async function getMember(name){
           variables: { accountName: name }, }),
     }).then(r => r.json())
       .then(data => member = data)
-      console.log(member)
+      //console.log(member)
       member = JSON.stringify(member.data.member) // Remove the Json "padding" to get the object or array
-      console.log(member)
+      //console.log(member)
     return member
 }
 
@@ -160,7 +160,7 @@ export async function getUserCount() {
     }).then(r => r.json())
       .then(data => userCount = data)
       userCount = userCount.data.userCount
-    console.log(userCount)
+   // console.log(userCount)
     return userCount
 }
 

@@ -7,10 +7,11 @@
 
       <div class="test-main-container">
 
-      <div class="test-container test-container--red">
+      <div class="test-container" style="background-color: #ff4558;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> {{ onlineUsersCount }}</div>
+            <div class="test-container-text-upper" v-if="showOnline"> {{ onlineUsersCount }}</div>
+            <div class="test-container-text-upper" v-if="!showOnline"> {{ registerdUsersCount }}</div>
             <div class="test-container-text-lower"> Users</div>
           </div>
 
@@ -20,19 +21,25 @@
         </div>
 
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="updateChart('online' , '#b51f1f')">
+          <button class="test-container-lower-lhs" v-if="showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('online')">
             Online
           </button>
-          <button class="test-container-lower-rhs" @click="updateChart( 'registered' , '#b51f1f')">
+          <button class="test-container-lower-lhs" v-if="!showOnline" @click="displayGraph('online')">
+            Online
+          </button>
+          <button class="test-container-lower-rhs" v-if="showOnline" @click="displayGraph('registered')">
+            Registered
+          </button>
+          <button class="test-container-lower-rhs" v-if="!showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('registered')">
             Registered
           </button>
         </div>
       </div>
 
-      <div class="test-container test-container--yellow">
+      <div class="test-container" style="background-color:  #ffc000;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> 5</div>
+            <div class="test-container-text-upper"> {{ testData }}</div>
             <div class="test-container-text-lower"> Trades</div>
           </div>
           <div class="test-container-rhs">
@@ -40,19 +47,20 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="updateChart('transactions' , '#bcbf0d')">
+          <button class="test-container-lower-lhs" @click="displayGraph('transactions')">
             Transactions
           </button>
-          <button class="test-container-lower-rhs" @click="updateChart( 'volume' , '#bcbf0d')">
+          <button class="test-container-lower-rhs" @click="displayGraph('volume')">
             Volume
           </button>
         </div>
       </div>
 
-      <div class="test-container test-container--blue">
+      <div class="test-container" style="background-color: #00abe0;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> 5</div>
+            <div class="test-container-text-upper" v-if="showOffers"> {{offerCount}}</div>
+            <div class="test-container-text-upper" v-if="!showOffers"> {{wantCount}}</div>
             <div class="test-container-text-lower"> Listed</div>
           </div>
           <div class="test-container-rhs">
@@ -60,16 +68,22 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="updateChart('offers' , '#1248b5')">
+          <button class="test-container-lower-lhs" v-if="showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-rhs" @click="updateChart( 'wants' , '#1248b5')">
+          <button class="test-container-lower-lhs" v-if="!showOffers" @click="displayGraph('offers')">
+            Offers
+          </button>
+          <button class="test-container-lower-rhs" v-if="showOffers" @click="displayGraph('wants')">
+            Wants
+          </button>
+          <button class="test-container-lower-rhs" v-if="!showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('wants')">
             Wants
           </button>
         </div>
       </div>
 
-      <div class="test-container test-container--green">
+      <div class="test-container" style="background-color: #00d282;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
             <div class="test-container-text-upper"> Network graph</div>
@@ -80,16 +94,16 @@
           </div>
         </div>
 
-        <button class="test-container-lower-graph" @click="hideGraph()">
+        <button class="test-container-lower-graph" v-if="!showChart" style="background-color: rgba(0, 0, 0, 0.300) ;" @click="hideGraph()">
+            Display
+        </button>
+        <button class="test-container-lower-graph" v-if="showChart" @click="hideGraph()">
             Display
         </button>
       </div>
     </div>
-
-
-
+    
       <div class="chart-container">
-
         <div class="node-graph-container" v-if="!showChart">
            <network class="network" ref="network" v-if="!showChart"
             :nodes="nodes"
@@ -101,17 +115,16 @@
           </network>
         </div>
 
-
         <div class="chart-buttons" v-if="showChart">
-          <button class="chart-button"> 1w </button>
-          <button class="chart-button"> 1m </button>
-          <button class="chart-button"> 3m </button>
-          <button class="chart-button"> 1y </button>
+          <button class="chart-button" @click="weekGraph(currentChart)"> 1w</button>
+          <button class="chart-button" @click="monthGraph(currentChart)"> 1m </button>
+          <button class="chart-button" @click="ThreemonthGraph(currentChart)"> 3m </button>
+          <button class="chart-button" @click="yearGraph(currentChart)"> 1y </button>
 
           <div class="datepicker-container">
-            <Datepicker range circle class="datepicker"  placeholder="Custom date" lang="en"/>
+            <Datepicker ref="dpicker" range showClearButton v-model="selectedDate" circle class="datepicker"  placeholder="Custom date" lang="en"
+            @change="datePickRange(currentChart)"/>
           </div>
-
 
           <div class="chart-text-box" v-if="showChart">
             <div class="chart-text">
@@ -119,11 +132,9 @@
             </div>
           </div>
 
-
         </div>
-
         <div class="chart" v-if="showChart">
-          <apexchart type="area" :options="chartOptions" :series="chartSeries">
+          <apexchart ref="chart" type="area" :options="chartOptions" :series="chartSeries">
           </apexchart>
         </div>
       </div>
@@ -160,7 +171,10 @@
 
   // fetchFuncs
   import { Network } from "vue-vis-network";
-  import { getMembers } from '/pages/gqlFetch.js'
+  import { getUserCount } from '/pages/gqlFetch.js';
+  import { getAllArticles } from '/pages/gqlFetch.js';
+import { tSMethodSignature } from '@babel/types';
+
 
   // fetchFuncs end
 
@@ -173,19 +187,64 @@
       network: Network
     },
 
+
     data() {
       return {
-        utcTime: null,
-        usersList: [],
+        // Picture references
         onlineUser,
         trade,
         listed,
         nodeGraph,
+        // ------------------
+        
+        currentChart: "online",
+
+        // Dates 
+        utcTime: null,
+        currentDate: null,
+        from: null,
+        to: null,
+        // ------------------        
+
+        // Usr
+        usersList: [],
         onlineUsersCount: 0,
+        registerdUsersCount: 0,
+        showOnline: true,
+        // ------------------        
+        
+        // Trades
+        testData : 5,
+        offers: [],
+        offerCount: 0,
+        wants: [],
+        wantCount: 0,
+        listedCount: 0,
         activeTrades: 23,
-        registerdUsers: 232,
+        showOffers: true,
+        // ------------------
+        
+        // Maps
+        registeredUserMap: new Map(),
+        onlineUserMap : new Map(),
+        transactionsMap: new Map(),
+        volumeMap: new Map(),
+        offersMap: new Map(),
+        wantsMap: new Map(),
+        // ------------------  
         dashBoardText: "",
         showChart: true,
+        
+        // DatePicker
+        selectedDate: 
+        [
+          new Date(),
+          new Date(),
+          //new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)
+        ],
+        // ------------------
+
+
 
       dummytransactions:
       [
@@ -261,7 +320,7 @@
         [
           {
             name: '# of Online',
-            data: [5, 7, 3, 11, 1], // fake data
+            data: [5, 7, 3, 11, 1, 99], // fake data
           }
         ],
 
@@ -307,10 +366,6 @@
           stroke:
           {
             curve: 'smooth'
-          },
-          xaxis:
-          {
-            categories: ['1/10', '2/10', '3/10', '4/10', '5/10']
           },
         }
       };
@@ -368,12 +423,15 @@
 
         }
       },
-      displayGraph()
+      displayGraph(currentChart)
       {
-        if(this.showChart == false)
-        {
+        
+
+        if (this.showChart === false)
+        { 
           this.showChart = true;
         }
+        this.weekGraph(currentChart);
       },
 
       hideGraph()
@@ -397,31 +455,39 @@
 
       updateChart(data, color)
       {
-        this.displayGraph();
-        //const newData = JSON.parse(JSON.stringify(data));
-        // graphql get data for all functions
-        switch(data)
-        {
-          case "online":
-            this.chartSeries = this.dataOnlineUsr;
-            break;
-          case "registered":
-            this.chartSeries = this.dataTrades;
-            break;
-          case "transactions":
-            this.chartSeries = this.dataTrades;
-            break;
-          case "volume":
-            this.chartSeries = this.dataOnlineUsr;
-            break;
-          case "offers":
-            this.chartSeries = this.dataTrades;
-            break;
-          case "wants":
-            this.chartSeries = this.dataListedTrades;
-            break;
-        }
-        this.updateChartOptions(color);
+      //   this.displayGraph();
+      //   //const newData = JSON.parse(JSON.stringify(data));
+      //   // graphql get data for all functions
+      //   switch(data)
+      //   {
+      //     case "online":
+      //       this.currentChart = "online";
+      //       this.showOnline = true;
+      //       break;
+      //     case "registered":
+      //       this.chartSeries = this.dataTrades;
+      //       this.showOnline = false;
+      //       break;
+      //     case "transactions":
+      //       this.chartSeries = this.dataTrades;
+      //       break;
+      //     case "volume":
+      //     this.currentChart = "volume";  
+      //     this.chartSeries = this.dataOnlineUsr;
+      //       break;
+      //     case "offers":
+      //       this.currentChart = "offers";
+      //       this.chartSeries = this.dataTrades;
+      //       this.showOffers = true;
+      //       break;
+      //     case "wants":
+      //       this.currentChart = "wants";  
+      //       this.chartSeries = this.dataListedTrades;
+      //       this.showOffers = false;
+      //       break;
+      //   }
+      //   this.updateChartOptions(color);
+      
       },
 
       updateChartOptions(color)
@@ -441,33 +507,233 @@
           this.utcTime = utcTime.slice(11, 16)
       },
 
-      async getOnlineUsers()
+      fetchDataToMaps()
       {
-        this.usersList = await getMembers();
-        this.onlineUsersCount = 0;
-        for(let i = 0; i < this.usersList.length; i++)
+
+        // SHOULD FETCH FROM DATABASE!
+
+
+        
+        const currentDate = new Date();
+        this.registeredUserMap.set(currentDate.toDateString().slice(4), 0);
+        this.onlineUserMap.set(currentDate.toDateString().slice(4), 0);
+        this.transactionsMap.set(currentDate.toDateString().slice(4), 0);
+        this.volumeMap.set(currentDate.toDateString().slice(4), 0);
+        this.offersMap.set(currentDate.toDateString().slice(4), 0);
+        this.wantsMap.set(currentDate.toDateString().slice(4), 0);
+
+        // Filling dates with dummy data.
+        for(let i = 0; i < 365; i++)
         {
-          if(this.usersList[i].status == "Online")
+          currentDate.setDate(currentDate.getDate() -1);
+          this.onlineUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.registeredUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.transactionsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.volumeMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.offersMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+          this.wantsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
+        }
+        // console.log(this.registeredUserMap.size);
+        // this.onlineUserMap.forEach((values, keys) => {
+        // console.log("values: ", values +
+        // ", keys: ", keys)
+        // })
+      },
+
+    
+
+      updateStartEndDate(startDate, endDate)
+      {
+          this.selectedDate[0] = startDate;
+          this.selectedDate[1] = endDate;
+          // this.$nextTick(() => 
+          // {
+          //   this.selectedDate = [new Date(startDate), new Date(endDate)];
+          // });
+      },
+
+
+
+      weekGraph(currentChart)
+      {
+        //this.$refs.dpicker.resetDate();
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setDate(endDate.getDate() - 6);
+        
+        this.updateStartEndDate(startDate, endDate);
+        this.getDataRange(currentChart);
+        
+      },
+
+      monthGraph(currentChart)
+      {
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setMonth(endDate.getMonth() - 1);
+
+        this.updateStartEndDate(startDate, endDate);
+        this.getDataRange(currentChart);
+      },
+
+      ThreemonthGraph(currentChart)
+      {
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setMonth(endDate.getMonth() - 3);
+
+        this.updateStartEndDate(startDate, endDate);
+        this.getDataRange(currentChart);
+      },
+
+      yearGraph(currentChart)
+      {
+        const endDate = new Date();
+        const startDate = new Date(endDate);
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        this.updateStartEndDate(startDate, endDate);
+
+        this.getDataRange(currentChart);
+
+      },
+
+      datePickRange(currentChart)
+      {
+        this.getDataRange(currentChart);
+      },
+
+      getDataRange(currentChart)
+      {
+        let map;
+        let color;
+        console.log(currentChart);
+
+        switch(currentChart)
+        {
+          case "online":
+            this.showOnline = true;
+            this.currentChart = "online";
+            map = this.onlineUserMap;
+            color = '#b51f1f'; 
+            break;
+          case "registered":
+            this.showOnline = false;
+            this.currentChart = "registered";
+            map = this.registeredUserMap;
+            color = '#b51f1f';
+            break;
+          case "transactions":
+            this.testData = 20;
+            this.currentChart = "transactions";
+            map = this.transactionsMap;
+            color = '#bcbf0d'; 
+            break;
+          case "volume":
+            this.testData = 5;
+            this.currentChart = "volume";  
+            map = this.volumeMap;
+            color = '#bcbf0d';
+            break;
+          case "offers":
+            this.showOffers = true;
+            map = this.offersMap;
+            this.currentChart = "offers";
+            color = '#1248b5';
+            break;
+          case "wants":
+            this.showOffers = false;
+            map = this.wantsMap;
+            this.currentChart = "wants";
+            color = '#1248b5';
+            break;
+        }
+        
+        let newDate = [];
+        let newData = [];
+        
+        let from = this.selectedDate[0];
+        let to = this.selectedDate[1];
+        
+        if(from <= to)
+        {
+          let current = new Date(from);
+          while (current <= to) 
           {
-            this.onlineUsersCount++;
+            newData.push(map.get(current.toDateString().slice(4)));
+            newDate.push(current.toDateString().slice(4));
+            current.setDate(current.getDate() + 1);
           }
         }
-      }
-      // totalregistered userCount()
-      // articles        getAllArticles()
+        this.$nextTick(() => 
+        {
+          this.updateChartData(newDate, newData, color);
+        });
+      },
+      
+      updateChartData(newDate, newData, color)
+      {
+        let newChart = 
+        [
+          {
+            name: '# of Online',
+            data: newData, // fake data
+          }
+        ];
 
-      // transactions     Dependant on CC-node
-      // transaction volume
+        
+         this.$nextTick(() => 
+           {
+            this.$refs.chart.updateOptions( 
+            {
+              colors: [color],
 
-      //
+              chart: 
+              {
+                width: '100%',
+                height: '100%'
+              },
+
+              xaxis:
+              { 
+                categories: newDate
+              } 
+            });
+          });
+          
+          this.showChart = true;
+          this.chartSeries = newChart; 
+       },
+
+      async getOnlineUsers()
+      {
+        this.registerdUsersCount = await getUserCount();
+      },
+    
+      async getTrades() {
+        var articles = await getAllArticles();
+        articles = JSON.parse(articles);
+
+        this.offers = articles.filter(function (article) {
+            return (article.status == "offer")
+        });
+        this.wants = articles.filter(function (article) {
+            return (article.status == "want")
+         });
+        this.offerCount = this.offers.length;
+        this.wantCount = this.wants.length;
+        this.listedCount = this.offerCount + this.wantCount;
+      },
     },
 
     mounted()
     {
       this.getOnlineUsers();
+      this.getTrades();
       this.printDashboardText("Dashboard");
-      this.updateChart("online" , '#b51f1f');
+      this.fetchDataToMaps();
+      this.weekGraph(this.currentChart);
       this.getUTCTime(false);
+      
 
       this.createNodes();
 
@@ -504,23 +770,6 @@
     height: 15vh;
     /* width: 26vw;
     height: 30vh; */
-  }
-  .test-container--red
-  {
-    background-color: #ff4558;
-  }
-
-  .test-container--blue
-  {
-    background-color: #00abe0;
-  }
-  .test-container--yellow
-  {
-    background-color:  #ffc000;
-  }
-  .test-container--green
-  {
-    background-color: #00d282;
   }
   .test-container-lhs
   {
@@ -601,7 +850,6 @@
   }
   .test-container-lower-lhs
   {
-
     flex-direction: row;
     font-size: 100%;
     width: 50%;
@@ -625,16 +873,6 @@
     color: white;
     user-select: none;
   }
-
-  .test-container-text-lower-lower
-  {
-    flex-direction: row;
-    font-size: 100%;
-    width: 100%;
-    height: 100%;
-    color: rgb(255, 255, 255);
-  }
-
   .center-container
   {
     display: flex;
@@ -643,7 +881,6 @@
     align-items: center;
     gap: 30px;
   }
-
   .chart
   {
     /* Change chartsize here!! */
@@ -707,7 +944,6 @@
     text-align: left;
     user-select: none;
   }
-
   .datepicker-container
   {
     display: flex;
@@ -715,10 +951,7 @@
     align-items: center;
     width: 30%;
     height: 70%;
-
-
   }
-
   .node-graph-container
   {
     display: flex;
@@ -727,13 +960,8 @@
     width: 100%;
     height: 100%;
   }
-
-
-
   .datepicker
   {
-
-
     /* Background color  */
     --v-calendar-input-bg-color: #e0e0e0;
 
@@ -746,8 +974,6 @@
     --v-calendar-input-font-weight: 500;
     --v-calendar-input-text-color: #000000;
 
-
-
     /* Inne i kalendern header */
     --v-calendar-view-button-font-size: 1rem;
     --v-calendar-select-bg-color: #e0e0e0;
@@ -758,13 +984,4 @@
     width: 100%;
     height: 100%;
   }
-
-  .test-switchbox
-  {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 5px
-  }
-
   </style>
