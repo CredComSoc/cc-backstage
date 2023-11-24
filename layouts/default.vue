@@ -27,7 +27,7 @@
       <v-app-bar :clipped-left="clipped" fixed app>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> <!-- Top toolbar code below-->
 
-        
+
 
         <!-- <v-toolbar-title v-text="title" /> -->
           <v-row align="center" justify="center">
@@ -58,7 +58,7 @@
       </v-footer>
     </v-app>
   </template>
-  
+
   <script>
 import { space } from 'postcss/lib/list';
 import svenskBarter from './svensk_barter.png';
@@ -93,10 +93,10 @@ import svenskBarter from './svensk_barter.png';
             title: 'Home',
         };
     },
-    components: { space }
+    components: { space },
 }
   </script>
-  
+
 <style scoped>
 
 .default_background

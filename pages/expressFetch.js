@@ -61,6 +61,22 @@ export async function authenticate () { //Checks if the cookie is valid and the 
     },
     credentials: 'include'
   }).then((response) => {
+
+    return response.json()
+  }).catch(() => {
+
+    return false
+  })
+}
+
+export async function checkAdminStatus () {
+  return fetch(EXPRESS_URL + '/admin', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  }).then((response) => {
     return response.json()
   }).catch(() => {
     return false

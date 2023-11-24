@@ -39,9 +39,6 @@
                 <button class="login_button" @click="handleSubmit">
                     Login
                 </button>
-                 <button class="login_button" @click="auth">
-                    Auth
-                </button>
 
 
 
@@ -65,7 +62,7 @@
 
 
 <script>
-import {login, authenticate} from '/pages/expressFetch.js'
+import {login} from '/pages/expressFetch.js'
 export default
 {
     data(){
@@ -93,33 +90,13 @@ export default
             }
         },
         async handleSubmit () {
-            //this.$refs.loadingComponent.showLoading()
-            login(this.email.toLowerCase(), this.password).then(async (response) => {
-            console.log(response)
-            if (response) {
-             //this.error = false
-           //this.loginCount = 0
-           //this.error = false
-              //await setStoreData()
-              //this.$refs.loadingComponent.hideLoading()
 
-              //window.location.href = '/'
-            } else {
-              //this.error = true
-          //this.loginCount += 1
-          //this.$refs.loadingComponent.hideLoading()
-        }
-      })
-    },
-    async auth() {
-        authenticate().then((res) => {
-      if (res) {
-        checkAdminStatus().then((res2) => {
-          console.log(res)
-          console.log(res2)
-        })
-      }
-    })
+             await login(this.email.toLowerCase(), this.password).then(async (response) => {
+            if(response)
+            {
+                this.$router.push('/admin/admin_overview')
+            }
+            })
 
     },
 
