@@ -68,12 +68,8 @@
             <v-col cols="4">
                 <chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"NOTIFICATIONS/LOG"'
                     :rightTabTitle='"MEMBER CHAT"' />
-                <div class="chatbox fixed-box" v-if="onLeftChatboxTab">
-                    I'm a notifications box.
-                </div>
-                <div class="chatbox fixed-box" v-else>
-                    I'm a message box.
-                </div>
+                <notification_box v-if=onLeftChatboxTab />
+                <chatbox v-else />
             </v-col>
         </v-row>
     </div>
@@ -87,11 +83,13 @@ import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
 import chat_tabs from '/components/chat_tabs.vue'
 import admin_row from '/components/admin_row.vue'
+import chatbox from '/components/chatbox.vue'
+import notification_box from '/components/notification_box.vue'
 
 export default {
 
     components: {
-        member_header, member_row, member_tabs, chat_tabs, admin_row
+        member_header, member_row, member_tabs, chat_tabs, admin_row, chatbox, notification_box
     },
 
     data() {

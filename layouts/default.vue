@@ -96,8 +96,10 @@ export default {
   margin-top: 20px;
 }
 
-.chatbox {
+.notification-box {
   height: calc(100vh - 293px);
+  color: white;
+  background-color: black;
 }
 
 .top-border {
