@@ -14,8 +14,11 @@
             </v-row>
         </div>
         <v-row>
-            <v-col cols="12">
+            <v-col cols="10" class="no-padding-right">
                 <input type="text" class="message-input" />
+            </v-col>
+            <v-col cols="2" class="no-padding-left align-right">
+                <div class="white-button send-button">Send</div>
             </v-col>
         </v-row>
     </div>
@@ -43,17 +46,23 @@ export default {
 </script>
 
 <style>
-
 .chatbox {
-  height: calc(100vh - 342px);
-  color: white;
-  flex-direction: column;
-  align-self: flex-end;
-  display: flex;
-  overflow-y: auto;
+    height: calc(100vh - 342px);
+    color: white;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overscroll-behavior-y: contain;
+    scroll-snap-type: y none;
 }
+
 .message-row {
-    margin: 0px;
+    margin-top: 0px !important;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0px;
 }
 
 .message {
@@ -61,8 +70,14 @@ export default {
     margin: 6px;
 }
 
+.chatbox>.message-row:last-child {
+    scroll-snap-align: end;
+}
+
 .right-message {
     background-color: #00abe0;
+    margin-left: auto;
+    margin-right: 6px;
 }
 
 .left-message {
@@ -75,13 +90,32 @@ export default {
 
 .writebox {
     background-color: white;
-
 }
 
 .message-input {
-    width: 100%;
+    width: 98%;
+    height: 40px;
     background-color: white;
     padding: 10px;
+    margin: 2px;
     border-radius: 10px;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.no-padding-right {
+    padding-right: 0px;
+}
+
+.no-padding-left {
+    padding-left: 0px;
+}
+
+.send-button {
+    margin: 2px;
+    margin-right: 6px;
+    height: 40px;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
 	<v-row class="tab-row">
 		<v-col cols="6">
-			<div class="tab left_tab" @click="toggleToLeftTab" v-if="leftTabVisible">
+			<div class="tab left-tab" @click="toggleToLeftTab" v-if="leftTabVisible">
 				{{ leftTabTitle }}
 			</div>
-			<div class="tab left_tab_dimmed" @click="toggleToLeftTab" v-if="rightTabVisible">
+			<div class="tab left-tab-dimmed" @click="toggleToLeftTab" v-if="rightTabVisible">
 				{{ leftTabTitle }}
 			</div>
 
@@ -12,10 +12,10 @@
 
 		</v-col>
 		<v-col cols="6">
-			<div class="tab right_tab" @click="toggleToRightTab" v-if="rightTabVisible">
+			<div class="tab right-tab" @click="toggleToRightTab" v-if="rightTabVisible">
 				{{ rightTabTitle }}
 			</div>
-			<div class="tab right_tab_dimmed" @click="toggleToRightTab" v-if="leftTabVisible">
+			<div class="tab right-tab-dimmed" @click="toggleToRightTab" v-if="leftTabVisible">
 				{{ rightTabTitle }}
 			</div>
 
@@ -64,20 +64,20 @@ export default {
 	border-radius: 8px;
 }
 
-.left_tab {
+.left-tab {
 	background-color: #FF4558;
 }
 
-.left_tab_dimmed {
+.left-tab-dimmed {
 	background-color: #FF4558;
 	opacity: 30%;
 }
 
-.right_tab {
+.right-tab {
 	background-color: #FFC000;
 }
 
-.right_tab_dimmed {
+.right-tab-dimmed {
 	background-color: #FFC000;
 	opacity: 40%;
 }
