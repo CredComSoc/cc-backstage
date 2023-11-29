@@ -83,7 +83,6 @@ div.mainContainer {
 
 form {
     margin: 0px auto;
-    background: #fff;
     text-align: left;
     padding: 25px;
 }
@@ -95,6 +94,7 @@ input {
     width: 100%;
     box-sizing: border-box;
     color: #000000;
+    background-color: white;
     border: 1px solid gray;
     border-radius: 5px;
 

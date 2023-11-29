@@ -47,5 +47,6 @@ export default {
 .admin-row-text {
 	margin: auto;
 	font-weight: bolder;
+	font-size: 90%;
 }
 </style>
