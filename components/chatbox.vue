@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="chatbox fixed-box">
-            <v-row class="message-row" v-for="message in messages.slice().reverse()">
+        <div name="chatbox" class="chatbox fixed-box">
+            <v-row class="message-row" v-for="message in messages">
                 <v-col v-if="message.from_me" cols="3"></v-col>
                 <v-col v-if="message.from_me" cols="8" class="message right-message">
                     <div class="timestamp">{{ message.date }} {{ message.time }}</div>
@@ -15,21 +15,22 @@
         </div>
         <v-row>
             <v-col cols="10" class="no-padding-right">
-                <input type="text" class="message-input" />
+                <input v-on:keyup.enter="sendMessage" v-model="myMessage" type="text" class="message-input" />
             </v-col>
             <v-col cols="2" class="no-padding-left align-right">
-                <div class="white-button send-button">Send</div>
+                <div @click="sendMessage" class="white-button send-button">Send</div>
             </v-col>
         </v-row>
     </div>
 </template>
 
 <script>
-
 export default {
 
     data() {
         return {
+
+            myMessage: "",
 
             messages: [
                 { date: "2023-09-12", time: "12:03", from: "Anna Karlsson", message: "Hej Hej Hej Hej Hej Hej Hej Hej ", from_me: true },
@@ -42,6 +43,31 @@ export default {
         }
     },
 
+    methods: {
+        scrollToBottom() {
+            this.$nextTick(function () {
+                var myObj = document.getElementsByName("chatbox")[0];
+                myObj.scrollTop = myObj.scrollHeight;
+            })
+        },
+
+        sendMessage() {
+            var fullDate = new Date();
+            var dateStr = fullDate.getFullYear() + "-" + fullDate.getMonth() + "-" + fullDate.getDate();
+            var timeStr = fullDate.getHours() + "-" + fullDate.getUTCMinutes();
+            var mess = { date: dateStr, time: timeStr, from: "Me", message: this.myMessage, from_me: true }
+            this.messages.push(mess);
+            this.myMessage = "";
+            this.scrollToBottom();
+        }
+    },
+
+    created() {
+        this.scrollToBottom();
+    }
+
+
+
 }
 </script>
 
@@ -53,8 +79,9 @@ export default {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    overscroll-behavior-y: contain;
+    /*    overscroll-behavior-y: contain;
     scroll-snap-type: y none;
+    */
 }
 
 .message-row {
@@ -71,7 +98,7 @@ export default {
 }
 
 .chatbox>.message-row:last-child {
-    scroll-snap-align: end;
+    /* scroll-snap-align: end; */
 }
 
 .right-message {

@@ -62,6 +62,8 @@ export default {
 	color: #ffffff;
 	font-weight: bold;
 	border-radius: 8px;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .left-tab {
