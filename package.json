@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
-    "apexcharts": "^3.42.0",
+    "apexcharts": "^3.44.1",
     "chart.js": "^4.4.0",
     "consola": "^3.2.3",
     "core-js": "^3.25.3",
