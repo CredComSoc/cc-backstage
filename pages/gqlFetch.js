@@ -38,7 +38,18 @@ export async function getMembers() {
         "Content-Type": "application/json",
         Accept: "application/json",
         },                             // When querying graphql without parameters, simply include the type and all members in it that you want to recieve
-        body: JSON.stringify({ query: "{ allMembers{ id, accountName, is_admin, email, description, address, city, phone, last_online}  }" }),
+        body: JSON.stringify({ query: `{ allMembers{ id,
+            accountName,
+            is_admin,
+            email,
+            balance,
+            status,
+            description,
+            address,
+            city,
+            phone,
+            last_online
+          }  }` }),
     }).then(r => r.json())
       .then(data => member_arr = data)
     member_arr = member_arr.data.allMembers
@@ -239,6 +250,46 @@ export async function getAllTransactions(id){
   return transactions
 }
 
+
+export async function getUserNotifications(name){
+
+
+  try {
+  var notifications = await fetch("/api/graphql", {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+      body: JSON.stringify({ query: `query userNotifications($name: String!) {
+        userNotifications(name: $name) {
+            _id
+            date
+            type
+            toUser
+            fromUser
+            seen
+            amount
+            itemName
+            itemCount
+            limitSurplusAmount
+          }
+        }`,
+        variables: { name: name }, }),
+  }).then(r => r.json())
+    .then(data => notifications = data)
+  } catch(error)
+  {
+    console.error("Error fetching notifications: ", error)
+    throw error
+    return
+  }
+    notifications = JSON.stringify(notifications.data.userNotifications) // Remove the Json "padding" to get the object or array
+
+  return notifications
+
+
+}
 
 
 // type EntryMeta{
