@@ -41,7 +41,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .notification-box {
   height: calc(100vh - 293px);
   color: black;

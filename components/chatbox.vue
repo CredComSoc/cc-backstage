@@ -71,7 +71,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .chatbox {
     height: calc(100vh - 342px);
     color: white;
@@ -79,9 +79,6 @@ export default {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    /*    overscroll-behavior-y: contain;
-    scroll-snap-type: y none;
-    */
 }
 
 .message-row {
@@ -95,10 +92,6 @@ export default {
 .message {
     border-radius: 10px;
     margin: 6px;
-}
-
-.chatbox>.message-row:last-child {
-    /* scroll-snap-align: end; */
 }
 
 .right-message {
