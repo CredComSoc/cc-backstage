@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div name="chatbox" class="chatbox fixed-box">
+        <div name="scrollbox" class="chatbox fixed-box">
             <v-row class="message-row" v-for="message in messages">
                 <v-col v-if="message.from_me" cols="3"></v-col>
                 <v-col v-if="message.from_me" cols="8" class="message right-message">
@@ -46,7 +46,7 @@ export default {
     methods: {
         scrollToBottom() {
             this.$nextTick(function () {
-                var myObj = document.getElementsByName("chatbox")[0];
+                var myObj = document.getElementsByName("scrollbox")[0];
                 myObj.scrollTop = myObj.scrollHeight;
             })
         },
@@ -54,7 +54,7 @@ export default {
         sendMessage() {
             var fullDate = new Date();
             var dateStr = fullDate.getFullYear() + "-" + fullDate.getMonth() + "-" + fullDate.getDate();
-            var timeStr = fullDate.getHours() + "-" + fullDate.getUTCMinutes();
+            var timeStr = fullDate.getHours() + ":" + fullDate.getUTCMinutes();
             var mess = { date: dateStr, time: timeStr, from: "Me", message: this.myMessage, from_me: true }
             this.messages.push(mess);
             this.myMessage = "";

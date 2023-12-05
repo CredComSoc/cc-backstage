@@ -96,12 +96,6 @@ export default {
   margin-top: 20px;
 }
 
-.notification-box {
-  height: calc(100vh - 293px);
-  color: white;
-  background-color: black;
-}
-
 .top-border {
   border-top: 1px solid #ffffff;
 }
