@@ -122,8 +122,9 @@
           <button class="chart-button" @click="yearGraph(currentChart)"> 1y </button>
 
           <div class="datepicker-container">
-            <Datepicker ref="dpicker" range showClearButton v-model="selectedDate" circle class="datepicker"  placeholder="Custom date" lang="en"
+            <Datepicker ref="dpicker" range showClearButton v-model="selectedDate" circle class="datepicker" placeholder="Custom date" lang="en"
             @change="datePickRange(currentChart)"/>
+          
           </div>
 
           <div class="chart-text-box" v-if="showChart">
@@ -173,7 +174,7 @@
   import { Network } from "vue-vis-network";
   import { getUserCount } from '/pages/gqlFetch.js';
   import { getAllArticles } from '/pages/gqlFetch.js';
-import { tSMethodSignature } from '@babel/types';
+  import { tSMethodSignature } from '@babel/types';
 
 
   // fetchFuncs end
@@ -766,10 +767,9 @@ import { tSMethodSignature } from '@babel/types';
     align-items: flex-start;
     flex-direction: column;
     border-radius: 5px;
+    
     width: 13vw;
     height: 15vh;
-    /* width: 26vw;
-    height: 30vh; */
   }
   .test-container-lhs
   {
@@ -810,6 +810,8 @@ import { tSMethodSignature } from '@babel/types';
     width: 100%;
     height: 30%;
     background-color: rgba(0, 0, 0, 0.138);
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
     font-size: 100%;
     color: rgb(255, 255, 255);
   }
@@ -819,10 +821,13 @@ import { tSMethodSignature } from '@babel/types';
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    font-size: 0.85vw;
+    font-weight: 500;
     width: 100%;
     height: 30%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
     background-color: rgba(0, 0, 0, 0.138);
-    font-size: 100%;
     color: rgb(255, 255, 255);
   }
   .test-container-lower-rhs
@@ -831,9 +836,12 @@ import { tSMethodSignature } from '@babel/types';
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    font-size: 0.85vw;
+    font-weight: 500;
     width: 50%;
     height: 100%;
-    border-left: 1px rgba(0, 0, 0, 0.200) solid;
+    border-bottom-right-radius: 5px;
+    border-left: 0.09vw rgba(0, 0, 0, 0.200) solid;
   }
   .test-container-lower-graph:hover
   {
@@ -851,28 +859,33 @@ import { tSMethodSignature } from '@babel/types';
   .test-container-lower-lhs
   {
     flex-direction: row;
-    font-size: 100%;
+    font-size: 0.85vw;
+    font-weight: 500;
     width: 50%;
     height: 100%;
     color: rgb(255, 255, 255);
     display: flex;
     justify-content: center;
     align-items: center;
-    border-right: 1px rgba(0, 0, 0, 0.200) solid;
+    border-bottom-left-radius: 5px;
+    border-right: 0.09vw rgba(0, 0, 0, 0.200) solid;
   }
   .test-container-text-upper
   {
-    font-size: 110%;
+    font-size: 0.92vw;
     font-weight: bold;
     color: white;
     user-select: none;
   }
   .test-container-text-lower
   {
-    font-size: 110%;
+    font-size: 0.92vw;
     color: white;
     user-select: none;
   }
+
+  
+
   .center-container
   {
     display: flex;
@@ -908,6 +921,7 @@ import { tSMethodSignature } from '@babel/types';
     width: 5%;
     height: 88%;
     color: rgb(0, 0, 0);
+    font-size: 0.88vw;
     border-radius: 4px;
   }
 
@@ -923,6 +937,7 @@ import { tSMethodSignature } from '@babel/types';
   }
   .chart-text
   {
+    font-size: 0.83vw;
     font-weight: bold;
   }
 
@@ -939,7 +954,7 @@ import { tSMethodSignature } from '@babel/types';
   .dashboard-text
   {
     color: black;
-    font-size: 50px;
+    font-size: 2.6vw;
     font-weight: bold;
     text-align: left;
     user-select: none;
@@ -951,6 +966,8 @@ import { tSMethodSignature } from '@babel/types';
     align-items: center;
     width: 30%;
     height: 70%;
+    background-color: red;
+    
   }
   .node-graph-container
   {
@@ -962,6 +979,7 @@ import { tSMethodSignature } from '@babel/types';
   }
   .datepicker
   {
+    
     /* Background color  */
     --v-calendar-input-bg-color: #e0e0e0;
 
@@ -970,6 +988,7 @@ import { tSMethodSignature } from '@babel/types';
     --v-calendar-datepicker-icon-size: 1.0rem;
 
     /* Storlek på inputen texten */
+    /* --v-calendar-input-font-size: 1.0rem; */
     --v-calendar-input-font-size: 1.0rem;
     --v-calendar-input-font-weight: 500;
     --v-calendar-input-text-color: #000000;
@@ -977,6 +996,7 @@ import { tSMethodSignature } from '@babel/types';
     /* Inne i kalendern header */
     --v-calendar-view-button-font-size: 1rem;
     --v-calendar-select-bg-color: #e0e0e0;
+
 
   }
   .network

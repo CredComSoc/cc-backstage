@@ -1,13 +1,15 @@
 <template>
     <v-app dark class="default_background">
-      <v-app-bar fixed app >
+      <v-app-bar fixed app>
         <v-col></v-col>
         <v-col></v-col>
-        <v-col align="right"><members></members></v-col>
+        <v-col align="right">
+          <members></members>
+        </v-col>
         <v-col></v-col>
         <v-col align="center">
-          <button @click="homeRoute()">
-            <img :src="svenskBarter" style="width:200px" alt="SvenskBarter" draggable="false">
+          <button class="logo_button" @click="homeRoute()">
+            <img :src="svenskBarter"  alt="SvenskBarter" draggable="false">
           </button>
         </v-col>
         <v-col></v-col>
@@ -65,4 +67,14 @@ import notice from '/components/topbar_notice.vue';
 {
   background-color: rgba(199, 199, 199, 0.819);
 }
+
+.logo_button
+{
+  width: 13rem;
+  height: 3.5rem;
+}
+
+
+
+
 </style>
