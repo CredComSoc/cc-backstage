@@ -172,7 +172,7 @@
 
   // fetchFuncs
   import { Network } from "vue-vis-network";
-  import { getUserCount } from '/pages/gqlFetch.js';
+  import { getUserCount, getMembers } from '/pages/gqlFetch.js';
   import { getAllArticles } from '/pages/gqlFetch.js';
   import { tSMethodSignature } from '@babel/types';
 
@@ -401,7 +401,6 @@
 
         if (!isToNodeInArray)
         {
-          console.log("warning");
           this.nodes.push(toNode);
         }
 
@@ -707,11 +706,9 @@
 
       async getOnlineUsers()
       {
-        let asd = await getUserCount();
-        
-        console.log(asd);
-        //this.registerdUsersCount = await getUserCount();
-      
+        console.log("HEJEJEJEJEJEJEEJEJ")
+        this.onlineUser = await getMembers();
+        //console.log(asd);
       },
     
       async getTrades() {
