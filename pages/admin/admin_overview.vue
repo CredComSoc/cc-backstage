@@ -39,7 +39,7 @@
       <div class="test-container" style="background-color:  #ffc000;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> {{ testData }}</div>
+            <div class="test-container-text-upper"> {{ transactions }}</div>
             <div class="test-container-text-lower"> Trades</div>
           </div>
           <div class="test-container-rhs">
@@ -172,10 +172,11 @@
 
   // fetchFuncs
   import { Network } from "vue-vis-network";
-  import { getUserCount, getMembers } from '/pages/gqlFetch.js';
-  import { getAllArticles } from '/pages/gqlFetch.js';
+  import { getUserCount, getMembers, getAllArticles, getAllTransactions } from '/pages/gqlFetch.js';
   import { tSMethodSignature } from '@babel/types';
+  import { forEach } from 'vis-util';
 
+  
 
   // fetchFuncs end
 
@@ -216,6 +217,7 @@
         
         // Trades
         testData : 5,
+        transactions: 0,
         offers: [],
         offerCount: 0,
         wants: [],
@@ -540,8 +542,6 @@
         // })
       },
 
-    
-
       updateStartEndDate(startDate, endDate)
       {
           this.selectedDate[0] = startDate;
@@ -551,8 +551,6 @@
           //   this.selectedDate = [new Date(startDate), new Date(endDate)];
           // });
       },
-
-
 
       weekGraph(currentChart)
       {
@@ -704,11 +702,30 @@
           this.chartSeries = newChart; 
        },
 
-      async getOnlineUsers()
+       getOnlineUsers(userData)
+       {
+          let onlineMembers = 0;
+          userData.forEach((user) => 
+          {
+            if(user.last_online == "2023-11-20")
+              onlineMembers++;
+          });
+          console.log(onlineMembers);
+          return onlineMembers;
+       },
+
+      async getDisplayData()
       {
-        console.log("HEJEJEJEJEJEJEEJEJ")
-        this.onlineUser = await getMembers();
-        //console.log(asd);
+        //User Data
+        this.registerdUsersCount = await getUserCount();
+        let userData = await getMembers();
+        this.getOnlineUsers(userData);
+        console.log(this.onlineUsersCount);
+        
+        //Trade Data
+        this.transactions = await getAllTransactions();
+
+        console.log(this.registerdUsersCount);
       },
     
       async getTrades() {
@@ -729,7 +746,7 @@
 
     mounted()
     {
-      this.getOnlineUsers();
+      this.getDisplayData();
       this.getTrades();
       this.printDashboardText("Dashboard");
       this.fetchDataToMaps();
