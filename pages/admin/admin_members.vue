@@ -1,10 +1,15 @@
 <template>
     <div>
+
+
+
         <member_header :title='"ALL MEMBERS"' />
         <v-row>
             <v-col cols="8">
                 <member_tabs @click="setMemberListTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
+
                 <div v-if="onBlueTab">
+                    <input type="text" v-model="search" v-on:keyup="onSearch" placeholder="Search" background-color="white">
                     <v-row class="row-headings">
                         <v-col cols="2">
                             <h1>Member</h1>
@@ -20,6 +25,7 @@
                         </v-col>
                     </v-row>
                     <div class="fixed-box fixed-box-with-admin">
+
                         <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
                             :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
                     </div>
@@ -77,7 +83,7 @@
 
 <script>
 
-import { getMembers } from '/pages/gqlFetch.js'
+import { getMembers, getAllTransactions } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
@@ -95,8 +101,9 @@ export default {
     data() {
         return {
             members: [],
+            allMembers: [],
             admin: { id: 0, accountName: "SB ADMIN", balance: 1999 },
-
+            search: "",
             onBlueTab: true,
             onLeftChatboxTab: true,
 
@@ -119,18 +126,35 @@ export default {
         },
 
         async updateMembers() {
-            this.members = await getMembers()
+            this.allMembers = await getMembers()
+            this.members = this.allMembers
         },
         setMemberListTabStatus(onBlueTab) {
             this.onBlueTab = onBlueTab
         },
         setChatboxTabStatus(onLeftChatboxTab) {
             this.onLeftChatboxTab = onLeftChatboxTab
+        },
+        onSearch()
+        {
+            this.members = this.allMembers.filter(member => {
+                return member.accountName.toLowerCase().includes(this.search.toLowerCase())
+            })
+        },
+        async updateTransactions(){
+            this.transactions = await getAllTransactions()
+            this.entries = []
+            this.transactions.forEach((transaction) => {
+                this.entries.push(transaction.entries[0])
+            })
+            console.log(this.entries)
         }
+
 
     },
     mounted: function () {
         this.updateMembers()
+        //this.updateTransactions()
     }
 
 }
