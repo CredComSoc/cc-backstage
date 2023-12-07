@@ -75,9 +75,9 @@ export default {
 .chatbox {
     height: calc(100vh - 342px);
     color: white;
-    align-self: flex-end;
-    display: flex;
-    flex-direction: column;
+    /*align-self: flex-end;
+     display: flex;
+    flex-direction: column;*/
     overflow-y: scroll;
 }
 
