@@ -1,63 +1,110 @@
 <template>
     <div>
         <member_header :title='"ALL MEMBERS"' />
-		<member_tabs 
-			@click="setTabStatus" 
-			:blueTabTitle='"MEMBERS"'
-			:greenTabTitle='"TRANSACTIONS"'
-		/>
-        <v-container v-if="memberTabVisible">
-            <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
-                :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
-        </v-container>
-		<v-container v-if="transactionTabVisible">
-			<v-row v-for="transaction in transactions">
-				<v-col>
-					{{ transaction.date }}
-				</v-col>
-				<v-col>
-					{{ transaction.payer }}
-				</v-col>
-				<v-col>
-					{{ transaction.receiver }}
-				</v-col>
-				<v-col>
-					{{ transaction.amount }}
-				</v-col>
-				<v-col>
-                    <NuxtLink :to="{ name: '', params: {  } }">
-						<v-btn>Reverse</v-btn>
-					</NuxtLink>
-				</v-col>
-			</v-row>
-		</v-container>
+        <v-row>
+            <v-col cols="8">
+                <member_tabs @click="setMemberListTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
+                <div v-if="onBlueTab">
+                    <v-row class="row-headings">
+                        <v-col cols="2">
+                            <h1>Member</h1>
+                        </v-col>
+                        <v-col cols="2">
+                            <h1>Balance</h1>
+                        </v-col>
+                        <v-col cols="1">
+                            <h1>Status</h1>
+                        </v-col>
+                        <v-col cols="2">
+                            <h1>Phone number</h1>
+                        </v-col>
+                    </v-row>
+                    <div class="fixed-box fixed-box-with-admin">
+                        <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
+                            :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
+                    </div>
+                    <div class="admin-box">
+                        <admin_row :id="admin.id" :accountName="admin.accountName" :balance="admin.balance" />
+                    </div>
+                </div>
+                <div v-else>
+                    <v-row class="row-headings">
+                        <v-col cols="2">
+                            <h1>Date</h1>
+                        </v-col>
+                        <v-col cols="3">
+                            <h1>Payer</h1>
+                        </v-col>
+                        <v-col cols="3">
+                            <h1>Receiver</h1>
+                        </v-col>
+                        <v-col cols="2">
+                            <h1>Amount</h1>
+                        </v-col>
+                    </v-row>
+                    <div class="fixed-box fixed-box-no-admin">
+                        <v-row class="top-border" v-for="transaction in transactions">
+                            <v-col cols="2" class="row-text">
+                                {{ transaction.date }}
+                            </v-col>
+                            <v-col cols="3" class="row-text">
+                                {{ transaction.payer }}
+                            </v-col>
+                            <v-col cols="3" class="row-text">
+                                {{ transaction.receiver }}
+                            </v-col>
+                            <v-col cols="2" class="row-text">
+                                {{ transaction.amount }}
+                            </v-col>
+                            <v-col class="button-row">
+                                <NuxtLink :to="{ name: '', params: {} }">
+                                    <div class="white-button">Reverse</div>
+                                </NuxtLink>
+                            </v-col>
+                        </v-row>
+                    </div>
+                </div>
+            </v-col>
+            <v-col cols="4">
+                <chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"NOTIFICATIONS/LOG"'
+                    :rightTabTitle='"MEMBER CHAT"' />
+                <notification_box v-if=onLeftChatboxTab />
+                <chatbox v-else />
+            </v-col>
+        </v-row>
     </div>
 </template>
 
 <script>
 
-// import Member from '@/pages/admin/member.vue'
 import { getMembers } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
+import chat_tabs from '/components/chat_tabs.vue'
+import admin_row from '/components/admin_row.vue'
+import chatbox from '/components/chatbox.vue'
+import notification_box from '/components/notification_box.vue'
 
 export default {
 
     components: {
-        member_header, member_row, member_tabs
+        member_header, member_row, member_tabs, chat_tabs, admin_row, chatbox, notification_box
     },
 
     data() {
         return {
             members: [],
-            memberTabVisible: true,
+            admin: { id: 0, accountName: "SB ADMIN", balance: 1999 },
 
-			transactions: [
-				{ date: "2023-09-12", payer:"Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
-				{ date: "2023-09-12", payer:"Patrik Olsson", receiver: "John Benson", amount: "22" },
-				{ date: "2020-01-10", payer:"Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
-			],
+            onBlueTab: true,
+            onLeftChatboxTab: true,
+
+            transactions: [
+                { date: "2023-09-12", payer: "Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
+                { date: "2023-09-12", payer: "Patrik Olsson", receiver: "John Benson", amount: "22" },
+                { date: "2020-01-10", payer: "Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
+            ],
 
         }
     },
@@ -74,24 +121,13 @@ export default {
         async updateMembers() {
             this.members = await getMembers()
         },
+        setMemberListTabStatus(onBlueTab) {
+            this.onBlueTab = onBlueTab
+        },
+        setChatboxTabStatus(onLeftChatboxTab) {
+            this.onLeftChatboxTab = onLeftChatboxTab
+        }
 
-		toggleToMemberTab() {
-			this.transactionTabVisible = false;
-			this.memberTabVisible = true;
-		},
-
-		toggleToTransactionTab() {
-			this.transactionTabVisible = true;
-			this.memberTabVisible = false;
-		},
-		
-		setTabStatus(onMemberTab) {
-			if (onMemberTab) {
-				this.toggleToMemberTab();
-			} else {
-				this.toggleToTransactionTab();
-			}
-		}
     },
     mounted: function () {
         this.updateMembers()
@@ -101,70 +137,14 @@ export default {
 </script>
 
 <style scoped>
-.member-header {
-    width: 100%;
-}
-
-.member-header-middle {
-    text-align: center;
-    margin: auto;
-    color: rgb(165, 9, 9);
-    font-size: large;
-    font-weight: bold;
-    ;
-}
-
-.member-header-right {
-    text-align: right;
-    margin: auto;
-}
-
-form {
-    max-width: 420px;
-    margin: 0px auto;
-    background: #ddd;
-    text-align: left;
-}
-
-input {
-    display: block;
-    padding: 10px 6px;
-    width: 100%;
-    box-sizing: border-box;
-    color: #000000;
-}
-
-.container_all_listings {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    width: max(20rem, 60%);
-    margin: auto;
-}
-
-
-ul {
-    padding: 0;
-    margin: auto;
-
-}
-
-.accountName_col {
-    width: 500px;
-}
-
-.container_all_listings>* {
-    flex-basis: 100%;
-    width: 100%;
-}
-
-li {
-    list-style-type: none;
-    margin-bottom: 15px;
-}
-
-h3 {
+.admin-box {
+    bottom: 0px;
     margin-top: 20px;
-    margin-bottom: 10px;
+    width: 100%;
+}
+
+.chatbox {
+    color: white;
+    background-color: black;
 }
 </style>

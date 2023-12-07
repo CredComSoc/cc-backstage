@@ -1,39 +1,82 @@
 <template>
 	<div>
-		<h1>Offer & Wants for {{ name }} </h1>
-		<br>
-		<h2>Offers</h2>
+		<member_header :title="memberName" />
+		<member_tabs @click="setTabStatus" :blueTabTitle='"OFFERS"' :greenTabTitle='"WANTS"' />
 
-
-		Offers: {{ offers.length }}
-		Wants: {{ wants.length }}
-
-		<ul>
-			<div v-for="offer in offers">
-				<li>
-					<!-- < NuxtLink : to = "{ name: 'admin-member', params: { id: member.id, name: member.name } }" > Member: {
-					{
-						member.name }}</NuxtLink> <a v-bind:href="`mailto:${member.email}`">Email</a> -->
-					{{ offer.title }} - {{ offer.price }} <NuxtLink
-						:to="{ name: 'admin-edit_offer_want', params: { id: id } }">
-						<v-btn>Edit</v-btn>
-					</NuxtLink>
-				</li>
+		<div v-if="onBlueTab">
+			<v-row class="row-headings">
+				<v-col cols="1">
+					<h1>Date</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Title</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Amount</h1>
+				</v-col>
+				<v-col cols="3">
+					<h1>Description</h1>
+				</v-col>
+			</v-row>
+			<div class="fixed-box fixed-box-no-admin">
+				<v-row class="top-border" v-for="offer in offers">
+					<v-col cols="1" class="row-text">
+						{{ offer.date }}
+					</v-col>
+					<v-col cols="2" class="row-text">
+						{{ offer.title }}
+					</v-col>
+					<v-col cols="2" class="row-text">
+						{{ offer.amount }}
+					</v-col>
+					<v-col cols="3" class="row-text">
+						{{ offer.description }}
+					</v-col>
+					<v-col class="button-row">
+						<NuxtLink :to="{ name: '', params: {} }">
+							<div class="white-button">Buy</div>
+						</NuxtLink>
+					</v-col>
+				</v-row>
 			</div>
-		</ul>
-		<br>
-		<h2>Wants</h2>
-		<ul>
-			<div v-for="want in wants">
-				<li>
-					<!-- < NuxtLink : to = "{ name: 'admin-member', params: { id: member.id, name: member.name } }" > Member: {
-					{
-						member.name }}</NuxtLink> <a v-bind:href="`mailto:${member.email}`">Email</a> -->
-					{{ want.title }} - {{ want.price }}
-				</li>
+		</div>
+		<div v-else>
+			<v-row class="row-headings">
+				<v-col cols="1">
+					<h1>Date</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Title</h1>
+				</v-col>
+				<v-col cols="2">
+					<h1>Amount</h1>
+				</v-col>
+				<v-col cols="3">
+					<h1>Description</h1>
+				</v-col>
+			</v-row>
+			<div class="fixed-box fixed-box-no-admin">
+				<v-row class="top-border" v-for="want in wants">
+					<v-col cols="1" class="row-text">
+						{{ want.date }}
+					</v-col>
+					<v-col cols="2" class="row-text">
+						{{ want.title }}
+					</v-col>
+					<v-col cols="2" class="row-text">
+						{{ want.amount }}
+					</v-col>
+					<v-col cols="3" class="row-text">
+						{{ want.description }}
+					</v-col>
+					<v-col class="button-row">
+						<NuxtLink :to="{ name: '', params: {} }">
+							<div class="white-button">Sell</div>
+						</NuxtLink>
+					</v-col>
+				</v-row>
 			</div>
-		</ul>
-
+		</div>
 	</div>
 </template>
 
@@ -41,15 +84,22 @@
 
 <script>
 import { getUserArticles } from '/pages/gqlFetch.js'
-//import {register} from '/pages/expressFetch.js'
+// import { register } from '/pages/expressFetch.js'
+import member_header from '/components/member_header.vue'
+import member_tabs from '/components/member_tabs.vue'
+
 export default {
+
+	components: {
+		member_header, member_tabs
+	},
 
 	data() {
 		return {
 			offers: [],
+			wants: [{ date: "2023-11-01", title: "Frogs legs", amount: 4, description: "I want some frogs' legs." }],
 
-			wants: [],
-
+			onBlueTab: true,
 
 			id: this.$route.params.id,
 			name: this.$route.params.name
@@ -71,9 +121,13 @@ export default {
 			console.log(articles)
 		},
 
+		setTabStatus(onBlueTab) {
+			this.onBlueTab = onBlueTab
+		}
+
 	},
 	mounted: function () {
-		this.updateOffers()
+		// this.updateOffers()
 	}
 
 

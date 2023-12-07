@@ -1,4 +1,6 @@
 const FormData = require('form-data')
+const EXPRESS_URL = "http://localhost:3000"
+
 export async function register(isadmin, username, password, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone){
     const data = new FormData()
     data.append('accountInfo', JSON.stringify({
@@ -31,16 +33,13 @@ export async function register(isadmin, username, password, description, address
     })
 }
 
-export async function login(){
-  var email = "admin@nowhere.com"
-  var password = "testpassword"
-
-  return await fetch("localhost:3000" + '/login', {
+export async function login (email, password) { // The same login function as on sb.web.app. Stores a cookie when login successful
+  return await fetch(EXPRESS_URL + '/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ email: email, password: password}),
+    body: JSON.stringify({ email: email, password: password }),
     credentials: 'include'
   }).then((response) => {
     if (!response.ok) {
@@ -48,6 +47,37 @@ export async function login(){
     } else {
       return true
     }
+  }).catch(() => {
+    return false
+  })
+}
+
+
+export async function authenticate () { //Checks if the cookie is valid and the user is still logged in
+  return fetch(EXPRESS_URL + '/authenticate', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  }).then((response) => {
+
+    return response.json()
+  }).catch(() => {
+
+    return false
+  })
+}
+
+export async function checkAdminStatus () {
+  return fetch(EXPRESS_URL + '/admin', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  }).then((response) => {
+    return response.json()
   }).catch(() => {
     return false
   })

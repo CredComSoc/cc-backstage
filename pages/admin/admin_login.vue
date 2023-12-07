@@ -7,17 +7,17 @@
                 Admin Login
             </div>
 
-            
+
         </div>
-        
+
         <div class="login_box_body">
             <div class="login_box_body_upper">
-                
+
                 <div class="login_box_text">
                     E-mail
                 </div>
                 <div class="input_bar">
-                    <input type="text"
+                    <input v-model="email" type="text"
                         placeholder="email@something.com"
                        name="search"
                        ref="emailInput">
@@ -25,18 +25,18 @@
             </div>
             <div class="login_box_body_middle">
                 <div class="login_box_text">
-                    Password 
+                    Password
                 </div>
                 <div class="input_bar">
-                    <input type="password"
+                    <input v-model="password" type="password"
                         placeholder="password"
                         name="password"
-                        ref="passwordInput"> 
+                        ref="passwordInput">
                 </div>
             </div>
             <div class="login_box_body_lower">
-                
-                <button class="login_button" @click="controlUsr">
+
+                <button class="login_button" @click="handleSubmit">
                     Login
                 </button>
 
@@ -47,10 +47,10 @@
         <div class="login_box_foot">
         <div class login_box_header_text>
             Need help?
-    
+
         </div>
         </div>
-        
+
         </div>
     </div>
 
@@ -62,7 +62,7 @@
 
 
 <script>
-
+import {login} from '/pages/expressFetch.js'
 export default
 {
     data(){
@@ -72,8 +72,8 @@ export default
             password: '',
             correctEmail: "admin",
             correctPassword: "admin",
-            isAdminLoggedIn: false 
-        
+            isAdminLoggedIn: false
+
         }
     },
 
@@ -89,17 +89,26 @@ export default
                 this.$router.push('/admin/admin_overview');
             }
         },
-    
+        async handleSubmit () {
+
+             await login(this.email.toLowerCase(), this.password).then(async (response) => {
+            if(response)
+            {
+                this.$router.push('/admin/admin_overview')
+            }
+            })
+
     },
 
     mounted()
     {
-        this.isAdminLoggedIn = true;
+        this.isAdminLoggedIn = false;
 
 
     }
 
 
+}
 }
 
 </script>
@@ -111,7 +120,7 @@ export default
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100vw; 
+    width: 100vw;
     height: 100vh;
     padding-right: 7%;
 }
@@ -129,7 +138,7 @@ export default
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
-    width: 60%; 
+    width: 60%;
     height: 70%;
     background-color: rgb(253, 241, 217);
     border-radius: 10px;
@@ -148,7 +157,7 @@ export default
     font-weight: bold;
     font-size: 1.5vw;
     color: black;
-        
+
 }
 .login_box_body
 {
@@ -186,14 +195,14 @@ export default
 
 .login_box_body_lower
 {
-    
+
     width: 100%;
     height: 33%;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
-    
+
 }
 
 .login_box_foot
@@ -214,15 +223,15 @@ export default
 
 .input_bar
 {
-    
+
 }
-.input_bar input 
+.input_bar input
 {
     width: 160%;
     padding-left: 3%;
     border: 1px solid #ccc;
-    border-radius: 5px; 
-    font-size: 0.9vw; 
+    border-radius: 5px;
+    font-size: 0.9vw;
 }
 
 .login_button
@@ -244,14 +253,14 @@ export default
 }
 
 
-.login_box.fade-in 
+.login_box.fade-in
 {
   opacity: 0;
   transform: translateY(20px);
   animation: fade-in 0.5s ease forwards;
 }
 
-@keyframes fade-in 
+@keyframes fade-in
 {
   to {
     opacity: 1;
