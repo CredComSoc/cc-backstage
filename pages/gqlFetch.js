@@ -53,7 +53,7 @@ export async function getMembers() {
     }).then(r => r.json())
       .then(data => member_arr = data)
     member_arr = member_arr.data.allMembers
-    console.log(member_arr)
+    //console.log(member_arr)
     return member_arr
 }
 
@@ -215,7 +215,7 @@ export async function getUserTransactions(id){
 
 export async function getAllTransactions(id){
   var transactions
-  console.log(id)
+  //console.log(id)
   await fetch("/api/graphql", {
       method: "POST",
       headers: {
@@ -246,7 +246,7 @@ export async function getAllTransactions(id){
   }).then(r => r.json())
     .then(data => transactions = data)
     transactions = transactions.data.allTransactions // Remove the Json "padding" to get the object or array
-    console.log(transactions)
+    //console.log(transactions)
   return transactions
 }
 

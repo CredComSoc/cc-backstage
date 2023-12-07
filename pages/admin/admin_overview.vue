@@ -511,35 +511,29 @@
 
       fetchDataToMaps()
       {
-
-        // SHOULD FETCH FROM DATABASE!
-
-
-        
         const currentDate = new Date();
-        this.registeredUserMap.set(currentDate.toDateString().slice(4), 0);
-        this.onlineUserMap.set(currentDate.toDateString().slice(4), 0);
-        this.transactionsMap.set(currentDate.toDateString().slice(4), 0);
-        this.volumeMap.set(currentDate.toDateString().slice(4), 0);
-        this.offersMap.set(currentDate.toDateString().slice(4), 0);
-        this.wantsMap.set(currentDate.toDateString().slice(4), 0);
+        const currentDateISO = currentDate.toISOString().slice(0, 10); // Get the date part of the ISO string
+        
+        this.registeredUserMap.set(currentDateISO, 0);
+        this.onlineUserMap.set(currentDateISO, 0);
+        this.transactionsMap.set(currentDateISO, 0);
+        this.volumeMap.set(currentDateISO, 0);
+        this.offersMap.set(currentDateISO, 0);
+        this.wantsMap.set(currentDateISO, 0);
 
-        // Filling dates with dummy data.
-        for(let i = 0; i < 365; i++)
+        // Filling dates with dummy 0.
+        for (let i = 0; i < 365; i++) 
         {
-          currentDate.setDate(currentDate.getDate() -1);
-          this.onlineUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.registeredUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.transactionsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.volumeMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.offersMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.wantsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-        }
-        // console.log(this.registeredUserMap.size);
-        // this.onlineUserMap.forEach((values, keys) => {
-        // console.log("values: ", values +
-        // ", keys: ", keys)
-        // })
+          currentDate.setDate(currentDate.getDate() - 1);
+          const previousDateISO = currentDate.toISOString().slice(0, 10);
+  
+          this.onlineUserMap.set(previousDateISO, 0);
+          this.registeredUserMap.set(previousDateISO, 0);
+          this.transactionsMap.set(previousDateISO, 0);
+          this.volumeMap.set(previousDateISO, 0);
+          this.offersMap.set(previousDateISO, 0);
+          this.wantsMap.set(previousDateISO, 0);
+          }
       },
 
       updateStartEndDate(startDate, endDate)
@@ -604,7 +598,6 @@
       {
         let map;
         let color;
-        console.log(currentChart);
 
         switch(currentChart)
         {
@@ -657,8 +650,8 @@
           let current = new Date(from);
           while (current <= to) 
           {
-            newData.push(map.get(current.toDateString().slice(4)));
-            newDate.push(current.toDateString().slice(4));
+            newData.push(map.get(current.toISOString().slice(0,10)));
+            newDate.push(current.toISOString().slice(0,10));
             current.setDate(current.getDate() + 1);
           }
         }
@@ -705,51 +698,86 @@
        getOnlineUsers(userData)
        {
           let onlineMembers = 0;
+          // Slice off miliseconds.
+          let unixTime = Math.floor(Date.now()/1000);
+          // Time in seconds to online (900 = 15 minutes).
+          const onlineThreshold = 900;
+          let Threshhold = unixTime - onlineThreshold;
+          
           userData.forEach((user) => 
           {
-            if(user.last_online == "2023-11-20")
+            if(user.last_online/1000 > Threshhold)       
+            {
               onlineMembers++;
+            }
           });
-          console.log(onlineMembers);
           return onlineMembers;
        },
 
-      async getDisplayData()
+       getTradeData(trades)
+       {
+          let date = new Date();
+          date = date.toISOString().slice(0,10);
+          trades.forEach((trade) => 
+          {
+            let cur = this.transactionsMap.get(trade.written.slice(0,10));
+            let new_value = cur + 1;
+            this.transactionsMap.set(trade.written.slice(0,10), new_value);
+          });
+          
+          this.transactions = this.transactionsMap.get(date);
+          
+       },
+
+      async getDisplayData() // Fetcha ->> stödfunktioner
       {
         //User Data
         this.registerdUsersCount = await getUserCount();
         let userData = await getMembers();
-        this.getOnlineUsers(userData);
-        console.log(this.onlineUsersCount);
+        this.onlineUsersCount = this.getOnlineUsers(userData);
         
         //Trade Data
-        this.transactions = await getAllTransactions();
+        let trades = await getAllTransactions();
+        this.getTradeData(trades);
 
-        console.log(this.registerdUsersCount);
+        //Listed Date
+        let listed = await getAllArticles();
+        this.getListedData(listed);
+        
       },
     
-      async getTrades() {
-        var articles = await getAllArticles();
-        articles = JSON.parse(articles);
-
-        this.offers = articles.filter(function (article) {
-            return (article.status == "offer")
+      getListedData(listed) 
+      {
+        let date = new Date();
+        date = date.toISOString().slice(0,10);
+        listed = JSON.parse(listed);  
+        listed.forEach((listing) =>
+        { 
+          var tempDate = new Date(parseInt(listing.uploadDate,10));
+          tempDate = tempDate.toISOString().slice(0,10);
+          if(listing.status == "offer")
+          {
+            let cur = this.offersMap.get(tempDate);
+            cur++;
+            this.offersMap.set(tempDate, cur);
+          }
+          else if(listing.status == "want")
+          {
+            let cur = this.wantsMap.get(tempDate);
+            cur++;
+            this.wantsMap.set(tempDate, cur); 
+          }
         });
-        this.wants = articles.filter(function (article) {
-            return (article.status == "want")
-         });
-        this.offerCount = this.offers.length;
-        this.wantCount = this.wants.length;
-        this.listedCount = this.offerCount + this.wantCount;
+        this.offerCount = this.offersMap.get(date);
+        this.wantCount = this.wantsMap.get(date);
       },
     },
 
     mounted()
     {
-      this.getDisplayData();
-      this.getTrades();
-      this.printDashboardText("Dashboard");
       this.fetchDataToMaps();
+      this.getDisplayData();
+      this.printDashboardText("Dashboard");
       this.weekGraph(this.currentChart);
       this.getUTCTime(false);
       
@@ -984,7 +1012,7 @@
     align-items: center;
     width: 30%;
     height: 70%;
-    background-color: red;
+    
     
   }
   .node-graph-container
