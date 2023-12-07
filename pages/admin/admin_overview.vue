@@ -707,7 +707,11 @@
 
       async getOnlineUsers()
       {
-        this.registerdUsersCount = await getUserCount();
+        let asd = await getUserCount();
+        
+        console.log(asd);
+        //this.registerdUsersCount = await getUserCount();
+      
       },
     
       async getTrades() {
