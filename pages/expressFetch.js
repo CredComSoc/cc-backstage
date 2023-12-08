@@ -82,3 +82,17 @@ export async function checkAdminStatus () {
     return false
   })
 }
+
+export async function getCurrentProfile () {
+  return fetch(EXPRESS_URL + '/profile', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  }).then((response) => {
+    return response.json()
+  }).catch(() => {
+    return false
+  })
+}

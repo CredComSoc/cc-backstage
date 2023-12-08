@@ -39,9 +39,9 @@
                 <button class="login_button" @click="handleSubmit">
                     Login
                 </button>
-
-
-
+                <button class="login_button" @click="ConsoleLogName">
+                    Console log mah info
+                </button>
             </div>
         </div>
         <div class="login_box_foot">
@@ -62,7 +62,7 @@
 
 
 <script>
-import {login} from '/pages/expressFetch.js'
+import {login, getCurrentUser} from '/pages/expressFetch.js'
 export default
 {
     data(){
@@ -73,7 +73,6 @@ export default
             correctEmail: "admin",
             correctPassword: "admin",
             isAdminLoggedIn: false
-
         }
     },
 
@@ -90,24 +89,22 @@ export default
             }
         },
         async handleSubmit () {
-
-             await login(this.email.toLowerCase(), this.password).then(async (response) => {
+            await login(this.email.toLowerCase(), this.password).then(async (response) => {
             if(response)
             {
                 this.$router.push('/admin/admin_overview')
             }
             })
-
-    },
+        },
+        async ConsoleLogName() {
+            const result = await getCurrentUser()
+            console.log(result)
+        },
 
     mounted()
     {
         this.isAdminLoggedIn = false;
-
-
     }
-
-
 }
 }
 
