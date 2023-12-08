@@ -8,7 +8,7 @@
 		</v-col>
 
 		<v-col cols="1" class="row-text">
-			status {{ status }}
+			{{ status }}
 		</v-col>
 
 		<v-col cols="1" class="row-text">

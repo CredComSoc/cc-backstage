@@ -1,6 +1,6 @@
 const { buildSchema } = require("graphql")
 const {MongoClient, ObjectId} = require('mongodb')
-import {CC_BACKEND_URL, DB_FOLDER, DB_URL} from './config.js'
+import {CC_BACKEND_URL, DB_FOLDER, DB_URL, CC_NODE_URL} from './config.js'
 /*In the schema below, objects can be defined for GraphQL to use in queries or mutations*/
 let schema = buildSchema(`
 
@@ -16,6 +16,8 @@ let schema = buildSchema(`
         is_admin: Boolean
         email: String
         description: String
+        status: String
+        balance: Int
         address: String
         city: String
         phone: String
@@ -54,6 +56,18 @@ let schema = buildSchema(`
         userUploader: String
         userId: String
     }
+    type Notification{
+        _id: String
+        date: String
+        type: String
+        toUser: String
+        fromUser: String
+        seen: Boolean
+        amount: Int
+        itemName: String
+        itemCount: Int
+        limitSurplusAmount: Int
+    }
     type Query{
         member(id: Int, accountName: String): Member
         allMembers: [Member]
@@ -61,6 +75,7 @@ let schema = buildSchema(`
         allArticles: [Article]
         allTransactions: [Transaction]
         userTransactions(id: String!): [Transaction]
+        userNotifications(name: String!): [Notification]
         userCount: Int
     }
 
@@ -156,7 +171,7 @@ const transactions = [
 
 async function getMember({id, accountName}) { // Get a single member, selected by either id or name
     //Now from array, later from Credit Coop backend
-    console.log(accountName)
+    //console.log(accountName)
     const db = await MongoClient.connect(DB_URL) //Connect to the mongoDB
     const dbo = db.db(DB_FOLDER)    // state the correct folder in the DB
     var user = await dbo.collection("users").findOne({"profile.accountName": accountName}) //Get the data from the mongoDB based on the collection name and the query in findOne/find
@@ -165,40 +180,58 @@ async function getMember({id, accountName}) { // Get a single member, selected b
     userData.email = user.email
     let date = new Date(userData.last_online) // Converting the UNIX time to a readable date
     userData.last_online = date.toLocaleDateString() // The time of day is lost at the moment but perhaps there is an efficient way to include it all.
-    console.log(userData)
+    //console.log(userData)
     return userData
 
 }
 
 async function getAllMembers(){ // Get a list of all the members
-
+    try{
      var allMembers = []
      const db = await MongoClient.connect(DB_URL)
      const dbo = db.db(DB_FOLDER)
      var users = await dbo.collection("users").find({}).toArray()
+     var response
+     await fetch(CC_NODE_URL + '/account/summary', {
+        method: "GET",
+            headers: {
+              'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
+              'cc-auth': '123'
+            },
+            credentials: 'include'
+        }).then(r => r.json())
+        .then(data => response = data)
      for (const user of users) {
         //console.log(user.profile.accountName + " "+user._id.getTimestamp())
         let userData = user.profile
         userData.is_admin = user.is_admin
         userData.email = user.email
         userData.id = user._id
+        userData.status = user.is_active ? "Active" : "Inactive"
+        userData.balance = response.data[userData.id].completed.balance
+        console.log(userData.balance)
         //Get balance information from CC-node using ID from user._id
         //As well as necessary logic for this.
         let date = new Date(userData.last_online)
         userData.last_online = date.toLocaleDateString()
         allMembers.push(userData)
     }
-    console.log(allMembers)
+}catch(error)
+{
+    console.error("Error when fetching all the members data" + error)
+    throw error
+}
+    //console.log(allMembers)
     return allMembers
     //return members
 }
 
 async function getUserArticles(username){ // Get all article data related to a user
-    console.log(username)
+    //console.log(username)
     const db = await MongoClient.connect(DB_URL)
     const dbo = db.db(DB_FOLDER)//Simple query returning all posts that the user has uploaded
     let articles = await dbo.collection("posts").find({"userUploader": username.accountName}).toArray()
-    console.log(articles)
+    //console.log(articles)
     return articles
 }
 
@@ -235,6 +268,15 @@ async function getUserTransactions({id}){
     return userTransactions
 }
 
+async function getUserNotifications({name}){
+
+    const db = await MongoClient.connect(DB_URL)
+    const dbo = db.db(DB_FOLDER)//Getting all notifications from the database to a specific user
+    let notifications = await dbo.collection("notifications").find({"toUser": name}).toArray()
+
+    return notifications
+}
+
 
 async function addNewMember(input){
     members.push(input)
@@ -261,6 +303,10 @@ var root ={
     },
     userTransactions: ({id}) => {
         return getUserTransactions({id})
+    },
+    userNotifications: ({name}) => {
+
+        return getUserNotifications({name})
     }
 
 }
