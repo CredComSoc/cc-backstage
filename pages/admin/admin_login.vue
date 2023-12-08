@@ -62,7 +62,7 @@
 
 
 <script>
-import {login, getCurrentUser} from '/pages/expressFetch.js'
+import {login, getCurrentProfile} from '/pages/expressFetch.js'
 export default
 {
     data(){
@@ -97,7 +97,7 @@ export default
             })
         },
         async ConsoleLogName() {
-            const result = await getCurrentUser()
+            const result = await getCurrentProfile()
             console.log(result)
         },
 
