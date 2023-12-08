@@ -68,7 +68,7 @@
             <v-col cols="4">
                 <chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"NOTIFICATIONS/LOG"'
                     :rightTabTitle='"MEMBER CHAT"' />
-                <notification_box v-if=onLeftChatboxTab />
+                <notification_box v-if=onLeftChatboxTab :userName="SBAdmin" /> <!-- CHANGEME: Dummy data -->
                 <chatbox v-else />
             </v-col>
         </v-row>

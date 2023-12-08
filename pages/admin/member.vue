@@ -32,10 +32,10 @@
 								{{ transaction.written.split(" ")[0] }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-								{{ transaction.entries[0] }}
+								<!-- {{ transaction.entries[0].payer }} -->
 							</v-col>
 							<v-col cols="2" class="row-text">
-								{{ transaction.entries[0].payer }}
+								{{ transaction.entries[0].metadata.quantity }}
 							</v-col>
 							<v-col cols="2" class="row-text">
 
@@ -75,10 +75,10 @@
 								{{ transaction.state }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-								{{ transaction.written.split(" ")[0] }}
+								<!-- {{ transaction.written.split(" ")[0] }} -->
 							</v-col>
 							<v-col cols="2" class="row-text">
-								{{ extractCounterpart(transaction) }}
+
 							</v-col>
 							<v-col cols="2" class="row-text">
 								{{ transaction.amount_kr }}
@@ -186,12 +186,15 @@ export default {
 		async updateTransactions() {
 			//console.log("Updating transactions")
 			this.transactions = await getUserTransactions(this.memberId)
+			/*
 			for (transaction in transactions) {
 				//console.log("Adding counterpart")
 				var counterpart = await extractCounterpart(transaction)
 				transaction.entries[0].$set("counterpart", counterpart);
 			}
+			*/
 		},
+		/*
 		async extractCounterpart(transaction) {
 			if (transaction.entries[0].payer == this.memberId) {
 				var member = await getMemberById(transaction.entries[0].payee)
@@ -202,7 +205,7 @@ export default {
 				return member.accountName
 			}
 		}
-
+*/
 	},
 	mounted: function () {
 		this.updateMember()

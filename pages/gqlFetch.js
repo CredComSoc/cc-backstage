@@ -164,46 +164,6 @@ export async function getMember(name) {
   return member
 }
 
-export async function getMemberById(id) {
-  var member
-  //console.log(name)
-  await fetch("/api/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
-    body: JSON.stringify({
-      query: `query member($id: String!) {
-            member(id: $id) {
-                id
-                accountName
-                is_admin
-                email
-                description
-                address
-                city
-                phone
-                billing {
-                    name
-                    box
-                    address
-                    orgNumber
-                }
-                last_online
-            }
-          }`,
-      variables: { id: id },
-    }),
-  }).then(r => r.json())
-    .then(data => member = data)
-  console.log(member)
-  member = JSON.stringify(member.data.member) // Remove the Json "padding" to get the object or array
-  //console.log(member)
-  return member
-}
-
-
 
 export async function getUserCount() {
   var userCount
@@ -256,11 +216,9 @@ export async function getUserTransactions(id) {
     }),
   }).then(r => r.json())
     .then(data => transactions = data)
-  // transactions = JSON.stringify(transactions.data.userTransactions) // Remove the Json "padding" to get the object or array
-  transactions = transactions.data.userTransactions
+  transactions = transactions.data.userTransactions // Remove the Json "padding" to get the object or array
   console.log(transactions)
   return transactions
-
 }
 
 export async function getAllTransactions(id) {

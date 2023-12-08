@@ -17,7 +17,11 @@
 </template>
 
 <script>
+import { getUserNotifications } from '/pages/gqlFetch.js'
+
 export default {
+
+    props: ['userName'],
 
     data() {
         return {
@@ -25,26 +29,33 @@ export default {
             notification: "",
 
             notifications: [
-                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson",  status: "Pending", sum: "50" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson",  status: "Paid", sum: "100" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson",  status: "Paid", sum: "540" },
-                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson",  status: "Pending", sum: "50" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson",  status: "Paid", sum: "100" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson",  status: "Paid", sum: "540" },
-                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson",  status: "Pending", sum: "50" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson",  status: "Paid", sum: "100" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson",  status: "Paid", sum: "540" },
+                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson", status: "Pending", sum: "50" },
+                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson", status: "Paid", sum: "100" },
+                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson", status: "Paid", sum: "540" },
+                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson", status: "Pending", sum: "50" },
+                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson", status: "Paid", sum: "100" },
+                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson", status: "Paid", sum: "540" },
+                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson", status: "Pending", sum: "50" },
+                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson", status: "Paid", sum: "100" },
+                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson", status: "Paid", sum: "540" },
             ],
 
         }
     },
+
+    methods: {
+        updateNotifications() {
+            notifications = getUserNotifications(this.userName)
+        }
+    }
+
 }
 </script>
 
 <style scoped>
 .notification-box {
-  height: calc(100vh - 293px);
-  color: black;
+    height: calc(100vh - 293px);
+    color: black;
 }
 
 .notification {

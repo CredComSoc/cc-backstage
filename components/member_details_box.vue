@@ -2,15 +2,15 @@
     <div>
         <div class="member-details-box fixed-box">
             <img v-bind:src="question_image" class="member-details-image" />
-            <div class="member-details-heading">Företagsnamn</div>
+            <div class="member-details-heading">Company name</div>
             <div class="member-details-text">{{ member_details.name }}</div>
-            <div class="member-details-heading">Beskrivning</div>
+            <div class="member-details-heading">Description</div>
             <div class="member-details-text">{{ member_details.description }}</div>
-            <div class="member-details-heading">Adress</div>
+            <div class="member-details-heading">Address</div>
             <div class="member-details-text">{{ member_details.address }}</div>
-            <div class="member-details-heading">Stad/Ort</div>
+            <div class="member-details-heading">City</div>
             <div class="member-details-text">{{ member_details.city }}</div>
-            <div class="member-details-heading">Faktureringsuppgifter</div>
+            <div class="member-details-heading">Billing data</div>
             <div class="member-details-text">{{ member_details.billing }}</div>
         </div>
     </div>
@@ -63,5 +63,4 @@ export default {
 .align-right {
     text-align: right;
 }
-
 </style>
