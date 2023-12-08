@@ -254,8 +254,13 @@ export async function getAllTransactions(id) {
     }),
   }).then(r => r.json())
     .then(data => transactions = data)
+<<<<<<< HEAD
   transactions = JSON.stringify(transactions.data.allTransactions) // Remove the Json "padding" to get the object or array
   console.log(transactions)
+=======
+    transactions = transactions.data.allTransactions // Remove the Json "padding" to get the object or array
+    console.log(transactions)
+>>>>>>> graphql
   return transactions
 }
 
