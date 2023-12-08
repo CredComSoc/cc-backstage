@@ -18,6 +18,7 @@
 
 <script>
 import { getUserNotifications } from '/pages/gqlFetch.js'
+import { getCurrentUser } from '/pages/expressFetch.js'
 
 export default {
 
@@ -44,9 +45,15 @@ export default {
     },
 
     methods: {
-        updateNotifications() {
-            notifications = getUserNotifications(this.userName)
+        async updateNotifications() {
+            const result = await getCurrentUser()
+            alert(result)
+            //notifications = getUserNotifications(this.userName)
         }
+    },
+
+    mounted() {
+        this.updateNotifications()
     }
 
 }

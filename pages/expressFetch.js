@@ -98,10 +98,8 @@ export async function checkAdminStatus() {
     return false
   })
 }
-<<<<<<< HEAD
-=======
 
-export async function getCurrentProfile () {
+export async function getCurrentUser() {
   return fetch(EXPRESS_URL + '/profile', {
     method: 'GET',
     headers: {
@@ -114,4 +112,3 @@ export async function getCurrentProfile () {
     return false
   })
 }
->>>>>>> graphql
