@@ -147,14 +147,14 @@ export default {
             this.transactions.forEach((transaction) => {
                 this.entries.push(transaction.entries[0])
             })
-            console.log(this.entries)
+            console.log(this.transactions)
         }
 
 
     },
     mounted: function () {
         this.updateMembers()
-        //this.updateTransactions()
+        this.updateTransactions()
     }
 
 }
