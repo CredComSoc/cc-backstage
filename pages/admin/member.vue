@@ -109,7 +109,7 @@
 
 <script>
 import member_header from '/components/member_header.vue'
-import { getMember } from '/pages/gqlFetch.js'
+import { getMember, getUserTransactions } from '/pages/gqlFetch.js'
 import member_tabs from '/components/member_tabs.vue'
 import chat_tabs from '/components/chat_tabs.vue'
 import chatbox from '/components/chatbox.vue'
@@ -146,8 +146,10 @@ export default {
             this.onLeftChatboxTab = onLeftChatboxTab
         },
 		async updateMember() {
-			var response = await getMember(this.memberName)
-			console.log(response)
+			this.member = await getMember(this.memberName)
+			console.log(this.member)
+			this.transactions = await getUserTransactions(this.member.id)
+			console.log(this.transactions)
 		}
 	},
 	mounted: function () {
