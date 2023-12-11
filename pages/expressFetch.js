@@ -69,22 +69,6 @@ export async function authenticate() { //Checks if the cookie is valid and the u
   })
 }
 
-export async function getuser() { //Checks if the cookie is valid and the user is still logged in
-  return fetch(EXPRESS_URL + '/profile', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    credentials: 'include'
-  }).then((response) => {
-
-    return response.json()
-  }).catch(() => {
-
-    return false
-  })
-}
-
 export async function checkAdminStatus() {
   return fetch(EXPRESS_URL + '/admin', {
     method: 'GET',

@@ -4,12 +4,12 @@
             <v-row class="notification" v-for="notification in notifications">
                 <v-col cols="6">
                     <div class="timestamp">{{ notification.date }}</div>
-                    <div class="larger-font">{{ notification.sum }}</div>
+                    <div class="larger-font">{{ notification.amount }}</div>
                 </v-col>
                 <v-col cols="6" class="align-right row-text">
-                    {{ notification.sender }}<br>
-                    {{ notification.status }}<br>
-                    {{ notification.receiver }}
+                    {{ notification.fromUser }}<br>
+                    {{ notification.type }}<br>
+                    {{ notification.toUser }}
                 </v-col>
             </v-row>
         </div>
@@ -22,33 +22,57 @@ import { getCurrentUser } from '/pages/expressFetch.js'
 
 export default {
 
-    props: ['userName'],
-
     data() {
         return {
-
-            notification: "",
-
             notifications: [
-                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson", status: "Pending", sum: "50" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson", status: "Paid", sum: "100" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson", status: "Paid", sum: "540" },
-                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson", status: "Pending", sum: "50" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson", status: "Paid", sum: "100" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson", status: "Paid", sum: "540" },
-                { date: "2023-09-12", sender: "Anna Karlsson", receiver: "Patrik Olsson", status: "Pending", sum: "50" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Patrik Olsson", status: "Paid", sum: "100" },
-                { date: "2023-09-12", sender: "Alfred Skog", receiver: "Kurt Bertilsson", status: "Paid", sum: "540" },
+                { date: "2023-09-12", fromUser: "Anna Karlsson", toUser: "Patrik Olsson", type: "Pending", amount: "50" },
+                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Patrik Olsson", type: "Paid", amount: "100" },
+                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Kurt Bertilsson", type: "Paid", amount: "540" },
+                { date: "2023-09-12", fromUser: "Anna Karlsson", toUser: "Patrik Olsson", type: "Pending", amount: "50" },
+                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Patrik Olsson", type: "Paid", amount: "100" },
+                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Kurt Bertilsson", type: "Paid", amount: "540" },
+                { date: "2023-09-12", fromUser: "Anna Karlsson", toUser: "Patrik Olsson", type: "Pending", amount: "50" },
+                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Patrik Olsson", type: "Paid", amount: "100" },
+                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Kurt Bertilsson", type: "Paid", amount: "540" },
             ],
 
         }
     },
+    /*
+        An admin:
+        {
+            name: "admintest",
+            description: "description",
+            address: "address",
+            city: "city",
+            billingName: "billingName",
+            billingBox: "billingBox",
+            billingAddress: "billingAddress",
+            orgNumber: "orgNumber",
+            email: "admin@nowhere.com",
+            phone: "phone"
+        }
 
+        A notification:
+        type Notification{
+        _id: String
+        date: String
+        type: String
+        toUser: String
+        fromUser: String
+        seen: Boolean
+        amount: Int
+        itemName: String
+        itemCount: Int
+        limitSurplusAmount: Int
+    }
+
+
+    */
     methods: {
         async updateNotifications() {
-            const result = await getCurrentUser()
-            alert(result)
-            //notifications = getUserNotifications(this.userName)
+            const currentUser = await getCurrentUser()
+            this.notifications = await getUserNotifications(currentUser.name)
         }
     },
 

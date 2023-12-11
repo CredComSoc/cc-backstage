@@ -25,12 +25,12 @@
                         </v-col>
                     </v-row>
                     <div class="fixed-box fixed-box-with-admin">
-
                         <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
                             :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
                     </div>
                     <div class="admin-box">
-                        <admin_row :id="admin.id" :accountName="admin.accountName" :balance="admin.balance" />
+                        <admin_row :accountName=admin.name :balance="1001" />
+                        <!-- There is no balance in the admin record, so using dummy data  -->
                     </div>
                 </div>
                 <div v-else>
@@ -74,7 +74,7 @@
             <v-col cols="4">
                 <chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"NOTIFICATIONS/LOG"'
                     :rightTabTitle='"MEMBER CHAT"' />
-                <notification_box v-if=onLeftChatboxTab :userName="SBAdmin" /> <!-- CHANGEME: Dummy data -->
+                <notification_box v-if=onLeftChatboxTab />
                 <chatbox v-else />
             </v-col>
         </v-row>
@@ -84,6 +84,7 @@
 <script>
 
 import { getMembers, getAllTransactions } from '/pages/gqlFetch.js'
+import { getCurrentUser } from '/pages/expressFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
@@ -102,7 +103,7 @@ export default {
         return {
             members: [],
             allMembers: [],
-            admin: { id: 0, accountName: "SB ADMIN", balance: 1999 },
+            admin: {},
             search: "",
             onBlueTab: true,
             onLeftChatboxTab: true,
@@ -135,26 +136,29 @@ export default {
         setChatboxTabStatus(onLeftChatboxTab) {
             this.onLeftChatboxTab = onLeftChatboxTab
         },
-        onSearch()
-        {
+        onSearch() {
             this.members = this.allMembers.filter(member => {
                 return member.accountName.toLowerCase().includes(this.search.toLowerCase())
             })
         },
-        async updateTransactions(){
+        async updateTransactions() {
             this.transactions = await getAllTransactions()
             this.entries = []
             this.transactions.forEach((transaction) => {
                 this.entries.push(transaction.entries[0])
             })
             console.log(this.entries)
+        },
+        async updateAdminUser() {
+            this.admin = await getCurrentUser();
+            alert(admin.name) // FIXME: This never fires
         }
 
 
     },
     mounted: function () {
         this.updateMembers()
-        //this.updateTransactions()
+        this.updateAdminUser()
     }
 
 }

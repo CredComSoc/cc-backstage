@@ -97,7 +97,7 @@
 			</v-col>
 			<v-col cols="4">
 				<chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"MEMBER DETAILS"' :rightTabTitle='"MEMBER CHAT"' />
-				<member_details_box v-if=onLeftChatboxTab />
+				<member_details_box v-if=onLeftChatboxTab :memberName="johansson" />
 				<chatbox v-else />
 			</v-col>
 		</v-row>
@@ -108,7 +108,7 @@
 
 <script>
 import member_header from '/components/member_header.vue'
-import { getMember, getMemberById, getUserTransactions } from '/pages/gqlFetch.js'
+import { getMember, getUserTransactions } from '/pages/gqlFetch.js'
 import member_tabs from '/components/member_tabs.vue'
 import chat_tabs from '/components/chat_tabs.vue'
 import chatbox from '/components/chatbox.vue'
@@ -171,6 +171,8 @@ export default {
 				{"id":"0",
 				"quantity":1}}]},
 
+
+
 	*/
 
 	methods: {
@@ -181,7 +183,7 @@ export default {
 			this.onLeftChatboxTab = onLeftChatboxTab
 		},
 		async updateMember() {
-			var response = await getMember(this.memberName)
+			this.member = await getMember(this.memberName)
 		},
 		async updateTransactions() {
 			//console.log("Updating transactions")
@@ -194,6 +196,8 @@ export default {
 			}
 			*/
 		},
+
+
 		/*
 		async extractCounterpart(transaction) {
 			if (transaction.entries[0].payer == this.memberId) {
