@@ -83,8 +83,8 @@
 
 
 <script>
-import { getUserArticles } from '/pages/gqlFetch.js'
-// import { register } from '/pages/expressFetch.js'
+import { getUserArticles, getMember } from '/pages/gqlFetch.js'
+import { updateUserProfile } from '/pages/expressFetch.js'
 import member_header from '/components/member_header.vue'
 import member_tabs from '/components/member_tabs.vue'
 
@@ -119,6 +119,9 @@ export default {
 				return (article.status == "want")
 			})
 			console.log(articles)
+			// var member = await getMember(this.name)
+			// console.log(member)
+			// await updateUserProfile(this.name, "editnametest", member.description, member.address, member.city, member.billing.name, member.billing.box, member.billing.address, member.billing.orgNumber, member.email, member.phone)
 		},
 
 		setTabStatus(onBlueTab) {
@@ -127,7 +130,7 @@ export default {
 
 	},
 	mounted: function () {
-		// this.updateOffers()
+		this.updateOffers()
 	}
 
 

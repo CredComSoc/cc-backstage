@@ -230,7 +230,9 @@ async function getAllMembers() { // Get a list of all the members
             userData.email = user.email
             userData.id = user._id
             userData.status = user.is_active ? "Active" : "Inactive"
-            userData.balance = response.data[userData.id].completed.balance
+            if (response.data[userData.id] != null) { //If the user has not performed any CC-node actions yet, its ID wont be in account summary
+                userData.balance = response.data[userData.id].completed.balance
+            }
             allMembers.push(userData)
         }
         db.close()
