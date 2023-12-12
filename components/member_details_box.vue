@@ -25,12 +25,13 @@ import { getMember } from '/pages/gqlFetch.js'
 
 export default {
 
+
     props: ['memberName'],
 
     data() {
         return {
 
-            questionImage: questionImage,
+            questionImage: questionImage, // DB holds no pictures, so use this placeholder
 
             memberDetails: {
                 accountName: "Florist AB",
@@ -50,13 +51,13 @@ export default {
 
     methods: {
         async updateMember() {
+            // Gets data from the mongodb for all users (incl. admin, if the name exists there).
+            // TODO: admin data should be fetched from the old backend instead.
             this.memberDetails = await getMember(this.memberName)
-            alert(this.memberDetails.accountName)
         },
     },
     mounted: function () {
         this.updateMember()
-        alert(this.memberName)
     }
 }
 </script>

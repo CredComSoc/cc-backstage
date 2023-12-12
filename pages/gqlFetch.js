@@ -159,7 +159,7 @@ export async function getMember(name) {
   }).then(r => r.json())
     .then(data => member = data)
   //console.log(member)
-  member = JSON.stringify(member.data.member) // Remove the Json "padding" to get the object or array
+  member = member.data.member // Remove the Json "padding" to get the object or array
   //console.log(member)
   return member
 }

@@ -21,16 +21,16 @@
 			<div class="fixed-box fixed-box-no-admin">
 				<v-row class="top-border" v-for="offer in offers">
 					<v-col cols="1" class="row-text">
-						{{ offer.date }}
+						{{ offer.uploadDate }}
 					</v-col>
 					<v-col cols="2" class="row-text">
 						{{ offer.title }}
 					</v-col>
 					<v-col cols="2" class="row-text">
-						{{ offer.amount }}
+						{{ offer.price }}
 					</v-col>
 					<v-col cols="3" class="row-text">
-						{{ offer.description }}
+						{{ offer.longDesc }}
 					</v-col>
 					<v-col class="button-row">
 						<NuxtLink :to="{ name: '', params: {} }">
@@ -102,14 +102,21 @@ export default {
 			onBlueTab: true,
 
 			id: this.$route.params.id,
-			name: this.$route.params.name
+			memberName: this.$route.params.name
 		}
 
 	},
 	methods: {
+
+		/*
+		 title
+		 uploadDate
+		 longDesc
+		 price
+		*/
+
 		async updateOffers() {
-			var user = this.name
-			var articles = await getUserArticles(this.name)
+			var articles = await getUserArticles(this.memberName)
 			articles = JSON.parse(articles)
 
 			this.offers = articles.filter(function (article) {
@@ -118,6 +125,16 @@ export default {
 			this.wants = articles.filter(function (article) {
 				return (article.status == "want")
 			})
+
+			for (var ii = 0; ii < this.offers.length; ii++) {
+				var date = new Date(this.offers[ii].uploadDate * 1000)
+				this.offers[ii].uploadDate = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
+			}
+			for (var entry in this.wants) {
+				alert("Before: " + entry.uploadDate + "\n After: " + new Date(entry.uploadDate * 1000))
+				entry.uploadDate = new Date(entry.uploadDate * 1000)
+			}
+
 			console.log(articles)
 		},
 
@@ -127,7 +144,7 @@ export default {
 
 	},
 	mounted: function () {
-		// this.updateOffers()
+		this.updateOffers()
 	}
 
 

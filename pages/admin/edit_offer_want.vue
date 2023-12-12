@@ -1,3 +1,5 @@
+
+
 <template>
 	<div>
 		<h1>Edit offer or want</h1>

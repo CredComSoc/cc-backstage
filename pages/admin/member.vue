@@ -97,7 +97,7 @@
 			</v-col>
 			<v-col cols="4">
 				<chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"MEMBER DETAILS"' :rightTabTitle='"MEMBER CHAT"' />
-				<member_details_box v-if=onLeftChatboxTab :memberName="johansson" />
+				<member_details_box v-if=onLeftChatboxTab :memberName="memberName" />
 				<chatbox v-else />
 			</v-col>
 		</v-row>

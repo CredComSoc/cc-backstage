@@ -1,8 +1,11 @@
+<!--
+    Fetches and shows a list of all members in one tab, and all transactions in another.
+    Also shows the admin account at the bottom of the page, and the notifications/chat
+    component to the right.
+-->
+
 <template>
     <div>
-
-
-
         <member_header :title='"ALL MEMBERS"' />
         <v-row>
             <v-col cols="8">
@@ -145,13 +148,12 @@ export default {
             this.transactions = await getAllTransactions()
             this.entries = []
             this.transactions.forEach((transaction) => {
-                this.entries.push(transaction.entries[0])
+                this.entries.push(transaction.entries)
             })
-            console.log(this.entries)
+            //console.log(this.entries)
         },
         async updateAdminUser() {
             this.admin = await getCurrentUser();
-            alert(admin.name) // FIXME: This never fires
         }
 
 
@@ -159,6 +161,7 @@ export default {
     mounted: function () {
         this.updateMembers()
         this.updateAdminUser()
+        this.updateTransactions()
     }
 
 }
