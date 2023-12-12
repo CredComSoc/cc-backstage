@@ -457,39 +457,6 @@
 
       updateChart(data, color)
       {
-      //   this.displayGraph();
-      //   //const newData = JSON.parse(JSON.stringify(data));
-      //   // graphql get data for all functions
-      //   switch(data)
-      //   {
-      //     case "online":
-      //       this.currentChart = "online";
-      //       this.showOnline = true;
-      //       break;
-      //     case "registered":
-      //       this.chartSeries = this.dataTrades;
-      //       this.showOnline = false;
-      //       break;
-      //     case "transactions":
-      //       this.chartSeries = this.dataTrades;
-      //       break;
-      //     case "volume":
-      //     this.currentChart = "volume";  
-      //     this.chartSeries = this.dataOnlineUsr;
-      //       break;
-      //     case "offers":
-      //       this.currentChart = "offers";
-      //       this.chartSeries = this.dataTrades;
-      //       this.showOffers = true;
-      //       break;
-      //     case "wants":
-      //       this.currentChart = "wants";  
-      //       this.chartSeries = this.dataListedTrades;
-      //       this.showOffers = false;
-      //       break;
-      //   }
-      //   this.updateChartOptions(color);
-      
       },
 
       updateChartOptions(color)
@@ -695,7 +662,7 @@
           this.chartSeries = newChart; 
        },
 
-       getOnlineUsers(userData)
+       getUsers(userData)
        {
           let onlineMembers = 0;
           // Slice off miliseconds.
@@ -703,14 +670,19 @@
           // Time in seconds to online (900 = 15 minutes).
           const onlineThreshold = 900;
           let Threshhold = unixTime - onlineThreshold;
-          
-          userData.forEach((user) => 
+          // Problem här. Får ej Users.
+          if(userData != null)
           {
-            if(user.last_online/1000 > Threshhold)       
-            {
-              onlineMembers++;
-            }
-          });
+              userData.forEach((user) => 
+              {
+                if(user.last_online/1000 > Threshhold)       
+                {
+                  onlineMembers++;
+                }
+                console.log(user);
+              });
+            
+          }
           return onlineMembers;
        },
 
@@ -734,7 +706,7 @@
         //User Data
         this.registerdUsersCount = await getUserCount();
         let userData = await getMembers();
-        this.onlineUsersCount = this.getOnlineUsers(userData);
+        this.onlineUsersCount = this.getUsers(userData);
         
         //Trade Data
         let trades = await getAllTransactions();
