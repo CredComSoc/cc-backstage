@@ -42,7 +42,7 @@
                             <h1>Payer</h1>
                         </v-col>
                         <v-col cols="3">
-                            <h1>Receiver</h1>
+                            <h1>Payee</h1>
                         </v-col>
                         <v-col cols="2">
                             <h1>Amount</h1>
@@ -57,7 +57,7 @@
                                 {{ transaction.payer }}
                             </v-col>
                             <v-col cols="3" class="row-text">
-                                {{ transaction.receiver }}
+                                {{ transaction.payee }}
                             </v-col>
                             <v-col cols="2" class="row-text">
                                 {{ transaction.amount }}
@@ -112,6 +112,7 @@ export default {
                 { date: "2023-09-12", payer: "Patrik Olsson", receiver: "John Benson", amount: "22" },
                 { date: "2020-01-10", payer: "Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
             ],
+            unformattedTransactions: [],
 
         }
     },
@@ -142,12 +143,17 @@ export default {
             })
         },
         async updateTransactions(){
-            this.transactions = await getAllTransactions()
-            this.entries = []
-            this.transactions.forEach((transaction) => {
-                this.entries.push(transaction.entries[0])
+            this.transactions = []
+            this.unformattedTransactions = await getAllTransactions()
+
+            this.unformattedTransactions.forEach((transaction) => {
+                var transactionRow = {}
+                transactionRow.date = transaction.date
+                transactionRow.payee = transaction.entries[0].payee
+                transactionRow.payer = transaction.entries[0].payer
+                transactionRow.amount = transaction.entries[0].quantity
+                this.transactions.push(transactionRow)
             })
-            console.log(this.transactions)
         }
 
 

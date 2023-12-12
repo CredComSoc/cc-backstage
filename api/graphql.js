@@ -179,17 +179,17 @@ async function getMember({ id, accountName }) { // Get a single member, selected
         const db = await MongoClient.connect(DB_URL) //Connect to the mongoDB
         const dbo = db.db(DB_FOLDER)    // state the correct folder in the DB
         var user = await dbo.collection("users").findOne({ "profile.accountName": accountName }) //Get the data from the mongoDB based on the collection name and the query in findOne/find
-        if(CC_NODE_ENABLED){
-        var response
-        await fetch(CC_NODE_URL + '/account/summary', {
-            method: "GET",
-            headers: {
-                'cc-user': user._id, //Should be the ID of the admin, not the first id of the list
-                'cc-auth': '123'
-            },
-            credentials: 'include'
-        }).then(r => r.json())
-            .then(data => response = data)
+        if (CC_NODE_ENABLED) {
+            var response
+            await fetch(CC_NODE_URL + '/account/summary', {
+                method: "GET",
+                headers: {
+                    'cc-user': user._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-auth': '123'
+                },
+                credentials: 'include'
+            }).then(r => r.json())
+                .then(data => response = data)
         }
         var userData = user.profile //For users, unecessary information such as Password is not to be sent back to the frontend
         userData.is_admin = user.is_admin
@@ -231,11 +231,7 @@ async function getAllMembers() { // Get a list of all the members
             userData.id = user._id
             userData.status = user.is_active ? "Active" : "Inactive"
             userData.balance = response.data[userData.id].completed.balance
-            console.log(userData.balance)
-            //Get balance information from CC-node using ID from user._id
-            //As well as necessary logic for this.
             allMembers.push(userData)
-
         }
         db.close()
     } catch (error) {
@@ -293,22 +289,36 @@ quantity
 async function getAllTransactions() {
     try {
         var namedTransactions = []
-        const transactions = allTransactions//Get from CC-node
-
+        var transactions = allTransactions//Dummy data incase CC-node is disabled
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
         var users = await dbo.collection("users").find({}).toArray()
+
+        if (CC_NODE_ENABLED) { //If cc-node is enabled, get transactions
+            await fetch(CC_NODE_URL + '/transactions', {
+                method: "GET",
+                headers: {
+                    'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-auth': '123'
+                },
+                credentials: 'include'
+            }).then(r => r.json())
+                .then(data => transactions = data)
+            transactions = transactions.data
+        }
+
         for (const transaction of transactions) {
             //console.log(user.profile.accountName + " "+user._id.getTimestamp())
             var transactionData = transaction
             transactionData.date = transaction.written
+            transactionData.entries[0].quantity = transaction.entries[0].quant
             transactionData.entries[0].payee = users.find(function (user) {
-                    return user._id == transactionData.entries[0].payee
-                }).profile.accountName
+                return user._id == transactionData.entries[0].payee
+            }).profile.accountName
 
             transactionData.entries[0].payer = users.find(function (user) {
-                    return user._id == transactionData.entries[0].payer
-                }).profile.accountName
+                return user._id == transactionData.entries[0].payer
+            }).profile.accountName
 
             console.log(transactionData)
             //Get balance information from CC-node using ID from user._id
@@ -326,24 +336,37 @@ async function getAllTransactions() {
 async function getUserTransactions({ id }) {
     //let allTransaction = JSON.parse(transactions)
     //console.log("id sent:" + id)
-    const transactions = allTransactions
-    console.log(id)
+    var transactions = allTransactions
     try {
-        var userTransactions = transactions.filter(function (transaction) {
-            // This only checks the main entry of the transaction
-            // If this is used in a system where there can be multiple entries another way is needed
-            console.log(transaction.entries[0].payee +" " +id+" " + transaction.entries[0].payer)
-            return (transaction.entries[0].payee == id || transaction.entries[0].payer == id)
-        })
-        console.log(userTransactions)
         var namedTransactions = []
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
         var users = await dbo.collection("users").find({}).toArray()
+
+        if (CC_NODE_ENABLED) {
+            await fetch(CC_NODE_URL + '/transactions', {
+                method: "GET",
+                headers: {
+                    'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-auth': '123'
+                },
+                credentials: 'include'
+            }).then(r => r.json())
+                .then(data => transactions = data)
+            transactions = transactions.data
+        }
+
+        var userTransactions = transactions.filter(function (transaction) {
+            // This only checks the main entry of the transaction
+            // If this is used in a system where there can be multiple entries another way is needed
+            return (transaction.entries[0].payee == id || transaction.entries[0].payer == id)
+        })
+
         for (const transaction of userTransactions) {
             //console.log(user.profile.accountName + " "+user._id.getTimestamp())
             let transactionData = transaction
             transactionData.date = transaction.written
+            transactionData.entries[0].quantity = transaction.entries[0].quant
             transactionData.entries[0].payee = transactionData.entries[0].payee.replace(transactionData.entries[0].payee, (pid) => {
                 return users.find(function (user) {
                     return user._id == pid
@@ -354,7 +377,6 @@ async function getUserTransactions({ id }) {
                     return user._id == pid
                 }).profile.accountName
             })
-            console.log(transactionData)
             //Get balance information from CC-node using ID from user._id
             //As well as necessary logic for this.
             namedTransactions.push(transactionData)
