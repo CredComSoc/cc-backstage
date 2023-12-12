@@ -39,7 +39,8 @@
       <div class="test-container" style="background-color:  #ffc000;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> {{ transactions }}</div>
+            <div class="test-container-text-upper" v-if="showTransactions"> {{ transactions }}</div>
+            <div class="test-container-text-upper" v-if="!showTransactions"> {{ volume }} BKr </div>
             <div class="test-container-text-lower"> Trades</div>
           </div>
           <div class="test-container-rhs">
@@ -47,10 +48,16 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="displayGraph('transactions')">
+          <button class="test-container-lower-lhs" v-if="showTransactions" style="background-color: rgba(0, 0, 0, 0.200);" @click="displayGraph('transactions')">
             Transactions
           </button>
-          <button class="test-container-lower-rhs" @click="displayGraph('volume')">
+          <button class="test-container-lower-lhs" v-if="!showTransactions" @click="displayGraph('transactions')">
+            Transactions
+          </button>
+          <button class="test-container-lower-rhs" v-if="showTransactions" @click="displayGraph('volume')">
+            Volume
+          </button>
+          <button class="test-container-lower-rhs" v-if="!showTransactions" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('volume')">
             Volume
           </button>
         </div>
@@ -110,7 +117,7 @@
             :edges="edges"
             :options="options"
             :events="['selectNode', 'hoverNode']"
-            @select-node="onNodeSelected"
+            @select-node="onNodeSelected()"
             @hover-node="onNodeHovered">
           </network>
         </div>
@@ -216,17 +223,22 @@
         // ------------------        
         
         // Trades
-        testData : 5,
         transactions: 0,
-        offers: [],
-        offerCount: 0,
-        wants: [],
-        wantCount: 0,
-        listedCount: 0,
-        activeTrades: 23,
-        showOffers: true,
+        volume: 0,
+        showTransactions: true,
         // ------------------
         
+        // Listings
+        
+        offers: [],
+        wants: [],
+        offerCount: 0,
+        wantCount: 0,
+        listedCount: 0,
+        activeTrades: 0,
+        showOffers: true,
+        // ------------------
+
         // Maps
         registeredUserMap: new Map(),
         onlineUserMap : new Map(),
@@ -376,55 +388,11 @@
 
     methods:
     {
-
-      createNodes()
+      onNodeSelected()
       {
-        for (let i = 0; i < this.dummytransactions.length; i++)
-        {
-          const fromNode =
-          {
-            id: this.dummytransactions[i].from,
-            label: this.dummytransactions[i].from,
-          };
+        console.log("Funkar");
+      }, 
 
-          const toNode =
-          {
-            id: this.dummytransactions[i].to,
-            label: this.dummytransactions[i].to,
-          };
-
-        const isFromNodeInArray = this.nodes.some(node => node.id === fromNode.id);
-        const isToNodeInArray = this.nodes.some(node => node.id === toNode.id);
-
-        if (!isFromNodeInArray)
-        {
-          this.nodes.push(fromNode);
-        }
-
-        if (!isToNodeInArray)
-        {
-          this.nodes.push(toNode);
-        }
-
-        const edge =
-        {
-          from: this.dummytransactions[i].from,
-          to: this.dummytransactions[i].to,
-        };
-
-        const isEdgeInArray = this.edges.some(existingEdge =>
-        (existingEdge.from === edge.from && existingEdge.to === edge.to) ||
-        (existingEdge.from === edge.to && existingEdge.to === edge.from));
-
-
-        if(!isEdgeInArray)
-        {
-          this.edges.push(edge);
-        }
-
-
-        }
-      },
       displayGraph(currentChart)
       {
         
@@ -581,13 +549,13 @@
             color = '#b51f1f';
             break;
           case "transactions":
-            this.testData = 20;
+            this.showTransactions = true;
             this.currentChart = "transactions";
             map = this.transactionsMap;
             color = '#bcbf0d'; 
             break;
           case "volume":
-            this.testData = 5;
+            this.showTransactions = false;
             this.currentChart = "volume";  
             map = this.volumeMap;
             color = '#bcbf0d';
@@ -670,18 +638,20 @@
           // Time in seconds to online (900 = 15 minutes).
           const onlineThreshold = 900;
           let Threshhold = unixTime - onlineThreshold;
-          // Problem här. Får ej Users.
+          //Problem här. Får ej Users.
+          //console.log(user.profile.accountName + " "+user._id.getTimestamp())
           if(userData != null)
           {
               userData.forEach((user) => 
               {
+                // Fetching when they are registerd.
+                // const curDate = user.registerd;
                 if(user.last_online/1000 > Threshhold)       
                 {
                   onlineMembers++;
                 }
-                console.log(user);
-              });
-            
+                
+              }); 
           }
           return onlineMembers;
        },
@@ -692,14 +662,84 @@
           date = date.toISOString().slice(0,10);
           trades.forEach((trade) => 
           {
-            let cur = this.transactionsMap.get(trade.written.slice(0,10));
+            if(trade.state != "completed")
+            {
+              return;
+            }
+            console.log(trade);
+            //Transactions
+            let cur = this.transactionsMap.get(trade.date.slice(0,10));
             let new_value = cur + 1;
-            this.transactionsMap.set(trade.written.slice(0,10), new_value);
+            this.transactionsMap.set(trade.date.slice(0,10), new_value);
+
+            //Volume
+            let volume = this.volumeMap.get(trade.date.slice(0,10));
+            let new_volume = volume + parseInt(trade.entries[0].quantity.substring(1));
+            this.volumeMap.set(trade.date.slice(0,10), new_volume);
+
           });
           
           this.transactions = this.transactionsMap.get(date);
-          
+          this.volume = this.volumeMap.get(date);
        },
+
+      getNetwork(trades)
+      {
+        trades.forEach((trade) =>
+        {  
+          if(trade.state != "completed")
+          {
+            return;
+          }
+          
+          let fromNode =
+          {
+            id: trade.entries[0].payee,
+            label: trade.entries[0].payee
+          };
+          
+          let toNode =
+          {
+            id: trade.entries[0].payer,
+            label: trade.entries[0].payer
+          };
+          
+          // Is node already existing
+          const isFromNodeInArray = this.nodes.some(node => node.id === fromNode.id);
+          const isToNodeInArray = this.nodes.some(node => node.id === toNode.id);
+
+          // If not existing add.
+          if (!isFromNodeInArray)
+          {
+            this.nodes.push(fromNode);
+          };
+          
+          // If not existing add.
+          if (!isToNodeInArray)
+          {
+            this.nodes.push(toNode);
+          };
+
+          const edge =
+          {
+            from: fromNode.label,
+            to: toNode.label,
+          };
+
+          // Is edge already existing?
+          // Potentially add, if two people trade more?
+          // Incrase thickness of edge.
+          const isEdgeInArray = this.edges.some(existingEdge =>
+          (existingEdge.from === edge.from && existingEdge.to === edge.to) ||
+          (existingEdge.from === edge.to && existingEdge.to === edge.from));
+
+          // Add if not already existing.
+          if(!isEdgeInArray)
+          {
+            this.edges.push(edge);
+          } 
+        });
+      },
 
       async getDisplayData() // Fetcha ->> stödfunktioner
       {
@@ -716,6 +756,8 @@
         let listed = await getAllArticles();
         this.getListedData(listed);
         
+        //Networkgraph 
+        this.getNetwork(trades);
       },
     
       getListedData(listed) 
@@ -752,9 +794,6 @@
       this.printDashboardText("Dashboard");
       this.weekGraph(this.currentChart);
       this.getUTCTime(false);
-      
-
-      this.createNodes();
 
       this.timer = setInterval(() => {
         this.getUTCTime(false);
@@ -901,9 +940,6 @@
     color: white;
     user-select: none;
   }
-
-  
-
   .center-container
   {
     display: flex;
