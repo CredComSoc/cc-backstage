@@ -51,8 +51,6 @@ export default {
 
     methods: {
         async updateMember() {
-            // Gets data from the mongodb for all users (incl. admin, if the name exists there).
-            // TODO: admin data should be fetched from the old backend instead.
             this.memberDetails = await getMember(this.memberName)
         },
     },

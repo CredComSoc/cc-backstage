@@ -29,17 +29,16 @@
 								{{ transaction.state }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-								{{ transaction.written.split(" ")[0] }}
+								{{ transaction.date }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-								<!-- {{ transaction.entries[0].payer }} -->
+								{{ transaction.counterpart }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-								{{ transaction.entries[0].metadata.quantity }}
+								{{ transaction.amount }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-
-
+								{{ transaction.description }}
 							</v-col>
 							<v-col class="button-row">
 								<NuxtLink :to="{ name: '', params: {} }">
@@ -75,13 +74,13 @@
 								{{ transaction.state }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-								<!-- {{ transaction.written.split(" ")[0] }} -->
+								{{ transaction.date }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-
+								{{ transaction.counterpart }}
 							</v-col>
 							<v-col cols="2" class="row-text">
-								{{ transaction.amount_kr }}
+								{{ transaction.amount_kr }} kr
 							</v-col>
 							<v-col cols="2" class="row-text">
 								{{ transaction.description }}
@@ -126,7 +125,7 @@ export default {
 			memberName: this.$route.params.name,
 			member: {},
 
-
+			conversionRate: 1.25, // Dummy conversion rate SEK:Bartercrowns
 
 			transactions: [],
 			/*transactions: [
@@ -191,45 +190,33 @@ export default {
 		async updateMember() {
 			this.member = await getMember(this.memberName)
 		},
-		async updateTransactions() {
-			//console.log("Updating transactions")
-			this.transactions = await getUserTransactions(this.memberId)
-			/*
-			for (transaction in transactions) {
-				//console.log("Adding counterpart")
-				var counterpart = await extractCounterpart(transaction)
-				transaction.entries[0].$set("counterpart", counterpart);
-			}
-			*/
-		},
-
-
-		/*
 		async extractCounterpart(transaction) {
-			if (transaction.entries[0].payer == this.memberId) {
-				var member = await getMemberById(transaction.entries[0].payee)
+			if (transaction.entries[0].payer == this.member.accountName) {
+				var member = await getMember(transaction.entries[0].payee)
 				return member.accountName
 			}
 			else {
-				var member = await getMemberById(transaction.entries[0].payer)
+				var member = await getMember(transaction.entries[0].payer)
 				return member.accountName
 			}
-			console.log(this.member)
-
+		},
+		async updateTransactions() {
+			this.transactions = await getUserTransactions(this.memberId)
+			this.unformattedTransactions = this.transactions
 			this.transactions = []
-			this.unformattedTransactions = await getUserTransactions(this.member.id)
-
-			this.unformattedTransactions.forEach((transaction) => {
+			this.unformattedTransactions.forEach(async (transaction) => {
 				var transactionRow = {}
-				transactionRow.date = transaction.date
-				transactionRow.payee = transaction.entries[0].payee
-				transactionRow.payer = transaction.entries[0].payer
+				transactionRow.state = transaction.state
+				transactionRow.date = transaction.date.split(" ")[0] // Extract YYYY-MM-DD
+				transactionRow.counterpart = await this.extractCounterpart(transaction)
 				transactionRow.amount = transaction.entries[0].quantity
+				transactionRow.amount_kr = Number(transactionRow.amount.substring(1)) * this.conversionRate // substring removes the $ sign
+				transactionRow.description = transaction.entries[0].description
 				this.transactions.push(transactionRow)
 			})
+		},
 
-		}
-*/
+
 	},
 	mounted: function () {
 		this.updateMember()

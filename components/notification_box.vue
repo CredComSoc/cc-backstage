@@ -73,6 +73,10 @@ export default {
         async updateNotifications() {
             const currentUser = await getCurrentUser()
             this.notifications = await getUserNotifications(currentUser.name)
+            if (this.notifications == 0) {
+                var noNotifications = { date: "", fromUser: "", toUser: "", type: "", amount: "No notifications" }
+                this.notifications.push(noNotifications)
+            }
         }
     },
 

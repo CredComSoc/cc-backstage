@@ -54,7 +54,7 @@
                     <div class="fixed-box fixed-box-no-admin">
                         <v-row class="top-border" v-for="transaction in transactions">
                             <v-col cols="2" class="row-text">
-                                {{ transaction.date }}
+                                {{ transaction.date.split(' ')[0] }}
                             </v-col>
                             <v-col cols="3" class="row-text">
                                 {{ transaction.payer }}
@@ -157,6 +157,10 @@ export default {
                 transactionRow.amount = transaction.entries[0].quantity
                 this.transactions.push(transactionRow)
             })
+        },
+
+        async updateAdminUser() {
+            this.admin = await getCurrentUser()
         }
 
 

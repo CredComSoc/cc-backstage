@@ -263,8 +263,6 @@ export async function getAllTransactions(id) {
 
 
 export async function getUserNotifications(name) {
-
-
   try {
     var notifications = await fetch("/api/graphql", {
       method: "POST",
@@ -296,11 +294,9 @@ export async function getUserNotifications(name) {
     throw error
     return
   }
-  notifications = JSON.stringify(notifications.data.userNotifications) // Remove the Json "padding" to get the object or array
+  notifications = notifications.data.userNotifications // Remove the Json "padding" to get the object or array
 
   return notifications
-
-
 }
 
 
