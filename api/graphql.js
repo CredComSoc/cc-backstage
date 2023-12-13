@@ -13,6 +13,7 @@ let schema = buildSchema(`
     type Member{
         id: String
         accountName: String
+        registered: String
         is_admin: Boolean
         email: String
         description: String
@@ -192,6 +193,7 @@ async function getMember({ id, accountName }) { // Get a single member, selected
                 .then(data => response = data)
         }
         var userData = user.profile //For users, unecessary information such as Password is not to be sent back to the frontend
+        userData.registered = user._id.getTimestamp()
         userData.is_admin = user.is_admin
         userData.email = user.email
         userData.id = user._id
@@ -226,6 +228,7 @@ async function getAllMembers() { // Get a list of all the members
         for (const user of users) {
             //console.log(user.profile.accountName + " "+user._id.getTimestamp())
             let userData = user.profile
+            userData.registered = user._id.getTimestamp()
             userData.is_admin = user.is_admin
             userData.email = user.email
             userData.id = user._id

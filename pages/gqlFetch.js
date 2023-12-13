@@ -40,6 +40,7 @@ export async function getMembers() {
         },                             // When querying graphql without parameters, simply include the type and all members in it that you want to recieve
         body: JSON.stringify({ query: `{ allMembers{ id,
             accountName,
+            registered,
             is_admin,
             email,
             balance,
@@ -134,6 +135,7 @@ export async function getMember(name){
             member(accountName: $accountName) {
                 id
                 accountName
+                registered
                 is_admin
                 email
                 description
