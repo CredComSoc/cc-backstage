@@ -96,3 +96,34 @@ export async function getCurrentUser() {
     return false
   })
 }
+
+//edittest pwd oko1yreq
+export async function updateUserProfile(previousname, accountName, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone, logo) {
+  const data = new FormData()
+  data.append('accountInfo', JSON.stringify({
+    accountName: accountName,
+    description: description,
+    address: address,
+    city: city,
+    billingName: billingName,
+    billingBox: billingBox,
+    billingAddress: billingAddress,
+    orgNumber: orgNumber,
+    email: email.toLowerCase(),
+    phone: phone
+  }))
+  data.append('file', logo)
+  return await fetch(EXPRESS_URL + '/updateuserProfile/' + previousname, {
+    method: 'POST',
+    credentials: 'include',
+    body: data
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    } else {
+      return response
+    }
+  }).catch(err => {
+    console.error('There has been a problem with your fetch operation:', err)
+  })
+}

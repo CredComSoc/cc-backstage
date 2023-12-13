@@ -128,7 +128,13 @@ export default {
 
 
 
-			transactions: {},
+			transactions: [],
+			/*transactions: [
+				{ status: "Finished", date: "2023-09-12", counterpart: "Ben Johnson", description: "Shoes", amount: "110", amount_kr: "400", type: "invoice" },
+				{ status: "Pending", date: "2023-09-12", counterpart: "John Benson", description: "Hat", amount: "22", amount_kr: "100", type: "credit" },
+				{ status: "Pending", date: "2020-01-10", counterpart: "Sune Mangs", description: "Shirt", amount: "220", amount_kr: "640", type: "credit" }
+			],*/
+			unformattedTransactions: [],
 
 			onBlueTab: true,
 			onLeftChatboxTab: true,
@@ -208,6 +214,20 @@ export default {
 				var member = await getMemberById(transaction.entries[0].payer)
 				return member.accountName
 			}
+			console.log(this.member)
+
+			this.transactions = []
+			this.unformattedTransactions = await getUserTransactions(this.member.id)
+
+			this.unformattedTransactions.forEach((transaction) => {
+				var transactionRow = {}
+				transactionRow.date = transaction.date
+				transactionRow.payee = transaction.entries[0].payee
+				transactionRow.payer = transaction.entries[0].payer
+				transactionRow.amount = transaction.entries[0].quantity
+				this.transactions.push(transactionRow)
+			})
+
 		}
 */
 	},

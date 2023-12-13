@@ -41,6 +41,7 @@ export async function getMembers() {
     body: JSON.stringify({
       query: `{ allMembers{ id,
             accountName,
+            registered,
             is_admin,
             email,
             balance,
@@ -139,6 +140,7 @@ export async function getMember(name) {
             member(accountName: $accountName) {
                 id
                 accountName
+                registered
                 is_admin
                 email
                 description
@@ -195,7 +197,7 @@ export async function getUserTransactions(id) {
       query: `query userTransactions($id: String!) {
           userTransactions(id: $id) {
             uuid
-            written
+            date
             state
             type
             version
@@ -234,7 +236,7 @@ export async function getAllTransactions(id) {
       query: `query allTransactions{
           allTransactions{
             uuid
-            written
+            date
             state
             type
             version
