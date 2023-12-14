@@ -64,6 +64,8 @@ export default {
 	border-radius: 8px;
 	overflow: hidden;
 	white-space: nowrap;
+	user-select: none;
+	cursor: pointer;
 }
 
 .left-tab {

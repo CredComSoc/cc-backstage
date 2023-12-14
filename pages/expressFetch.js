@@ -1,9 +1,9 @@
 const FormData = require('form-data')
 const EXPRESS_URL = "http://localhost:3000"
 
-export async function register(isadmin, username, password, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone){
-    const data = new FormData()
-    data.append('accountInfo', JSON.stringify({
+export async function register(isadmin, username, password, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone) {
+  const data = new FormData()
+  data.append('accountInfo', JSON.stringify({
     is_admin: isadmin,
     accountName: username,
     password: password,
@@ -25,7 +25,7 @@ export async function register(isadmin, username, password, description, address
     method: 'POST',
     body: data,
     headers: {
-      'Content-Type' : 'multipart/form-data'
+      'Content-Type': 'multipart/form-data'
     }
   })
     .then((response) => {
@@ -33,7 +33,7 @@ export async function register(isadmin, username, password, description, address
     })
 }
 
-export async function login (email, password) { // The same login function as on sb.web.app. Stores a cookie when login successful
+export async function login(email, password) { // The same login function as on sb.web.app. Stores a cookie when login successful
   return await fetch(EXPRESS_URL + '/login', {
     method: 'POST',
     headers: {
@@ -53,7 +53,7 @@ export async function login (email, password) { // The same login function as on
 }
 
 
-export async function authenticate () { //Checks if the cookie is valid and the user is still logged in
+export async function authenticate() { //Checks if the cookie is valid and the user is still logged in
   return fetch(EXPRESS_URL + '/authenticate', {
     method: 'GET',
     headers: {
@@ -69,7 +69,7 @@ export async function authenticate () { //Checks if the cookie is valid and the 
   })
 }
 
-export async function checkAdminStatus () {
+export async function checkAdminStatus() {
   return fetch(EXPRESS_URL + '/admin', {
     method: 'GET',
     headers: {
@@ -83,7 +83,7 @@ export async function checkAdminStatus () {
   })
 }
 
-export async function getCurrentProfile () {
+export async function getCurrentUser() {
   return fetch(EXPRESS_URL + '/profile', {
     method: 'GET',
     headers: {
@@ -98,7 +98,7 @@ export async function getCurrentProfile () {
 }
 
 //edittest pwd oko1yreq
-export async function updateUserProfile (previousname, accountName, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone, logo) {
+export async function updateUserProfile(previousname, accountName, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone, logo) {
   const data = new FormData()
   data.append('accountInfo', JSON.stringify({
     accountName: accountName,

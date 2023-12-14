@@ -1,8 +1,11 @@
+<!--
+    Fetches and shows a list of all members in one tab, and all transactions in another.
+    Also shows the admin account at the bottom of the page, and the notifications/chat
+    component to the right.
+-->
+
 <template>
     <div>
-
-
-
         <member_header :title='"ALL MEMBERS"' />
         <v-row>
             <v-col cols="8">
@@ -25,12 +28,12 @@
                         </v-col>
                     </v-row>
                     <div class="fixed-box fixed-box-with-admin">
-
                         <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
                             :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
                     </div>
                     <div class="admin-box">
-                        <admin_row :id="admin.id" :accountName="admin.accountName" :balance="admin.balance" />
+                        <admin_row :accountName=admin.name :balance="1001" />
+                        <!-- There is no balance in the admin record, so using dummy data  -->
                     </div>
                 </div>
                 <div v-else>
@@ -51,7 +54,7 @@
                     <div class="fixed-box fixed-box-no-admin">
                         <v-row class="top-border" v-for="transaction in transactions">
                             <v-col cols="2" class="row-text">
-                                {{ transaction.date }}
+                                {{ transaction.date.split(' ')[0] }}
                             </v-col>
                             <v-col cols="3" class="row-text">
                                 {{ transaction.payer }}
@@ -84,6 +87,7 @@
 <script>
 
 import { getMembers, getAllTransactions } from '/pages/gqlFetch.js'
+import { getCurrentUser } from '/pages/expressFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
@@ -102,7 +106,7 @@ export default {
         return {
             members: [],
             allMembers: [],
-            admin: { id: 0, accountName: "SB ADMIN", balance: 1999 },
+            admin: {},
             search: "",
             onBlueTab: true,
             onLeftChatboxTab: true,
@@ -136,13 +140,12 @@ export default {
         setChatboxTabStatus(onLeftChatboxTab) {
             this.onLeftChatboxTab = onLeftChatboxTab
         },
-        onSearch()
-        {
+        onSearch() {
             this.members = this.allMembers.filter(member => {
                 return member.accountName.toLowerCase().includes(this.search.toLowerCase())
             })
         },
-        async updateTransactions(){
+        async updateTransactions() {
             this.transactions = []
             this.unformattedTransactions = await getAllTransactions()
 
@@ -154,12 +157,17 @@ export default {
                 transactionRow.amount = transaction.entries[0].quantity
                 this.transactions.push(transactionRow)
             })
+        },
+
+        async updateAdminUser() {
+            this.admin = await getCurrentUser()
         }
 
 
     },
     mounted: function () {
         this.updateMembers()
+        this.updateAdminUser()
         this.updateTransactions()
     }
 

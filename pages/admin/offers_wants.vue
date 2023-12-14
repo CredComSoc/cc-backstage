@@ -1,82 +1,91 @@
 <template>
 	<div>
 		<member_header :title="memberName" />
-		<member_tabs @click="setTabStatus" :blueTabTitle='"OFFERS"' :greenTabTitle='"WANTS"' />
-		<img :src="this.imgUrl">
-		<div v-if="onBlueTab">
-			<v-row class="row-headings">
-				<v-col cols="1">
-					<h1>Date</h1>
-				</v-col>
-				<v-col cols="2">
-					<h1>Title</h1>
-				</v-col>
-				<v-col cols="2">
-					<h1>Amount</h1>
-				</v-col>
-				<v-col cols="3">
-					<h1>Description</h1>
-				</v-col>
-			</v-row>
-			<div class="fixed-box fixed-box-no-admin">
-				<v-row class="top-border" v-for="offer in offers">
-					<v-col cols="1" class="row-text">
-						{{ offer.date }}
-					</v-col>
-					<v-col cols="2" class="row-text">
-						{{ offer.title }}
-					</v-col>
-					<v-col cols="2" class="row-text">
-						{{ offer.amount }}
-					</v-col>
-					<v-col cols="3" class="row-text">
-						{{ offer.description }}
-					</v-col>
-					<v-col class="button-row">
-						<NuxtLink :to="{ name: '', params: {} }">
-							<div class="white-button">Buy</div>
-						</NuxtLink>
-					</v-col>
-				</v-row>
-			</div>
-		</div>
-		<div v-else>
-			<v-row class="row-headings">
-				<v-col cols="1">
-					<h1>Date</h1>
-				</v-col>
-				<v-col cols="2">
-					<h1>Title</h1>
-				</v-col>
-				<v-col cols="2">
-					<h1>Amount</h1>
-				</v-col>
-				<v-col cols="3">
-					<h1>Description</h1>
-				</v-col>
-			</v-row>
-			<div class="fixed-box fixed-box-no-admin">
-				<v-row class="top-border" v-for="want in wants">
-					<v-col cols="1" class="row-text">
-						{{ want.date }}
-					</v-col>
-					<v-col cols="2" class="row-text">
-						{{ want.title }}
-					</v-col>
-					<v-col cols="2" class="row-text">
-						{{ want.amount }}
-					</v-col>
-					<v-col cols="3" class="row-text">
-						{{ want.description }}
-					</v-col>
-					<v-col class="button-row">
-						<NuxtLink :to="{ name: '', params: {} }">
-							<div class="white-button">Sell</div>
-						</NuxtLink>
-					</v-col>
-				</v-row>
-			</div>
-		</div>
+		<v-row>
+			<v-col cols="8">
+				<member_tabs @click="setTabStatus" :blueTabTitle='"OFFERS"' :greenTabTitle='"WANTS"' />
+
+				<div v-if="onBlueTab">
+					<v-row class="row-headings">
+						<v-col cols="2">
+							<h1>Date</h1>
+						</v-col>
+						<v-col cols="2">
+							<h1>Title</h1>
+						</v-col>
+						<v-col cols="2">
+							<h1>Amount</h1>
+						</v-col>
+						<v-col cols="3">
+							<h1>Description</h1>
+						</v-col>
+					</v-row>
+					<div class="fixed-box fixed-box-no-admin">
+						<v-row class="top-border" v-for="offer in offers">
+							<v-col cols="2" class="row-text">
+								{{ offer.uploadDate }}
+							</v-col>
+							<v-col cols="2" class="row-text">
+								{{ offer.title }}
+							</v-col>
+							<v-col cols="2" class="row-text">
+								${{ offer.price }}
+							</v-col>
+							<v-col cols="3" class="row-text">
+								{{ offer.longDesc }}
+							</v-col>
+							<v-col class="button-row">
+								<NuxtLink :to="{ name: '', params: {} }">
+									<div class="white-button">Buy</div>
+								</NuxtLink>
+							</v-col>
+						</v-row>
+					</div>
+				</div>
+				<div v-else>
+					<v-row class="row-headings">
+						<v-col cols="2">
+							<h1>Date</h1>
+						</v-col>
+						<v-col cols="2">
+							<h1>Title</h1>
+						</v-col>
+						<v-col cols="2">
+							<h1>Amount</h1>
+						</v-col>
+						<v-col cols="3">
+							<h1>Description</h1>
+						</v-col>
+					</v-row>
+					<div class="fixed-box fixed-box-no-admin">
+						<v-row class="top-border" v-for="want in wants">
+							<v-col cols="2" class="row-text">
+								{{ want.uploadDate }}
+							</v-col>
+							<v-col cols="2" class="row-text">
+								{{ want.title }}
+							</v-col>
+							<v-col cols="2" class="row-text">
+								${{ want.price }}
+							</v-col>
+							<v-col cols="3" class="row-text">
+								{{ want.longDesc }}
+							</v-col>
+							<v-col class="button-row">
+								<NuxtLink :to="{ name: '', params: {} }">
+									<div class="white-button">Sell</div>
+								</NuxtLink>
+							</v-col>
+						</v-row>
+					</div>
+				</div>
+			</v-col>
+			<v-col cols="4">
+				<chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"MEMBER DETAILS"' :rightTabTitle='"MEMBER CHAT"' />
+				<member_details_box v-if=onLeftChatboxTab :memberName="memberName" />
+				<chatbox v-else />
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
@@ -87,11 +96,14 @@ import { getUserArticles, getMember } from '/pages/gqlFetch.js'
 import { updateUserProfile, getImg } from '/pages/expressFetch.js'
 import member_header from '/components/member_header.vue'
 import member_tabs from '/components/member_tabs.vue'
+import chat_tabs from '/components/chat_tabs.vue'
+import chatbox from '/components/chatbox.vue'
+import member_details_box from '/components/member_details_box.vue'
 
 export default {
 
 	components: {
-		member_header, member_tabs
+		member_header, member_tabs, chat_tabs, chatbox, member_details_box
 	},
 
 	data() {
@@ -100,16 +112,24 @@ export default {
 			wants: [{ date: "2023-11-01", title: "Frogs legs", amount: 4, description: "I want some frogs' legs." }],
 			imgUrl: "",
 			onBlueTab: true,
+			onLeftChatboxTab: true,
 
 			id: this.$route.params.id,
-			name: this.$route.params.name
+			memberName: this.$route.params.name
 		}
 
 	},
 	methods: {
+
+		/*
+		 title
+		 uploadDate
+		 longDesc
+		 price
+		*/
+
 		async updateOffers() {
-			var user = this.name
-			var articles = await getUserArticles(this.name)
+			var articles = await getUserArticles(this.memberName)
 			articles = JSON.parse(articles)
 
 			this.offers = articles.filter(function (article) {
@@ -118,6 +138,18 @@ export default {
 			this.wants = articles.filter(function (article) {
 				return (article.status == "want")
 			})
+
+			for (var ii = 0; ii < this.offers.length; ii++) {
+				var date = new Date(this.offers[ii].uploadDate * 1000)
+				this.offers[ii].uploadDate = date.getFullYear() + "-" + date.getMonth().toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
+				// TODO: The year is (very) wrong.
+
+			}
+			for (var ii = 0; ii < this.wants.length; ii++) {
+				var date = new Date(this.wants[ii].uploadDate * 1000)
+				this.wants[ii].uploadDate = date.getFullYear() + "-" + date.getMonth().toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
+			}
+
 			console.log(articles)
 
 
@@ -138,7 +170,10 @@ export default {
 
 		setTabStatus(onBlueTab) {
 			this.onBlueTab = onBlueTab
-		}
+		},
+		setChatboxTabStatus(onLeftChatboxTab) {
+			this.onLeftChatboxTab = onLeftChatboxTab
+		},
 
 	},
 	mounted: function () {

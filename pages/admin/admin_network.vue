@@ -1,46 +1,57 @@
 <template>
     <div>
         <member_header :title='"NETWORK ADMINISTRATION"' />
-        <member_tabs @click="setTabStatus" :blueTabTitle='"NETWORK POLICIES"' :greenTabTitle='"MEMBER ADMINISTRATION"' />
-        <div class="mainContainer">
-            <v-container v-if="onBlueTab">
-                <form action="submit">
-                    <label>Transaction Fee</label>
-                    <v-container>
-                        <v-row>
-                            <v-col>
-                                <input type="text" placeholder="seller percentage">
-                            </v-col>
-                            <v-col>
-                                <input type="text" placeholder="buyer percentage">
-                            </v-col>
-                        </v-row>
+        <v-row>
+            <v-col cols="8">
+                <member_tabs @click="setTabStatus" :blueTabTitle='"NETWORK POLICIES"'
+                    :greenTabTitle='"MEMBER ADMINISTRATION"' />
+                <div class="mainContainer">
+                    <v-container v-if="onBlueTab">
+                        <form action="submit">
+                            <label>Transaction Fee</label>
+                            <v-container style="padding-left: 0px;">
+                                <v-row>
+                                    <v-col>
+                                        <input type="text" placeholder="seller percentage">
+                                    </v-col>
+                                    <v-col>
+                                        <input type="text" placeholder="buyer percentage">
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                            <label>Interest on BSEK</label>
+                            <v-container style="padding-left: 0px;">
+                                <v-row>
+                                    <v-col>
+                                        <input type="text" placeholder="percentage">
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                            <label>Default Balance Limits</label>
+                            <v-container style="padding-left: 0px;">
+                                <v-row>
+                                    <v-col>
+                                        <input type="text" placeholder="Maximium">
+                                    </v-col>
+                                    <v-col>
+                                        <input type="text" placeholder="Minimum">
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </form>
                     </v-container>
-                    <label>Interest on BSEK</label>
-                    <v-container>
-                        <v-row>
-                            <v-col>
-                                <input type="text" placeholder="percentage">
-                            </v-col>
-                        </v-row>
+                    <v-container v-else>
+                        <!-- Place for Member admin section-->
                     </v-container>
-                    <label>Default Balance Limits</label>
-                    <v-container>
-                        <v-row>
-                            <v-col>
-                                <input type="text" placeholder="Maximium">
-                            </v-col>
-                            <v-col>
-                                <input type="text" placeholder="Minimum">
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </form>
-            </v-container>
-            <v-container v-else>
-
-            </v-container>
-        </div>
+                </div>
+            </v-col>
+            <v-col cols="4">
+                <chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"NOTIFICATIONS/LOG"'
+                    :rightTabTitle='"MEMBER CHAT"' />
+                <notification_box v-if=onLeftChatboxTab />
+                <chatbox v-else />
+            </v-col>
+        </v-row>
     </div>
 </template>
 
@@ -51,24 +62,31 @@ import { getMembers } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
+import chat_tabs from '/components/chat_tabs.vue'
+import chatbox from '/components/chatbox.vue'
+import notification_box from '/components/notification_box.vue'
 
 export default {
 
     components: {
-        member_header, member_row, member_tabs
+        member_header, member_row, member_tabs, chat_tabs, chatbox, notification_box
     },
 
     data() {
         return {
             members: [],
             onBlueTab: true,
+            onLeftChatboxTab: true,
         }
     },
 
     methods: {
         setTabStatus(onBlueTab) {
             this.onBlueTab = onBlueTab
-        }
+        },
+        setChatboxTabStatus(onLeftChatboxTab) {
+            this.onLeftChatboxTab = onLeftChatboxTab
+        },
     },
 
 }

@@ -31,14 +31,15 @@ export default {
 
 //Gets members from a member list and returns them without the unnecessary labels
 export async function getMembers() {
-    var member_arr
-    await fetch("/api/graphql", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        },                             // When querying graphql without parameters, simply include the type and all members in it that you want to recieve
-        body: JSON.stringify({ query: `{ allMembers{ id,
+  var member_arr
+  await fetch("/api/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },                             // When querying graphql without parameters, simply include the type and all members in it that you want to recieve
+    body: JSON.stringify({
+      query: `{ allMembers{ id,
             accountName,
             registered,
             is_admin,
@@ -52,23 +53,24 @@ export async function getMembers() {
             last_online,
             logo
           }  }` }),
-    }).then(r => r.json())
-      .then(data => member_arr = data)
-    member_arr = member_arr.data.allMembers
-    console.log(member_arr)
-    return member_arr
+  }).then(r => r.json())
+    .then(data => member_arr = data)
+  member_arr = member_arr.data.allMembers
+  console.log(member_arr)
+  return member_arr
 }
 
-export async function getUserArticles(name){
-    var articles
-    console.log(name)
-    await fetch("/api/graphql", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
-        body: JSON.stringify({ query: `query allUserArticles($accountName: String!) {
+export async function getUserArticles(name) {
+  var articles
+  console.log(name)
+  await fetch("/api/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+    body: JSON.stringify({
+      query: `query allUserArticles($accountName: String!) {
             allUserArticles(accountName: $accountName) {
               id
               title
@@ -83,24 +85,26 @@ export async function getUserArticles(name){
               userId
             }
           }`,
-          variables: { accountName: name }, }),
-    }).then(r => r.json())
-      .then(data => articles = data)
-      articles = JSON.stringify(articles.data.allUserArticles) // Remove the Json "padding" to get the object or array
-      //console.log(articles)
-    return articles
+      variables: { accountName: name },
+    }),
+  }).then(r => r.json())
+    .then(data => articles = data)
+  articles = JSON.stringify(articles.data.allUserArticles) // Remove the Json "padding" to get the object or array
+  //console.log(articles)
+  return articles
 }
 
-export async function getAllArticles(){
-    var articles
+export async function getAllArticles() {
+  var articles
 
-    await fetch("/api/graphql", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
-        body: JSON.stringify({ query: `query allArticles{
+  await fetch("/api/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+    body: JSON.stringify({
+      query: `query allArticles{
             allArticles{
               id
               title
@@ -115,24 +119,25 @@ export async function getAllArticles(){
               userId
             }
           }`,
-         }),
-    }).then(r => r.json())
-      .then(data => articles = data)
-      articles = JSON.stringify(articles.data.allArticles) // Remove the Json "padding" to get the object or array
-      //console.log(articles)
-    return articles
+    }),
+  }).then(r => r.json())
+    .then(data => articles = data)
+  articles = JSON.stringify(articles.data.allArticles) // Remove the Json "padding" to get the object or array
+  //console.log(articles)
+  return articles
 }
 
-export async function getMember(name){
-    var member
-    console.log(name)
-    await fetch("/api/graphql", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
-        body: JSON.stringify({ query: `query member($accountName: String!) {
+export async function getMember(name) {
+  var member
+  console.log(name)
+  await fetch("/api/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+    body: JSON.stringify({
+      query: `query member($accountName: String!) {
             member(accountName: $accountName) {
                 id
                 accountName
@@ -153,43 +158,45 @@ export async function getMember(name){
                 logo
             }
           }`,
-          variables: { accountName: name }, }),
-    }).then(r => r.json())
-      .then(data => member = data)
-      //console.log(member)
-      member = member.data.member // Remove the Json "padding" to get the object or array
-      //console.log(member)
-    return member
+      variables: { accountName: name },
+    }),
+  }).then(r => r.json())
+    .then(data => member = data)
+  //console.log(member)
+  member = member.data.member // Remove the Json "padding" to get the object or array
+  //console.log(member)
+  return member
 }
 
 
 export async function getUserCount() {
-    var userCount
-    await fetch("/api/graphql", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        },
-        body: JSON.stringify({ query: "{ userCount }" }),
-    }).then(r => r.json())
-      .then(data => userCount = data)
-      userCount = userCount.data.userCount
-   // console.log(userCount)
-    return userCount
+  var userCount
+  await fetch("/api/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ query: "{ userCount }" }),
+  }).then(r => r.json())
+    .then(data => userCount = data)
+  userCount = userCount.data.userCount
+  // console.log(userCount)
+  return userCount
 }
 
 
-export async function getUserTransactions(id){
+export async function getUserTransactions(id) {
   var transactions
   console.log(id)
   await fetch("/api/graphql", {
-      method: "POST",
-      headers: {
+    method: "POST",
+    headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
-      body: JSON.stringify({ query: `query userTransactions($id: String!) {
+    },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+    body: JSON.stringify({
+      query: `query userTransactions($id: String!) {
           userTransactions(id: $id) {
             uuid
             date
@@ -209,24 +216,26 @@ export async function getUserTransactions(id){
 
           }
         }`,
-        variables: { id: id }, }),
+      variables: { id: id },
+    }),
   }).then(r => r.json())
     .then(data => transactions = data)
-    transactions = transactions.data.userTransactions // Remove the Json "padding" to get the object or array
-    console.log(transactions)
+  transactions = transactions.data.userTransactions // Remove the Json "padding" to get the object or array
+  console.log(transactions)
   return transactions
 }
 
-export async function getAllTransactions(id){
+export async function getAllTransactions(id) {
   var transactions
   console.log(id)
   await fetch("/api/graphql", {
-      method: "POST",
-      headers: {
+    method: "POST",
+    headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
-      body: JSON.stringify({ query: `query allTransactions{
+    },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+    body: JSON.stringify({
+      query: `query allTransactions{
           allTransactions{
             uuid
             date
@@ -246,26 +255,25 @@ export async function getAllTransactions(id){
 
           }
         }`,
-        }),
+    }),
   }).then(r => r.json())
     .then(data => transactions = data)
-    transactions = transactions.data.allTransactions // Remove the Json "padding" to get the object or array
-    console.log(transactions)
+  transactions = transactions.data.allTransactions // Remove the Json "padding" to get the object or array
+  console.log(transactions)
   return transactions
 }
 
 
-export async function getUserNotifications(name){
-
-
+export async function getUserNotifications(name) {
   try {
-  var notifications = await fetch("/api/graphql", {
+    var notifications = await fetch("/api/graphql", {
       method: "POST",
       headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
-      body: JSON.stringify({ query: `query userNotifications($name: String!) {
+      body: JSON.stringify({
+        query: `query userNotifications($name: String!) {
         userNotifications(name: $name) {
             _id
             date
@@ -279,20 +287,18 @@ export async function getUserNotifications(name){
             limitSurplusAmount
           }
         }`,
-        variables: { name: name }, }),
-  }).then(r => r.json())
-    .then(data => notifications = data)
-  } catch(error)
-  {
+        variables: { name: name },
+      }),
+    }).then(r => r.json())
+      .then(data => notifications = data)
+  } catch (error) {
     console.error("Error fetching notifications: ", error)
     throw error
     return
   }
-    notifications = JSON.stringify(notifications.data.userNotifications) // Remove the Json "padding" to get the object or array
+  notifications = notifications.data.userNotifications // Remove the Json "padding" to get the object or array
 
   return notifications
-
-
 }
 
 

@@ -1,41 +1,62 @@
 <template>
     <div>
         <div class="member-details-box fixed-box">
-            <img v-bind:src="question_image" class="member-details-image" />
-            <div class="member-details-heading">Företagsnamn</div>
-            <div class="member-details-text">{{ member_details.name }}</div>
-            <div class="member-details-heading">Beskrivning</div>
-            <div class="member-details-text">{{ member_details.description }}</div>
-            <div class="member-details-heading">Adress</div>
-            <div class="member-details-text">{{ member_details.address }}</div>
-            <div class="member-details-heading">Stad/Ort</div>
-            <div class="member-details-text">{{ member_details.city }}</div>
-            <div class="member-details-heading">Faktureringsuppgifter</div>
-            <div class="member-details-text">{{ member_details.billing }}</div>
+            <img v-bind:src="questionImage" class="member-details-image" />
+            <div class="member-details-heading">Company name</div>
+            <div class="member-details-text">{{ memberDetails.accountName }}</div>
+            <div class="member-details-heading">Description</div>
+            <div class="member-details-text">{{ memberDetails.description }}</div>
+            <div class="member-details-heading">Address</div>
+            <div class="member-details-text">{{ memberDetails.address }}</div>
+            <div class="member-details-heading">City</div>
+            <div class="member-details-text">{{ memberDetails.city }}</div>
+            <div class="member-details-heading">Billing data</div>
+            <div class="billing-details-text">{{ memberDetails.billing.name }}</div>
+            <div class="billing-details-text">{{ memberDetails.billing.box }}</div>
+            <div class="billing-details-text">{{ memberDetails.billing.address }}</div>
+            <div class="billing-details-text">{{ memberDetails.billing.orgNumber }}</div>
         </div>
     </div>
 </template>
 
 <script>
-import question_image from './component_icons/question-sign.png';
+import questionImage from './component_icons/question-sign.png';
+import { getMember } from '/pages/gqlFetch.js'
 
 export default {
+
+
+    props: ['memberName'],
 
     data() {
         return {
 
-            question_image: question_image,
+            questionImage: questionImage, // DB holds no pictures, so use this placeholder
 
-            member_details: {
-                name: "Florist AB",
+            memberDetails: {
+                accountName: "Florist AB",
                 description: "Hej! Vi är en blombutik i Söderköping med fem glada florister. Se våra artiklar för aktuella blombuketter just nu.",
                 address: "Hantverksgatan 14",
                 city: "Söderköping",
-                billing: "billing details"
+                billing: {
+                    name: 'billingName',
+                    box: 'billingBox',
+                    address: 'billingAddress',
+                    orgNumber: 'orgNumber'
+                }
             },
 
         }
     },
+
+    methods: {
+        async updateMember() {
+            this.memberDetails = await getMember(this.memberName)
+        },
+    },
+    mounted: function () {
+        this.updateMember()
+    }
 }
 </script>
 
@@ -55,6 +76,10 @@ export default {
     margin-bottom: 20px;
 }
 
+.billing-details-text {
+    margin-left: 10px;
+}
+
 .member-details-image {
     width: 35%;
     margin-bottom: 30px;
@@ -63,5 +88,4 @@ export default {
 .align-right {
     text-align: right;
 }
-
 </style>
