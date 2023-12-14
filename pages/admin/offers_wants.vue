@@ -160,13 +160,7 @@ export default {
 			// console.log(member)
 			// await updateUserProfile(this.name, "editnametest", member.description, member.address, member.city, member.billing.name, member.billing.box, member.billing.address, member.billing.orgNumber, member.email, member.phone)
 		},
-		// async getImage() {
-		// 	var member = await getMember(this.name)
-		// 	console.log(member.logo)
-		// 	this.imgUrl = await getImg(member.logo)
-		// 	this.imgUrl = this.imgUrl.url
-		// 	console.log(this.imgUrl)
-		// },
+
 
 		setTabStatus(onBlueTab) {
 			this.onBlueTab = onBlueTab
@@ -178,7 +172,6 @@ export default {
 	},
 	mounted: function () {
 		this.updateOffers()
-		//this.getImage()
 	}
 
 

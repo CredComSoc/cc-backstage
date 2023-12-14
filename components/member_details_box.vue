@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="member-details-box fixed-box">
-            <img v-bind:src="questionImage" class="member-details-image" />
+            <img v-bind:src="imgUrl" class="member-details-image" />
             <div class="member-details-heading">Company name</div>
             <div class="member-details-text">{{ memberDetails.accountName }}</div>
             <div class="member-details-heading">Description</div>
@@ -22,6 +22,7 @@
 <script>
 import questionImage from './component_icons/question-sign.png';
 import { getMember } from '/pages/gqlFetch.js'
+import { getImg } from '/pages/expressFetch.js'
 
 export default {
 
@@ -31,7 +32,7 @@ export default {
     data() {
         return {
 
-            questionImage: questionImage, // DB holds no pictures, so use this placeholder
+            imgUrl: questionImage, // DB holds no pictures, so use this placeholder
 
             memberDetails: {
                 accountName: "Florist AB",
@@ -43,7 +44,8 @@ export default {
                     box: 'billingBox',
                     address: 'billingAddress',
                     orgNumber: 'orgNumber'
-                }
+                },
+                logo: ""
             },
 
         }
@@ -53,9 +55,18 @@ export default {
         async updateMember() {
             this.memberDetails = await getMember(this.memberName)
         },
+        async getImage() {
+			const response = await getImg(this.memberDetails.logo)
+            if(response.status == 200 || response.status == 304)
+            {
+			    this.imgUrl = response.url
+            }
+		},
+
     },
-    mounted: function () {
-        this.updateMember()
+    mounted: async function () {
+        await this.updateMember()
+        this.getImage()
     }
 }
 </script>
