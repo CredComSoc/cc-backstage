@@ -49,7 +49,8 @@ export async function getMembers() {
             address,
             city,
             phone,
-            last_online
+            last_online,
+            logo
           }  }` }),
     }).then(r => r.json())
       .then(data => member_arr = data)
@@ -149,6 +150,7 @@ export async function getMember(name){
                     orgNumber
                 }
                 last_online
+                logo
             }
           }`,
           variables: { accountName: name }, }),

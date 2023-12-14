@@ -24,6 +24,7 @@ let schema = buildSchema(`
         phone: String
         billing: Billing
         last_online: String
+        logo: String
     }
     type EntryMeta{
         id: String
@@ -194,6 +195,7 @@ async function getMember({ id, accountName }) { // Get a single member, selected
         }
         var userData = user.profile //For users, unecessary information such as Password is not to be sent back to the frontend
         userData.registered = user._id.getTimestamp()
+        userData.logo = user.logo
         userData.is_admin = user.is_admin
         userData.email = user.email
         userData.id = user._id
@@ -229,6 +231,7 @@ async function getAllMembers() { // Get a list of all the members
             //console.log(user.profile.accountName + " "+user._id.getTimestamp())
             let userData = user.profile
             userData.registered = user._id.getTimestamp()
+            userData.logo = user.logo
             userData.is_admin = user.is_admin
             userData.email = user.email
             userData.id = user._id

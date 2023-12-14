@@ -127,3 +127,19 @@ export async function updateUserProfile (previousname, accountName, description,
     console.error('There has been a problem with your fetch operation:', err)
   })
 }
+
+//logotest mptvk169
+export async function getImg (filename) {
+  const promise = await fetch(EXPRESS_URL + '/image/' + filename, {
+    method: 'GET',
+    credentials: 'include'
+  }).then((res) => {
+    return res
+  }).then((success) => {
+    return success
+  }).catch(error => {
+    return error
+  })
+
+  return promise
+}

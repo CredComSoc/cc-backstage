@@ -2,7 +2,7 @@
 	<div>
 		<member_header :title="memberName" />
 		<member_tabs @click="setTabStatus" :blueTabTitle='"OFFERS"' :greenTabTitle='"WANTS"' />
-
+		<img :src="this.imgUrl">
 		<div v-if="onBlueTab">
 			<v-row class="row-headings">
 				<v-col cols="1">
@@ -84,7 +84,7 @@
 
 <script>
 import { getUserArticles, getMember } from '/pages/gqlFetch.js'
-import { updateUserProfile } from '/pages/expressFetch.js'
+import { updateUserProfile, getImg } from '/pages/expressFetch.js'
 import member_header from '/components/member_header.vue'
 import member_tabs from '/components/member_tabs.vue'
 
@@ -98,7 +98,7 @@ export default {
 		return {
 			offers: [],
 			wants: [{ date: "2023-11-01", title: "Frogs legs", amount: 4, description: "I want some frogs' legs." }],
-
+			imgUrl: "",
 			onBlueTab: true,
 
 			id: this.$route.params.id,
@@ -119,10 +119,22 @@ export default {
 				return (article.status == "want")
 			})
 			console.log(articles)
+
+
+
+
+			// Not for offers and wants just testing member editing
 			// var member = await getMember(this.name)
 			// console.log(member)
 			// await updateUserProfile(this.name, "editnametest", member.description, member.address, member.city, member.billing.name, member.billing.box, member.billing.address, member.billing.orgNumber, member.email, member.phone)
 		},
+		// async getImage() {
+		// 	var member = await getMember(this.name)
+		// 	console.log(member.logo)
+		// 	this.imgUrl = await getImg(member.logo)
+		// 	this.imgUrl = this.imgUrl.url
+		// 	console.log(this.imgUrl)
+		// },
 
 		setTabStatus(onBlueTab) {
 			this.onBlueTab = onBlueTab
@@ -131,6 +143,7 @@ export default {
 	},
 	mounted: function () {
 		this.updateOffers()
+		//this.getImage()
 	}
 
 
