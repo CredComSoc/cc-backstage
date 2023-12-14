@@ -42,10 +42,10 @@
         <v-dialog v-model="toDisplay" max-width="600">
           <v-card>
             <v-card-title class="headline">
-              You are not a administrator!
+              Login was unsuccessful!
             </v-card-title>
             <v-card-text>
-                The hounds have been released! >:C
+                Make sure your creditials are correct and try again.
             </v-card-text>
             <v-card-actions>
               <v-btn color="blue darken-1" text @click="toDisplay = false">
@@ -85,6 +85,7 @@
                 else
                 {
                     this.toDisplay = true
+                    this.password = ""
                 }})
             },
             async ConsoleLogName() {
