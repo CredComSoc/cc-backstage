@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<member_header :title="memberName" />
+		<member_header @keyup="onSearch" :title="memberName" />
 		<v-row>
 			<v-col cols="8">
 				<member_tabs @click="setTabStatus" :blueTabTitle='"OFFERS"' :greenTabTitle='"WANTS"' />
@@ -109,7 +109,9 @@ export default {
 	data() {
 		return {
 			offers: [],
+			allOffers: [],
 			wants: [{ date: "2023-11-01", title: "Frogs legs", amount: 4, description: "I want some frogs' legs." }],
+			allWants: [],
 			imgUrl: "",
 			onBlueTab: true,
 			onLeftChatboxTab: true,
@@ -148,12 +150,24 @@ export default {
 				this.wants[ii].uploadDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
 			}
 
+			this.allOffers = this.offers
+			this.allWants = this.wants
+
 			// Not for offers and wants just testing member editing
 			// var member = await getMember(this.name)
 			// console.log(member)
 			// await updateUserProfile(this.name, "editnametest", member.description, member.address, member.city, member.billing.name, member.billing.box, member.billing.address, member.billing.orgNumber, member.email, member.phone)
 		},
 
+		onSearch(searchTerm) {
+			this.offers = this.allOffers.filter(offer => {
+				return offer.uploadDate.toString().includes(searchTerm)
+			})
+			this.wants = this.allWants.filter(want => {
+				return want.uploadDate.toString().includes(searchTerm)
+			})
+
+		},
 
 		setTabStatus(onBlueTab) {
 			this.onBlueTab = onBlueTab

@@ -2,7 +2,7 @@
     <v-row class="member-header">
         <v-col>
             <form>
-                <input type="text" v-model="searchTerm" placeholder="Search">
+                <input type="text" v-model="searchTerm" @keyup="search" placeholder="Search">
             </form>
         </v-col>
         <v-col class="member-header-middle"> {{ title }} </v-col>
@@ -16,8 +16,6 @@
 
 <script>
 
-// import EventBus from '/pages/event_bus.js'
-
 export default {
     data() {
         return {
@@ -28,7 +26,7 @@ export default {
 
     methods: {
         search() {
-            //EventBus.$emit('onSearch', this.searchTerm)
+            this.$emit('keyup', this.searchTerm);
         }
     }
 

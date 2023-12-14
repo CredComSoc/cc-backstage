@@ -6,13 +6,12 @@
 
 <template>
     <div>
-        <member_header :title='"ALL MEMBERS"' />
+        <member_header @keyup="onSearch" :title='"ALL MEMBERS"' />
         <v-row>
             <v-col cols="8">
                 <member_tabs @click="setMemberListTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
 
                 <div v-if="onBlueTab">
-                    <input type="text" v-model="search" v-on:keyup="onSearch" placeholder="Search" background-color="white">
                     <v-row class="row-headings">
                         <v-col cols="2">
                             <h1>Member</h1>
@@ -95,7 +94,6 @@ import chat_tabs from '/components/chat_tabs.vue'
 import admin_row from '/components/admin_row.vue'
 import chatbox from '/components/chatbox.vue'
 import notification_box from '/components/notification_box.vue'
-// import EventBus from '/pages/event_bus.js'
 
 export default {
 
@@ -162,7 +160,6 @@ export default {
         this.updateMembers()
         this.updateAdminUser()
         this.updateTransactions()
-        //EventBus.$on('onSearch', onSearch(searchTerm))
     }
 
 }
