@@ -2,7 +2,7 @@
     <v-row class="member-header">
         <v-col>
             <form>
-                <input type="text" v-model="search" placeholder="Search">
+                <input type="text" v-model="searchTerm" placeholder="Search">
             </form>
         </v-col>
         <v-col class="member-header-middle"> {{ title }} </v-col>
@@ -16,14 +16,23 @@
 
 <script>
 
-export default {
+// import EventBus from '/pages/event_bus.js'
 
+export default {
     data() {
         return {
-            search: '',
+            searchTerm: '',
         }
     },
-    props: ["title"]
+    props: ["title"],
+
+    methods: {
+        search() {
+            //EventBus.$emit('onSearch', this.searchTerm)
+        }
+    }
+
+
 }
 </script>
 

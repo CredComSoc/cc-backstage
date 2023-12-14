@@ -4,7 +4,6 @@
 		<v-row>
 			<v-col cols="8">
 				<member_tabs @click="setTabStatus" :blueTabTitle='"BARTERKRONOR"' :greenTabTitle='"KRONOR"' />
-
 				<div v-if="onBlueTab">
 					<v-row class="row-headings">
 						<v-col cols="2">
@@ -48,7 +47,7 @@
 						</v-row>
 					</div>
 				</div>
-				<div v-else>
+				<div v-else> <!-- Green tab-->
 					<v-row class="row-headings">
 						<v-col cols="2">
 							<h1>Status</h1>
@@ -113,6 +112,7 @@ import chat_tabs from '/components/chat_tabs.vue'
 import chatbox from '/components/chatbox.vue'
 import member_details_box from '/components/member_details_box.vue'
 
+export const EventBus = new Vue();
 
 export default {
 	components: {

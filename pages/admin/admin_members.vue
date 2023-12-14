@@ -95,6 +95,7 @@ import chat_tabs from '/components/chat_tabs.vue'
 import admin_row from '/components/admin_row.vue'
 import chatbox from '/components/chatbox.vue'
 import notification_box from '/components/notification_box.vue'
+// import EventBus from '/pages/event_bus.js'
 
 export default {
 
@@ -111,7 +112,7 @@ export default {
             onBlueTab: true,
             onLeftChatboxTab: true,
 
-            transactions: [
+            transactions: [ // Dummy data
                 { date: "2023-09-12", payer: "Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
                 { date: "2023-09-12", payer: "Patrik Olsson", receiver: "John Benson", amount: "22" },
                 { date: "2020-01-10", payer: "Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
@@ -122,14 +123,6 @@ export default {
     },
 
     methods: {
-        initTransaction(member) {
-            this.$router.push("/admin/member");
-        },
-
-        gotoOffersWants(member) {
-            this.$router.push("/admin/offers_wants");
-        },
-
         async updateMembers() {
             this.allMembers = await getMembers()
             this.members = this.allMembers
@@ -140,9 +133,9 @@ export default {
         setChatboxTabStatus(onLeftChatboxTab) {
             this.onLeftChatboxTab = onLeftChatboxTab
         },
-        onSearch() {
+        onSearch(searchTerm) {
             this.members = this.allMembers.filter(member => {
-                return member.accountName.toLowerCase().includes(this.search.toLowerCase())
+                return member.accountName.toLowerCase().includes(searchTerm.toLowerCase())
             })
         },
         async updateTransactions() {
@@ -169,6 +162,7 @@ export default {
         this.updateMembers()
         this.updateAdminUser()
         this.updateTransactions()
+        //EventBus.$on('onSearch', onSearch(searchTerm))
     }
 
 }

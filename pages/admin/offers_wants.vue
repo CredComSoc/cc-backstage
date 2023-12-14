@@ -140,20 +140,13 @@ export default {
 			})
 
 			for (var ii = 0; ii < this.offers.length; ii++) {
-				var date = new Date(this.offers[ii].uploadDate * 1000)
-				this.offers[ii].uploadDate = date.getFullYear() + "-" + date.getMonth().toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
-				// TODO: The year is (very) wrong.
-
+				var date = new Date(Number(this.offers[ii].uploadDate))
+				this.offers[ii].uploadDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
 			}
 			for (var ii = 0; ii < this.wants.length; ii++) {
-				var date = new Date(this.wants[ii].uploadDate * 1000)
-				this.wants[ii].uploadDate = date.getFullYear() + "-" + date.getMonth().toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
+				var date = new Date(Number(this.wants[ii].uploadDate))
+				this.wants[ii].uploadDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
 			}
-
-			console.log(articles)
-
-
-
 
 			// Not for offers and wants just testing member editing
 			// var member = await getMember(this.name)
