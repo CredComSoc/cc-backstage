@@ -27,15 +27,21 @@
                         </v-col>
                     </v-row>
                     <div class="fixed-box fixed-box-with-admin">
-                        <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
-                            :balance="member.balance" :status="member.status" :phone="member.phone" :email="member.email" />
+                        <div v-if="isLoadingUserData" class="spinner-holder">
+                            <img src="./admin_icons/Spinner-5.gif" class="spinner">
+                        </div>
+                        <div v-else> <!-- Display member list-->
+                            <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
+                                :balance="member.balance" :status="member.status" :phone="member.phone"
+                                :email="member.email" />
+                        </div>
                     </div>
                     <div class="admin-box">
                         <admin_row :accountName=admin.name :balance="1001" />
                         <!-- There is no balance in the admin record, so using dummy data  -->
                     </div>
                 </div>
-                <div v-else>
+                <div v-else> <!-- Green tab-->
                     <v-row class="row-headings">
                         <v-col cols="2">
                             <h1>Date</h1>
@@ -51,28 +57,35 @@
                         </v-col>
                     </v-row>
                     <div class="fixed-box fixed-box-no-admin">
-                        <v-row class="top-border" v-for="transaction in transactions">
-                            <v-col cols="2" class="row-text">
-                                {{ transaction.date.split(' ')[0] }}
-                            </v-col>
-                            <v-col cols="3" class="row-text">
-                                {{ transaction.payer }}
-                            </v-col>
-                            <v-col cols="3" class="row-text">
-                                {{ transaction.payee }}
-                            </v-col>
-                            <v-col cols="2" class="row-text">
-                                {{ transaction.amount }}
-                            </v-col>
-                            <v-col class="button-row">
-                                <NuxtLink :to="{ name: '', params: {} }">
-                                    <div class="white-button">Reverse</div>
-                                </NuxtLink>
-                            </v-col>
-                        </v-row>
+                        <div v-if="isLoadingTransactionData" class="spinner-holder">
+                            <img src="./admin_icons/Spinner-5.gif" class="spinner">
+                        </div>
+                        <div v-else>
+                            <v-row class="top-border" v-for="transaction in transactions">
+                                <v-col cols="2" class="row-text">
+                                    {{ transaction.date.split(' ')[0] }}
+                                </v-col>
+                                <v-col cols="3" class="row-text">
+                                    {{ transaction.payer }}
+                                </v-col>
+                                <v-col cols="3" class="row-text">
+                                    {{ transaction.payee }}
+                                </v-col>
+                                <v-col cols="2" class="row-text">
+                                    {{ transaction.amount }}
+                                </v-col>
+                                <v-col class="button-row">
+                                    <NuxtLink :to="{ name: '', params: {} }">
+                                        <div class="white-button">Reverse</div>
+                                    </NuxtLink>
+                                </v-col>
+                            </v-row>
+                        </div>
                     </div>
                 </div>
+
             </v-col>
+
             <v-col cols="4">
                 <chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"NOTIFICATIONS/LOG"'
                     :rightTabTitle='"MEMBER CHAT"' />
@@ -84,7 +97,6 @@
 </template>
 
 <script>
-
 import { getMembers, getAllTransactions } from '/pages/gqlFetch.js'
 import { getCurrentUser } from '/pages/expressFetch.js'
 import member_header from '/components/member_header.vue'
@@ -109,6 +121,8 @@ export default {
             search: "",
             onBlueTab: true,
             onLeftChatboxTab: true,
+            isLoadingUserData: false,
+            isLoadingTransactionData: false,
 
             transactions: [ // Dummy data
                 { date: "2023-09-12", payer: "Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
@@ -125,6 +139,7 @@ export default {
         async updateMembers() {
             this.allMembers = await getMembers()
             this.members = this.allMembers
+            this.isLoadingUserData = false
         },
         setMemberListTabStatus(onBlueTab) {
             this.onBlueTab = onBlueTab
@@ -134,19 +149,17 @@ export default {
             this.onLeftChatboxTab = onLeftChatboxTab
         },
         onSearch(searchTerm) {
-            if(this.onBlueTab)
-            {
-                 this.members = this.allMembers.filter(member => {
-                    return member.accountName.toLowerCase().includes(searchTerm.toLowerCase())
-                 })
-            }
-            else
-            {
-                 this.transactions = this.allTransactions.filter(transaction => {
-                    return (transaction.payee.toLowerCase().includes(searchTerm.toLowerCase()) || transaction.payer.toLowerCase().includes(searchTerm.toLowerCase()))
-                 })
-            }
+
+            this.members = this.allMembers.filter(member => {
+                return member.accountName.toLowerCase().includes(searchTerm.toLowerCase())
+            })
+
+            this.transactions = this.allTransactions.filter(transaction => {
+                return (transaction.payee.toLowerCase().includes(searchTerm.toLowerCase()) || transaction.payer.toLowerCase().includes(searchTerm.toLowerCase()) || transaction.date.toString().includes(searchTerm))
+            })
+
         },
+
         async updateTransactions() {
             this.transactions = []
             this.unformattedTransactions = await getAllTransactions()
@@ -160,6 +173,7 @@ export default {
                 this.transactions.push(transactionRow)
             })
             this.allTransactions = this.transactions
+            this.isLoadingTransactionData = false
         },
 
         async updateAdminUser() {
@@ -169,9 +183,12 @@ export default {
 
     },
     mounted: function () {
+        this.isLoadingUserData = true
+        this.isLoadingTransactionData = true
         this.updateMembers()
         this.updateAdminUser()
         this.updateTransactions()
+
     }
 
 }
@@ -182,10 +199,5 @@ export default {
     bottom: 0px;
     margin-top: 20px;
     width: 100%;
-}
-
-.chatbox {
-    color: white;
-    background-color: black;
 }
 </style>

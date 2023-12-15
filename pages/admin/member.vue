@@ -23,28 +23,33 @@
 						</v-col>
 					</v-row>
 					<div class="fixed-box fixed-box-no-admin">
-						<v-row class="top-border" v-for="transaction in transactions">
-							<v-col cols="2" class="row-text">
-								{{ transaction.state }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.date }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.counterpart }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.amount }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.description }}
-							</v-col>
-							<v-col class="button-row">
-								<NuxtLink :to="{ name: '', params: {} }">
-									<div class="white-button">Revert</div>
-								</NuxtLink>
-							</v-col>
-						</v-row>
+						<div v-if="isLoadingTransactionData" class="spinner-holder">
+							<img src="./admin_icons/Spinner-5.gif" class="spinner">
+						</div>
+						<div v-else>
+							<v-row class="top-border" v-for="transaction in transactions">
+								<v-col cols="2" class="row-text">
+									{{ transaction.state }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.date }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.counterpart }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.amount }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.description }}
+								</v-col>
+								<v-col class="button-row">
+									<NuxtLink :to="{ name: '', params: {} }">
+										<div class="white-button">Revert</div>
+									</NuxtLink>
+								</v-col>
+							</v-row>
+						</div>
 					</div>
 				</div>
 				<div v-else> <!-- Green tab-->
@@ -68,28 +73,33 @@
 					</v-row>
 
 					<div class="fixed-box fixed-box-no-admin">
-						<v-row class="top-border" v-for="transaction in transactions">
-							<v-col cols="2" class="row-text">
-								{{ transaction.state }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.date }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.counterpart }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.amount_kr }} kr
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ transaction.description }}
-							</v-col>
-							<v-col class="button-row">
-								<NuxtLink :to="{ name: '', params: {} }">
-									<div class="white-button">Revert</div>
-								</NuxtLink>
-							</v-col>
-						</v-row>
+						<div v-if="isLoadingTransactionData" class="spinner-holder">
+							<img src="./admin_icons/Spinner-5.gif" class="spinner">
+						</div>
+						<div v-else>
+							<v-row class="top-border" v-for="transaction in transactions">
+								<v-col cols="2" class="row-text">
+									{{ transaction.state }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.date }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.counterpart }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.amount_kr }} kr
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ transaction.description }}
+								</v-col>
+								<v-col class="button-row">
+									<NuxtLink :to="{ name: '', params: {} }">
+										<div class="white-button">Revert</div>
+									</NuxtLink>
+								</v-col>
+							</v-row>
+						</div>
 					</div>
 				</div>
 			</v-col>
@@ -125,6 +135,8 @@ export default {
 			member: {},
 
 			conversionRate: 1.25, // Dummy conversion rate SEK:Bartercrowns
+
+			isLoadingTransactionData: false,
 
 			allTransactions: [],
 			transactions: [],
@@ -181,12 +193,14 @@ export default {
 				this.transactions.push(transactionRow)
 			})
 			this.allTransactions = this.transactions
+			this.isLoadingTransactionData = false
 		},
 
 
 	},
 	mounted: function () {
 		this.updateMember()
+		this.isLoadingTransactionData = true
 		this.updateTransactions()
 	}
 }

@@ -16,9 +16,10 @@
       <v-col>
         <notice></notice>
       </v-col>
-      <v-col></v-col>
       <v-col align="right">
-      <button @click="logout"> Logout </button>
+        <button @click="logout"> Logout </button>
+      </v-col>
+      <v-col align="right">
         <help></help>
       </v-col>
     </v-app-bar>
@@ -140,5 +141,16 @@ export default {
   font-weight: 500;
   letter-spacing: 0.0892857143em;
   text-transform: uppercase;
+}
+
+.spinner-holder {
+  width: 100%;
+  height: 100%;
+}
+
+.spinner {
+  display: block;
+  margin: auto;
+
 }
 </style>

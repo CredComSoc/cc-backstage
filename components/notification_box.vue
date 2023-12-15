@@ -24,7 +24,7 @@ export default {
 
     data() {
         return {
-            notifications: [
+            notifications: [ // Dummy data
                 { date: "2023-09-12", fromUser: "Anna Karlsson", toUser: "Patrik Olsson", type: "Pending", amount: "50" },
                 { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Patrik Olsson", type: "Paid", amount: "100" },
                 { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Kurt Bertilsson", type: "Paid", amount: "540" },
@@ -38,42 +38,13 @@ export default {
 
         }
     },
-    /*
-        An admin:
-        {
-            name: "admintest",
-            description: "description",
-            address: "address",
-            city: "city",
-            billingName: "billingName",
-            billingBox: "billingBox",
-            billingAddress: "billingAddress",
-            orgNumber: "orgNumber",
-            email: "admin@nowhere.com",
-            phone: "phone"
-        }
 
-        A notification:
-        type Notification{
-        _id: String
-        date: String
-        type: String
-        toUser: String
-        fromUser: String
-        seen: Boolean
-        amount: Int
-        itemName: String
-        itemCount: Int
-        limitSurplusAmount: Int
-    }
-
-
-    */
     methods: {
         async updateNotifications() {
             const currentUser = await getCurrentUser()
             this.notifications = await getUserNotifications(currentUser.name)
-            if (this.notifications == 0) {
+            if (this.notifications == null) {
+                this.notifications = []
                 var noNotifications = { date: "", fromUser: "", toUser: "", type: "", amount: "No notifications" }
                 this.notifications.push(noNotifications)
             }

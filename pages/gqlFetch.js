@@ -291,13 +291,13 @@ export async function getUserNotifications(name) {
       }),
     }).then(r => r.json())
       .then(data => notifications = data)
+
   } catch (error) {
     console.error("Error fetching notifications: ", error)
     throw error
-    return
   }
-  notifications = notifications.data.userNotifications // Remove the Json "padding" to get the object or array
 
+  notifications = notifications.data.userNotifications
   return notifications
 }
 

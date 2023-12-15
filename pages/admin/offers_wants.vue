@@ -21,25 +21,30 @@
 						</v-col>
 					</v-row>
 					<div class="fixed-box fixed-box-no-admin">
-						<v-row class="top-border" v-for="offer in offers">
-							<v-col cols="2" class="row-text">
-								{{ offer.uploadDate }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ offer.title }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								${{ offer.price }}
-							</v-col>
-							<v-col cols="3" class="row-text">
-								{{ offer.longDesc }}
-							</v-col>
-							<v-col class="button-row">
-								<NuxtLink :to="{ name: '', params: {} }">
-									<div class="white-button">Buy</div>
-								</NuxtLink>
-							</v-col>
-						</v-row>
+						<div v-if="isLoadingOffersWants" class="spinner-holder">
+							<img src="./admin_icons/Spinner-5.gif" class="spinner">
+						</div>
+						<div v-else>
+							<v-row class="top-border" v-for="offer in offers">
+								<v-col cols="2" class="row-text">
+									{{ offer.uploadDate }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ offer.title }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									${{ offer.price }}
+								</v-col>
+								<v-col cols="3" class="row-text">
+									{{ offer.longDesc }}
+								</v-col>
+								<v-col class="button-row">
+									<NuxtLink :to="{ name: '', params: {} }">
+										<div class="white-button">Buy</div>
+									</NuxtLink>
+								</v-col>
+							</v-row>
+						</div>
 					</div>
 				</div>
 				<div v-else>
@@ -58,25 +63,30 @@
 						</v-col>
 					</v-row>
 					<div class="fixed-box fixed-box-no-admin">
-						<v-row class="top-border" v-for="want in wants">
-							<v-col cols="2" class="row-text">
-								{{ want.uploadDate }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								{{ want.title }}
-							</v-col>
-							<v-col cols="2" class="row-text">
-								${{ want.price }}
-							</v-col>
-							<v-col cols="3" class="row-text">
-								{{ want.longDesc }}
-							</v-col>
-							<v-col class="button-row">
-								<NuxtLink :to="{ name: '', params: {} }">
-									<div class="white-button">Sell</div>
-								</NuxtLink>
-							</v-col>
-						</v-row>
+						<div v-if="isLoadingOffersWants" class="spinner-holder">
+							<img src="./admin_icons/Spinner-5.gif" class="spinner">
+						</div>
+						<div v-else>
+							<v-row class="top-border" v-for="want in wants">
+								<v-col cols="2" class="row-text">
+									{{ want.uploadDate }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									{{ want.title }}
+								</v-col>
+								<v-col cols="2" class="row-text">
+									${{ want.price }}
+								</v-col>
+								<v-col cols="3" class="row-text">
+									{{ want.longDesc }}
+								</v-col>
+								<v-col class="button-row">
+									<NuxtLink :to="{ name: '', params: {} }">
+										<div class="white-button">Sell</div>
+									</NuxtLink>
+								</v-col>
+							</v-row>
+						</div>
 					</div>
 				</div>
 			</v-col>
@@ -116,6 +126,8 @@ export default {
 			onBlueTab: true,
 			onLeftChatboxTab: true,
 
+			isLoadingOffersWants: false,
+
 			id: this.$route.params.id,
 			memberName: this.$route.params.name
 		}
@@ -152,6 +164,7 @@ export default {
 
 			this.allOffers = this.offers
 			this.allWants = this.wants
+			this.isLoadingOffersWants = false
 
 			// Not for offers and wants just testing member editing
 			// var member = await getMember(this.name)
@@ -178,6 +191,7 @@ export default {
 
 	},
 	mounted: function () {
+		this.isLoadingOffersWants = true
 		this.updateOffers()
 	}
 
