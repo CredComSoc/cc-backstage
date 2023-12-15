@@ -2,7 +2,7 @@
     <v-row class="member-header">
         <v-col>
             <form>
-                <input type="text" v-model="search" placeholder="Search">
+                <input type="text" v-model="searchTerm" @keyup="search" placeholder="Search">
             </form>
         </v-col>
         <v-col class="member-header-middle"> {{ title }} </v-col>
@@ -17,13 +17,20 @@
 <script>
 
 export default {
-
     data() {
         return {
-            search: '',
+            searchTerm: '',
         }
     },
-    props: ["title"]
+    props: ["title"],
+
+    methods: {
+        search() {
+            this.$emit('keyup', this.searchTerm);
+        }
+    }
+
+
 }
 </script>
 

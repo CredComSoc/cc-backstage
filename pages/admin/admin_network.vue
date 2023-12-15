@@ -1,6 +1,6 @@
 <template>
     <div>
-        <member_header :title='"NETWORK ADMINISTRATION"' />
+        <member_header @keyup="onSearch" :title='"NETWORK ADMINISTRATION"' />
         <v-row>
             <v-col cols="8">
                 <member_tabs @click="setTabStatus" :blueTabTitle='"NETWORK POLICIES"'
@@ -78,6 +78,9 @@ export default {
             onBlueTab: true,
             onLeftChatboxTab: true,
         }
+    },
+
+    onSearch(searchTerm) {
     },
 
     methods: {

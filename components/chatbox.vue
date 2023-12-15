@@ -53,7 +53,7 @@ export default {
 
         sendMessage() {
             var fullDate = new Date();
-            var dateStr = fullDate.getFullYear() + "-" + fullDate.getMonth() + "-" + fullDate.getDate();
+            var dateStr = fullDate.getFullYear() + "-" + (fullDate.getMonth() + 1) + "-" + fullDate.getDate(); // getMonth returns 0-11
             var timeStr = fullDate.getHours() + ":" + fullDate.getUTCMinutes();
             var mess = { date: dateStr, time: timeStr, from: "Me", message: this.myMessage, from_me: true }
             this.messages.push(mess);

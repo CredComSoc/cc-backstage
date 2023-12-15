@@ -6,13 +6,12 @@
 
 <template>
     <div>
-        <member_header :title='"ALL MEMBERS"' />
+        <member_header @keyup="onSearch" :title='"ALL MEMBERS"' />
         <v-row>
             <v-col cols="8">
                 <member_tabs @click="setMemberListTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
 
                 <div v-if="onBlueTab">
-                    <input type="text" v-model="search" v-on:keyup="onSearch" placeholder="Search" background-color="white">
                     <v-row class="row-headings">
                         <v-col cols="2">
                             <h1>Member</h1>
@@ -111,7 +110,7 @@ export default {
             onBlueTab: true,
             onLeftChatboxTab: true,
 
-            transactions: [
+            transactions: [ // Dummy data
                 { date: "2023-09-12", payer: "Anna Karlsson", receiver: "Ben Johnson", amount: "110" },
                 { date: "2023-09-12", payer: "Patrik Olsson", receiver: "John Benson", amount: "22" },
                 { date: "2020-01-10", payer: "Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
@@ -122,14 +121,6 @@ export default {
     },
 
     methods: {
-        initTransaction(member) {
-            this.$router.push("/admin/member");
-        },
-
-        gotoOffersWants(member) {
-            this.$router.push("/admin/offers_wants");
-        },
-
         async updateMembers() {
             this.allMembers = await getMembers()
             this.members = this.allMembers
@@ -140,9 +131,9 @@ export default {
         setChatboxTabStatus(onLeftChatboxTab) {
             this.onLeftChatboxTab = onLeftChatboxTab
         },
-        onSearch() {
+        onSearch(searchTerm) {
             this.members = this.allMembers.filter(member => {
-                return member.accountName.toLowerCase().includes(this.search.toLowerCase())
+                return member.accountName.toLowerCase().includes(searchTerm.toLowerCase())
             })
         },
         async updateTransactions() {
