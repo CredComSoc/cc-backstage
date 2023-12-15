@@ -1,3 +1,6 @@
+<!--
+	For displaying the logged-in admin's data.
+-->
 <template>
 	<v-row>
 		<v-col cols="2" class="admin-row-text">
@@ -31,13 +34,6 @@
 
 <script>
 export default {
-
-	data() {
-		return {
-
-		}
-	},
-
 	props: ["id", "accountName", "balance"]
 }
 </script>

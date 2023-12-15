@@ -1,3 +1,9 @@
+<!--
+    Header with a search/filter box, the current page's name, and a link to the Settings page.
+
+    The search box fires keyup events, and the parent should filter the list on its page (using the searchTerm parameter) when this happens. The parent should therefore also bind to searchTerm when using the component.
+-->
+
 <template>
     <v-row class="member-header">
         <v-col>
@@ -26,7 +32,7 @@ export default {
 
     methods: {
         search() {
-            this.$emit('keyup', this.searchTerm);
+            this.$emit('keyup', this.searchTerm); // Parent should listen for this event
         }
     }
 

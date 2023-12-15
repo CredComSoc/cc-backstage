@@ -1,3 +1,7 @@
+<!--
+Load and display one user's offers and wants. The search box filters the list on date. Also has a chatbox and member details box (for this member) on the right.
+-->
+
 <template>
 	<div>
 		<member_header @keyup="onSearch" :title="memberName" />
@@ -21,10 +25,11 @@
 						</v-col>
 					</v-row>
 					<div class="fixed-box fixed-box-no-admin">
+						<!-- Spinner while loading the list-->
 						<div v-if="isLoadingOffersWants" class="spinner-holder">
 							<img src="./admin_icons/Spinner-5.gif" class="spinner">
 						</div>
-						<div v-else>
+						<div v-else> <!-- Display list-->
 							<v-row class="top-border" v-for="offer in offers">
 								<v-col cols="2" class="row-text">
 									{{ offer.uploadDate }}
@@ -63,10 +68,11 @@
 						</v-col>
 					</v-row>
 					<div class="fixed-box fixed-box-no-admin">
+						<!-- Spinner while loading the list-->
 						<div v-if="isLoadingOffersWants" class="spinner-holder">
 							<img src="./admin_icons/Spinner-5.gif" class="spinner">
 						</div>
-						<div v-else>
+						<div v-else> <!-- Display list-->
 							<v-row class="top-border" v-for="want in wants">
 								<v-col cols="2" class="row-text">
 									{{ want.uploadDate }}
@@ -102,8 +108,7 @@
 
 
 <script>
-import { getUserArticles, getMember } from '/pages/gqlFetch.js'
-import { updateUserProfile, getImg } from '/pages/expressFetch.js'
+import { getUserArticles } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_tabs from '/components/member_tabs.vue'
 import chat_tabs from '/components/chat_tabs.vue'
@@ -134,14 +139,6 @@ export default {
 
 	},
 	methods: {
-
-		/*
-		 title
-		 uploadDate
-		 longDesc
-		 price
-		*/
-
 		async updateOffers() {
 			var articles = await getUserArticles(this.memberName)
 			articles = JSON.parse(articles)
@@ -154,32 +151,27 @@ export default {
 			})
 
 			for (var ii = 0; ii < this.offers.length; ii++) {
-				var date = new Date(Number(this.offers[ii].uploadDate))
+				var date = new Date(Number(this.offers[ii].uploadDate)) // Unix time to Date
 				this.offers[ii].uploadDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
 			}
 			for (var ii = 0; ii < this.wants.length; ii++) {
-				var date = new Date(Number(this.wants[ii].uploadDate))
+				var date = new Date(Number(this.wants[ii].uploadDate)) // Unix time to Date
 				this.wants[ii].uploadDate = date.getFullYear() + "-" + (date.getMonth() + 1).toString().padStart(2, '0') + "-" + date.getDate().toString().padStart(2, '0')
 			}
 
 			this.allOffers = this.offers
 			this.allWants = this.wants
-			this.isLoadingOffersWants = false
-
-			// Not for offers and wants just testing member editing
-			// var member = await getMember(this.name)
-			// console.log(member)
-			// await updateUserProfile(this.name, "editnametest", member.description, member.address, member.city, member.billing.name, member.billing.box, member.billing.address, member.billing.orgNumber, member.email, member.phone)
+			this.isLoadingOffersWants = false // spinner off
 		},
 
 		onSearch(searchTerm) {
+			// Filter both lists on date
 			this.offers = this.allOffers.filter(offer => {
 				return offer.uploadDate.toString().includes(searchTerm)
 			})
 			this.wants = this.allWants.filter(want => {
 				return want.uploadDate.toString().includes(searchTerm)
 			})
-
 		},
 
 		setTabStatus(onBlueTab) {
@@ -191,7 +183,7 @@ export default {
 
 	},
 	mounted: function () {
-		this.isLoadingOffersWants = true
+		this.isLoadingOffersWants = true // spinner on
 		this.updateOffers()
 	}
 

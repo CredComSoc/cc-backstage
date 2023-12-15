@@ -1,3 +1,14 @@
+<!--
+Page for administering the network. Contains fields where an admin can set Transaction Fees,
+Interest on BSEK and Default Balance Limits.
+
+Also has a Member Administration tab, which is currently blank.
+
+To the right, holds notifications and chat boxes.
+
+The search box (in the header component) does nothing on this page.
+-->
+
 <template>
     <div>
         <member_header @keyup="onSearch" :title='"NETWORK ADMINISTRATION"' />
@@ -56,9 +67,6 @@
 </template>
 
 <script>
-
-// import Member from '@/pages/admin/member.vue'
-import { getMembers } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
@@ -74,7 +82,6 @@ export default {
 
     data() {
         return {
-            members: [],
             onBlueTab: true,
             onLeftChatboxTab: true,
         }
@@ -98,7 +105,6 @@ export default {
 <style scoped>
 div.mainContainer {
     height: 70vh;
-    /* border: 1px solid black; */
     margin: 0px;
 }
 

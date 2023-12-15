@@ -1,3 +1,6 @@
+<!--
+	A container component with two tabs. Toggle which tab is showing by setting blueTabVisible and greenTabVisible from the parent component. The parent needs to listen for the click event and switch tab content when it fires.
+-->
 <template>
 	<v-row class="tab-row">
 		<v-col cols="6">
@@ -32,13 +35,13 @@ export default {
 		}
 	},
 
-	props: ['blueTabTitle', 'greenTabTitle'],
+	props: ['blueTabTitle', 'greenTabTitle'], // Tab names from parent
 
 	methods: {
 		toggleToBlueTab() {
 			this.greenTabVisible = false;
 			this.blueTabVisible = true;
-			this.$emit('click', true);
+			this.$emit('click', true); // Parent should listen for this
 		},
 
 		toggleToGreenTab() {

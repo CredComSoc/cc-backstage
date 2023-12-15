@@ -1,3 +1,7 @@
+<!--
+One row of data in the member table. Takes as parameters and displays a user's name, balance, status, phone number, and buttons to go to its user, transactions, or offers & wants page, and a button for emailing the user.
+-->
+
 <template>
 	<v-row class="top-border">
 		<v-col cols="2" class="row-text">
@@ -42,13 +46,6 @@
 
 <script>
 export default {
-
-	data() {
-		return {
-
-		}
-	},
-
 	props: ["id", "accountName", "balance", "status", "phone", "email"]
 }
 </script>

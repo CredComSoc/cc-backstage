@@ -1,7 +1,9 @@
 <!--
     Fetches and shows a list of all members in one tab, and all transactions in another.
-    Also shows the admin account at the bottom of the page, and the notifications/chat
+    Also shows the admin account (admin_row) at the bottom of the page, and the notifications/chat
     component to the right.
+
+    The search box can be used to filter the list on user names in the Users tab or on user names and dates if on the Transactions tab.
 -->
 
 <template>
@@ -173,7 +175,7 @@ export default {
                 this.transactions.push(transactionRow)
             })
             this.allTransactions = this.transactions
-            this.isLoadingTransactionData = false
+            this.isLoadingTransactionData = false // stop spinner
         },
 
         async updateAdminUser() {
@@ -183,7 +185,7 @@ export default {
 
     },
     mounted: function () {
-        this.isLoadingUserData = true
+        this.isLoadingUserData = true // start spinner
         this.isLoadingTransactionData = true
         this.updateMembers()
         this.updateAdminUser()

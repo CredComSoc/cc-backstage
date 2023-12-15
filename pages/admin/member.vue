@@ -1,3 +1,7 @@
+<!--
+Fetches all transactions this user has, and display them either in Kronas or Barterkronas. Also has a chatbox and member details box (for this member) on the right.
+-->
+
 <template>
 	<div>
 		<member_header @keyup="onSearch" :title="memberName" />
@@ -104,6 +108,7 @@
 				</div>
 			</v-col>
 			<v-col cols="4">
+				<!-- Chat tabs is a tabbed component with one tab holding the chat box and the other the member details -->
 				<chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"MEMBER DETAILS"' :rightTabTitle='"MEMBER CHAT"' />
 				<member_details_box v-if=onLeftChatboxTab :memberName="memberName" />
 				<chatbox v-else />
@@ -136,7 +141,7 @@ export default {
 
 			conversionRate: 1.25, // Dummy conversion rate SEK:Bartercrowns
 
-			isLoadingTransactionData: false,
+			isLoadingTransactionData: false, // spinner control
 
 			allTransactions: [],
 			transactions: [],
@@ -193,14 +198,14 @@ export default {
 				this.transactions.push(transactionRow)
 			})
 			this.allTransactions = this.transactions
-			this.isLoadingTransactionData = false
+			this.isLoadingTransactionData = false // stop spinner
 		},
 
 
 	},
 	mounted: function () {
 		this.updateMember()
-		this.isLoadingTransactionData = true
+		this.isLoadingTransactionData = true // start spinner
 		this.updateTransactions()
 	}
 }

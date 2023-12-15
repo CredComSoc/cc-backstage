@@ -1,3 +1,7 @@
+<!--
+    Displays member data from the database. Also displays an image if there is one in the db, otherwise a placeholder.
+-->
+
 <template>
     <div>
         <div class="member-details-box fixed-box">
@@ -34,7 +38,7 @@ export default {
 
             imgUrl: questionImage, // DB holds no pictures, so use this placeholder
 
-            memberDetails: {
+            memberDetails: { // Dummy data
                 accountName: "Florist AB",
                 description: "Hej! Vi är en blombutik i Söderköping med fem glada florister. Se våra artiklar för aktuella blombuketter just nu.",
                 address: "Hantverksgatan 14",
@@ -52,20 +56,19 @@ export default {
     },
 
     methods: {
-        async updateMember() {
+        async updateMemberDetails() {
             this.memberDetails = await getMember(this.memberName)
         },
         async getImage() {
-			const response = await getImg(this.memberDetails.logo)
-            if(response.status == 200 || response.status == 304)
-            {
-			    this.imgUrl = response.url
+            const response = await getImg(this.memberDetails.logo)
+            if (response.status == 200 || response.status == 304) {
+                this.imgUrl = response.url
             }
-		},
+        },
 
     },
     mounted: async function () {
-        await this.updateMember()
+        await this.updateMemberDetails()
         this.getImage()
     }
 }

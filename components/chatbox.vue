@@ -1,3 +1,8 @@
+<!--
+    Chat box component. Display messages, and send new messages to appear in the chat flow.
+    This has no connection to the database, so messages are just dummy data, and nothing is saved.
+-->
+
 <template>
     <div>
         <div name="scrollbox" class="chatbox fixed-box">
@@ -44,8 +49,8 @@ export default {
     },
 
     methods: {
-        scrollToBottom() {
-            this.$nextTick(function () {
+        scrollToBottom() { // Scrolls the chatbox so that the latest message (at the bottom) is visible
+            this.$nextTick(function () { // Scroll needs to wait one tick, so that the new message has time to be mounted
                 var myObj = document.getElementsByName("scrollbox")[0];
                 myObj.scrollTop = myObj.scrollHeight;
             })
@@ -75,9 +80,6 @@ export default {
 .chatbox {
     height: calc(100vh - 342px);
     color: white;
-    /*align-self: flex-end;
-     display: flex;
-    flex-direction: column;*/
     overflow-y: scroll;
 }
 
@@ -108,10 +110,6 @@ export default {
     font-size: small;
 }
 
-.writebox {
-    background-color: white;
-}
-
 .message-input {
     width: 98%;
     height: 40px;
@@ -137,5 +135,7 @@ export default {
     margin: 2px;
     margin-right: 6px;
     height: 40px;
+    user-select: none;
+    cursor: pointer;
 }
 </style>

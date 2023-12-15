@@ -1,3 +1,7 @@
+<!--
+    A component to read and display a logged-in admin's notfications.
+-->
+
 <template>
     <div>
         <div class="notification-box fixed-box">
