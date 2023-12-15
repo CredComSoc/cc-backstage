@@ -115,6 +115,7 @@ export default {
                 { date: "2023-09-12", payer: "Patrik Olsson", receiver: "John Benson", amount: "22" },
                 { date: "2020-01-10", payer: "Stina Karlsson", receiver: "Sune Mangs", amount: "220" }
             ],
+            allTransactions: [],
             unformattedTransactions: [],
 
         }
@@ -127,14 +128,24 @@ export default {
         },
         setMemberListTabStatus(onBlueTab) {
             this.onBlueTab = onBlueTab
+
         },
         setChatboxTabStatus(onLeftChatboxTab) {
             this.onLeftChatboxTab = onLeftChatboxTab
         },
         onSearch(searchTerm) {
-            this.members = this.allMembers.filter(member => {
-                return member.accountName.toLowerCase().includes(searchTerm.toLowerCase())
-            })
+            if(this.onBlueTab)
+            {
+                 this.members = this.allMembers.filter(member => {
+                    return member.accountName.toLowerCase().includes(searchTerm.toLowerCase())
+                 })
+            }
+            else
+            {
+                 this.transactions = this.allTransactions.filter(transaction => {
+                    return (transaction.payee.toLowerCase().includes(searchTerm.toLowerCase()) || transaction.payer.toLowerCase().includes(searchTerm.toLowerCase()))
+                 })
+            }
         },
         async updateTransactions() {
             this.transactions = []
@@ -148,6 +159,7 @@ export default {
                 transactionRow.amount = transaction.entries[0].quantity
                 this.transactions.push(transactionRow)
             })
+            this.allTransactions = this.transactions
         },
 
         async updateAdminUser() {
