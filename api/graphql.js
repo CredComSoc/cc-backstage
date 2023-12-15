@@ -85,12 +85,6 @@ let schema = buildSchema(`
 
 `)
 
-
-// add to schema: user that has "Member Name, Balance, Status, Phone Number"
-// Transactions involving one specific member.
-// Send how many members are online
-// Send how many transactions were done on specific days
-
 // Dummy CC-node transactions for when the node is not used
 // Enable/disable the CC_NODE_ENABLED const in config.js to use
 const allTransactions = [
@@ -175,8 +169,6 @@ const allTransactions = [
 
 
 async function getMember({ id, accountName }) { // Get a single member, selected by either id or name
-    //Now from array, later from Credit Coop backend
-    //console.log(accountName)
     try {
         const db = await MongoClient.connect(DB_URL) //Connect to the mongoDB
         const dbo = db.db(DB_FOLDER)    // state the correct folder in the DB
@@ -200,13 +192,16 @@ async function getMember({ id, accountName }) { // Get a single member, selected
         userData.email = user.email
         userData.id = user._id
         userData.status = user.is_active ? "Active" : "Inactive"
-        //userData.balance = response.data[userData.id].completed.balance
-        //console.log(userData.balance)
+        if (CC_NODE_ENABLED && response.ok && response.data[userData.id] != null) { //If the user has not performed any CC-node actions yet, its ID wont be in account summary
+            userData.balance = response.data[userData.id].completed.balance
+        }
         db.close()
     }
     catch (error) {
-        console.error("Failure getting " + accountName + "'s profile " + error)
+        console.error("Query member(" + accountName + ") encountered an error: " + error)
+        throw error
     }
+    console.info("Query member(" + accountName + ") finished without errors")
     return userData
 
 }
@@ -217,18 +212,20 @@ async function getAllMembers() { // Get a list of all the members
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
         var users = await dbo.collection("users").find({}).toArray()
-        var response
-        await fetch(CC_NODE_URL + '/account/summary', {
-            method: "GET",
-            headers: {
-                'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
-                'cc-auth': '123'
-            },
-            credentials: 'include'
-        }).then(r => r.json())
-            .then(data => response = data)
+        if (CC_NODE_ENABLED) {
+            var response
+            await fetch(CC_NODE_URL + '/account/summary', {
+                method: "GET",
+                headers: {
+                    'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-auth': '123'
+                },
+                credentials: 'include'
+            }).then(r => r.json())
+                .then(data => response = data)
+        }
         for (const user of users) {
-            //console.log(user.profile.accountName + " "+user._id.getTimestamp())
+
             let userData = user.profile
             userData.registered = user._id.getTimestamp()
             userData.logo = user.logo
@@ -236,64 +233,67 @@ async function getAllMembers() { // Get a list of all the members
             userData.email = user.email
             userData.id = user._id
             userData.status = user.is_active ? "Active" : "Inactive"
-            if (response.data[userData.id] != null) { //If the user has not performed any CC-node actions yet, its ID wont be in account summary
+            if (CC_NODE_ENABLED && response.data[userData.id] != null) { //If the user has not performed any CC-node actions yet, its ID wont be in account summary
                 userData.balance = response.data[userData.id].completed.balance
             }
             allMembers.push(userData)
         }
         db.close()
     } catch (error) {
-        console.error("Error when fetching all the members data" + error)
+        console.error("Query allMembers encountered an error: " + error)
         throw error
     }
-    //console.log(allMembers)
+    console.info("Query getAllMembers finished without errors")
     return allMembers
-    //return members
 }
 
 async function getUserArticles(username) { // Get all article data related to a user
-    //console.log(username)
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)//Simple query returning all posts that the user has uploaded
         let articles = await dbo.collection("posts").find({ "userUploader": username.accountName }).toArray()
-        //console.log(articles)
         db.close()
-        return articles
     } catch (error) {
-        console.error("Failed to get user articles " + error)
+        console.error("Query userArticles encountered an error: " + error)
+        throw error
     }
+    console.info("Query userArticles(" + username + ") finished without errors")
+    return articles
 }
 
+
 async function getAllArticles() { // Get all posts
-    const db = await MongoClient.connect(DB_URL)
-    const dbo = db.db(DB_FOLDER)
-    let articles = await dbo.collection("posts").find({}).toArray()
-    db.close()
+    try {
+        const db = await MongoClient.connect(DB_URL)
+        const dbo = db.db(DB_FOLDER)
+        let articles = await dbo.collection("posts").find({}).toArray()
+        db.close()
+    } catch (error) {
+        console.error("Query allArticles encountered an error: " + error)
+        throw error
+    }
+    console.info("Query allArticles finished without errors")
     return articles
 
 }
 
+
 async function getUserCount() { // Get how many users that are not admins are in the database
-    const db = await MongoClient.connect(DB_URL)
-    const dbo = db.db(DB_FOLDER)
-    let count = await dbo.collection("users").countDocuments({ "is_admin": false })
-    db.close()
+    try {
+        const db = await MongoClient.connect(DB_URL)
+        const dbo = db.db(DB_FOLDER)
+        let count = await dbo.collection("users").countDocuments({ "is_admin": false })
+        db.close()
+    }
+    catch (error) {
+        console.error("Query userCount encountered an error: " + error)
+        throw error
+    }
+    console.info("Query userCount finished without errors")
     return count
 }
 
-// getOffers calling CCbackend/articles with user as input
-// Get offers related to a specific user from the CC-backend
 
-//getTransactions - calling backend or better to call the node directly?
-// Get transactions related to a specific user from the CC-node
-/* Sends transactions as
-date
-state
-payer
-payee
-quantity
-*/
 async function getAllTransactions() {
     try {
         var namedTransactions = []
@@ -316,7 +316,6 @@ async function getAllTransactions() {
         }
 
         for (const transaction of transactions) {
-            //console.log(user.profile.accountName + " "+user._id.getTimestamp())
             var transactionData = transaction
             transactionData.date = transaction.written
             transactionData.entries[0].quantity = transaction.entries[0].quant
@@ -328,7 +327,7 @@ async function getAllTransactions() {
                 return user._id == transactionData.entries[0].payer
             }).profile.accountName
 
-            console.log(transactionData)
+
             //Get balance information from CC-node using ID from user._id
             //As well as necessary logic for this.
             namedTransactions.push(transactionData)
@@ -337,13 +336,15 @@ async function getAllTransactions() {
         db.close()
 
     } catch (error) {
-        console.error("Failed to get all transactions " + error)
+        console.error("Query allTransactions encountered an error: " + error)
+        throw error
     }
+    console.info("Query allTransactions finished without errors")
     return namedTransactions
 }
+
+
 async function getUserTransactions({ id }) {
-    //let allTransaction = JSON.parse(transactions)
-    //console.log("id sent:" + id)
     var transactions = allTransactions
     try {
         var namedTransactions = []
@@ -371,7 +372,6 @@ async function getUserTransactions({ id }) {
         })
 
         for (const transaction of userTransactions) {
-            //console.log(user.profile.accountName + " "+user._id.getTimestamp())
             let transactionData = transaction
             transactionData.date = transaction.written
             transactionData.entries[0].quantity = transaction.entries[0].quant
@@ -385,39 +385,40 @@ async function getUserTransactions({ id }) {
                     return user._id == pid
                 }).profile.accountName
             })
-            //Get balance information from CC-node using ID from user._id
-            //As well as necessary logic for this.
             namedTransactions.push(transactionData)
-
         }
         db.close()
 
 
     } catch (error) {
-        console.error("Error getting " + id + "'s transactions " + error)
+        console.error("Query userTransactions(" + id + ") encountered an error: " + error)
+        throw error
     }
+    console.info("Query userTransactions(" + id + ") finished without errors")
     return userTransactions
 }
 
-async function getUserNotifications({ name }) {
 
-    const db = await MongoClient.connect(DB_URL)
-    const dbo = db.db(DB_FOLDER)//Getting all notifications from the database to a specific user
-    let notifications = await dbo.collection("notifications").find({ "toUser": name }).toArray()
-    db.close()
+async function getUserNotifications({ name }) {
+    try {
+        const db = await MongoClient.connect(DB_URL)
+        const dbo = db.db(DB_FOLDER)//Getting all notifications from the database to a specific user
+        let notifications = await dbo.collection("notifications").find({ "toUser": name }).toArray()
+        db.close()
+    } catch (error) {
+        console.error("Query userNotifications(" + name + ") encountered an error: " + error)
+        throw error
+    }
+    console.info("Query userNotifications(" + name + ") finished without errors")
     return notifications
 }
 
 
-async function addNewMember(input) {
-    members.push(input)
-}
-
-var root = {
-    member: ({ id, accountName }) => { // A query that should try to match what information the app needs about a single member
+var root = { //This is where what each query does is defined. When a query is sent with any of the names below, the corresponding function is called.
+    member: ({ id, accountName }) => {
         return getMember({ id, accountName })
     },
-    allMembers: () => { // A Query that returns all members
+    allMembers: () => {
         return getAllMembers()
     },
     allUserArticles: ({ accountName }) => {

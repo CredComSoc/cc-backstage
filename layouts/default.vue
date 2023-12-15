@@ -18,6 +18,7 @@
       </v-col>
       <v-col></v-col>
       <v-col align="right">
+      <button @click="logout"> Logout </button>
         <help></help>
       </v-col>
     </v-app-bar>
@@ -40,6 +41,7 @@ import svenskBarter from './svensk_barter.png';
 import members from '/components/topbar_members.vue';
 import help from '/components/topbar_help.vue';
 import notice from '/components/topbar_notice.vue';
+import { logout } from '/pages/expressFetch.js';
 
 export default {
   data() {
@@ -53,7 +55,12 @@ export default {
   {
     homeRoute() {
       this.$router.push('/admin/admin_overview');
-    }
+    },
+    async logout() {
+      await logout().then(() => {
+        window.location.reload()
+      })
+    },
   },
 
   components:
