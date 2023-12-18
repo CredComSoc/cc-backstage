@@ -19,7 +19,7 @@
     "graphql": "^16.8.1",
     "graphql-http": "^1.22.0",
     "mongodb": "^6.2.0",
-    "nuxt": "^2.15.8",
+    "nuxt": "^3.8.2",
     "vis-data": "^7.1.7",
     "vis-network": "^9.1.8",
     "vis-util": "^5.0.5",
