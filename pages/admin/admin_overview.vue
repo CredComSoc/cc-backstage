@@ -640,7 +640,6 @@
           const onlineThreshold = 900;
           let Threshhold = unixTime - onlineThreshold;
           //Problem här. Får ej Users.
-          //console.log(user.profile.accountName + " "+user._id.getTimestamp())
           if(userData != null)
           {
               userData.forEach((user) => 
@@ -667,7 +666,6 @@
             {
               return;
             }
-            console.log(trade);
             //Transactions
             let cur = this.transactionsMap.get(trade.date.slice(0,10));
             let new_value = cur + 1;
@@ -773,14 +771,20 @@
           if(listing.status == "offer")
           {
             let cur = this.offersMap.get(tempDate);
+            //let endDate = new Date(parseInt(listing.endDate, 10));
             cur++;
             this.offersMap.set(tempDate, cur);
+            //if(endDate >= date)
+              //this.offerCount++;
           }
           else if(listing.status == "want")
           {
             let cur = this.wantsMap.get(tempDate);
+            //let endDate = new Date(parseInt(listing.endDate, 10));
             cur++;
             this.wantsMap.set(tempDate, cur); 
+            //if(endDate >= date)
+              //this.wantCount++;
           }
         });
         this.offerCount = this.offersMap.get(date);
