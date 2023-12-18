@@ -369,6 +369,7 @@
         const currentDate = new Date();
         const currentDateISO = currentDate.toISOString().slice(0, 10); // Get the date part of the ISO string
         
+        // Load with random for dummy data
         this.registeredUserMap.set(currentDateISO, 0);
         this.onlineUserMap.set(currentDateISO, 0);
         this.transactionsMap.set(currentDateISO, 0);
@@ -559,7 +560,6 @@
           const onlineThreshold = 900;
           let Threshhold = unixTime - onlineThreshold;
           //Problem här. Får ej Users.
-          //console.log(user.profile.accountName + " "+user._id.getTimestamp())
           if(userData != null)
           {
               userData.forEach((user) => 
@@ -586,7 +586,6 @@
             {
               return;
             }
-            console.log(trade);
             //Transactions
             let cur = this.transactionsMap.get(trade.date.slice(0,10));
             let new_value = cur + 1;
@@ -692,14 +691,20 @@
           if(listing.status == "offer")
           {
             let cur = this.offersMap.get(tempDate);
+            //let endDate = new Date(parseInt(listing.endDate, 10));
             cur++;
             this.offersMap.set(tempDate, cur);
+            //if(endDate >= date)
+              //this.offerCount++;
           }
           else if(listing.status == "want")
           {
             let cur = this.wantsMap.get(tempDate);
+            //let endDate = new Date(parseInt(listing.endDate, 10));
             cur++;
             this.wantsMap.set(tempDate, cur); 
+            //if(endDate >= date)
+              //this.wantCount++;
           }
         });
         this.offerCount = this.offersMap.get(date);
@@ -745,6 +750,8 @@
     flex-direction: column;
     border-radius: 5px;
     
+    box-shadow: 10px 7px 21px -5px rgba(0,0,0,0.51);
+
     width: 13vw;
     height: 15vh;
   }

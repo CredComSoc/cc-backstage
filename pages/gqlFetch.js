@@ -76,6 +76,7 @@ export async function getUserArticles(name){
               status
               destination
               price
+              endDate
               uploadDate
               userUploader
               userId
