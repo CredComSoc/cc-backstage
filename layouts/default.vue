@@ -71,9 +71,25 @@ export default {
     notice: notice,
   }
 }
+
+
+
+
+
+
+
 </script>
 
 <style scoped>
+
+
+.logo_button
+{
+  width: 13rem;
+  height: 3.5rem;
+}
+
+
 .default_background {
   background-color: rgb(238, 238, 238);
 }

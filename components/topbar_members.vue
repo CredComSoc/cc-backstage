@@ -29,11 +29,11 @@
   };
 </script>
   
-  <style scoped>
+  <style>
   .main 
   {
-    width: 2vw;
-    height: 4vh;
+    width: 2.6rem;
+    height: 2.6rem;
   }
   
   .buttonStyle {

@@ -39,7 +39,8 @@
       <div class="test-container" style="background-color:  #ffc000;">
         <div class="test-container-upper">
           <div class="test-container-lhs">
-            <div class="test-container-text-upper"> {{ testData }}</div>
+            <div class="test-container-text-upper" v-if="showTransactions"> {{ transactions }}</div>
+            <div class="test-container-text-upper" v-if="!showTransactions"> {{ volume }} BKr </div>
             <div class="test-container-text-lower"> Trades</div>
           </div>
           <div class="test-container-rhs">
@@ -47,10 +48,16 @@
           </div>
         </div>
         <div class="test-container-lower">
-          <button class="test-container-lower-lhs" @click="displayGraph('transactions')">
+          <button class="test-container-lower-lhs" v-if="showTransactions" style="background-color: rgba(0, 0, 0, 0.200);" @click="displayGraph('transactions')">
             Transactions
           </button>
-          <button class="test-container-lower-rhs" @click="displayGraph('volume')">
+          <button class="test-container-lower-lhs" v-if="!showTransactions" @click="displayGraph('transactions')">
+            Transactions
+          </button>
+          <button class="test-container-lower-rhs" v-if="showTransactions" @click="displayGraph('volume')">
+            Volume
+          </button>
+          <button class="test-container-lower-rhs" v-if="!showTransactions" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('volume')">
             Volume
           </button>
         </div>
@@ -110,7 +117,7 @@
             :edges="edges"
             :options="options"
             :events="['selectNode', 'hoverNode']"
-            @select-node="onNodeSelected"
+            @select-node="onNodeSelected()"
             @hover-node="onNodeHovered">
           </network>
         </div>
@@ -122,8 +129,9 @@
           <button class="chart-button" @click="yearGraph(currentChart)"> 1y </button>
 
           <div class="datepicker-container">
-            <Datepicker ref="dpicker" range showClearButton v-model="selectedDate" circle class="datepicker"  placeholder="Custom date" lang="en"
+            <Datepicker ref="dpicker" range showClearButton v-model="selectedDate" circle class="datepicker" placeholder="Custom date" lang="en"
             @change="datePickRange(currentChart)"/>
+          
           </div>
 
           <div class="chart-text-box" v-if="showChart">
@@ -171,10 +179,11 @@
 
   // fetchFuncs
   import { Network } from "vue-vis-network";
-  import { getUserCount } from '/pages/gqlFetch.js';
-  import { getAllArticles } from '/pages/gqlFetch.js';
-import { tSMethodSignature } from '@babel/types';
+  import { getUserCount, getMembers, getAllArticles, getAllTransactions } from '/pages/gqlFetch.js';
+  import { tSMethodSignature } from '@babel/types';
+  import { forEach } from 'vis-util';
 
+  
 
   // fetchFuncs end
 
@@ -214,16 +223,22 @@ import { tSMethodSignature } from '@babel/types';
         // ------------------        
         
         // Trades
-        testData : 5,
-        offers: [],
-        offerCount: 0,
-        wants: [],
-        wantCount: 0,
-        listedCount: 0,
-        activeTrades: 23,
-        showOffers: true,
+        transactions: 0,
+        volume: 0,
+        showTransactions: true,
         // ------------------
         
+        // Listings
+        
+        offers: [],
+        wants: [],
+        offerCount: 0,
+        wantCount: 0,
+        listedCount: 0,
+        activeTrades: 0,
+        showOffers: true,
+        // ------------------
+
         // Maps
         registeredUserMap: new Map(),
         onlineUserMap : new Map(),
@@ -373,56 +388,11 @@ import { tSMethodSignature } from '@babel/types';
 
     methods:
     {
-
-      createNodes()
+      onNodeSelected()
       {
-        for (let i = 0; i < this.dummytransactions.length; i++)
-        {
-          const fromNode =
-          {
-            id: this.dummytransactions[i].from,
-            label: this.dummytransactions[i].from,
-          };
+        console.log("Funkar");
+      }, 
 
-          const toNode =
-          {
-            id: this.dummytransactions[i].to,
-            label: this.dummytransactions[i].to,
-          };
-
-        const isFromNodeInArray = this.nodes.some(node => node.id === fromNode.id);
-        const isToNodeInArray = this.nodes.some(node => node.id === toNode.id);
-
-        if (!isFromNodeInArray)
-        {
-          this.nodes.push(fromNode);
-        }
-
-        if (!isToNodeInArray)
-        {
-          console.log("warning");
-          this.nodes.push(toNode);
-        }
-
-        const edge =
-        {
-          from: this.dummytransactions[i].from,
-          to: this.dummytransactions[i].to,
-        };
-
-        const isEdgeInArray = this.edges.some(existingEdge =>
-        (existingEdge.from === edge.from && existingEdge.to === edge.to) ||
-        (existingEdge.from === edge.to && existingEdge.to === edge.from));
-
-
-        if(!isEdgeInArray)
-        {
-          this.edges.push(edge);
-        }
-
-
-        }
-      },
       displayGraph(currentChart)
       {
         
@@ -455,39 +425,6 @@ import { tSMethodSignature } from '@babel/types';
 
       updateChart(data, color)
       {
-      //   this.displayGraph();
-      //   //const newData = JSON.parse(JSON.stringify(data));
-      //   // graphql get data for all functions
-      //   switch(data)
-      //   {
-      //     case "online":
-      //       this.currentChart = "online";
-      //       this.showOnline = true;
-      //       break;
-      //     case "registered":
-      //       this.chartSeries = this.dataTrades;
-      //       this.showOnline = false;
-      //       break;
-      //     case "transactions":
-      //       this.chartSeries = this.dataTrades;
-      //       break;
-      //     case "volume":
-      //     this.currentChart = "volume";  
-      //     this.chartSeries = this.dataOnlineUsr;
-      //       break;
-      //     case "offers":
-      //       this.currentChart = "offers";
-      //       this.chartSeries = this.dataTrades;
-      //       this.showOffers = true;
-      //       break;
-      //     case "wants":
-      //       this.currentChart = "wants";  
-      //       this.chartSeries = this.dataListedTrades;
-      //       this.showOffers = false;
-      //       break;
-      //   }
-      //   this.updateChartOptions(color);
-      
       },
 
       updateChartOptions(color)
@@ -509,38 +446,30 @@ import { tSMethodSignature } from '@babel/types';
 
       fetchDataToMaps()
       {
-
-        // SHOULD FETCH FROM DATABASE!
-
-
-        
         const currentDate = new Date();
-        this.registeredUserMap.set(currentDate.toDateString().slice(4), 0);
-        this.onlineUserMap.set(currentDate.toDateString().slice(4), 0);
-        this.transactionsMap.set(currentDate.toDateString().slice(4), 0);
-        this.volumeMap.set(currentDate.toDateString().slice(4), 0);
-        this.offersMap.set(currentDate.toDateString().slice(4), 0);
-        this.wantsMap.set(currentDate.toDateString().slice(4), 0);
+        const currentDateISO = currentDate.toISOString().slice(0, 10); // Get the date part of the ISO string
+        
+        this.registeredUserMap.set(currentDateISO, 0);
+        this.onlineUserMap.set(currentDateISO, 0);
+        this.transactionsMap.set(currentDateISO, 0);
+        this.volumeMap.set(currentDateISO, 0);
+        this.offersMap.set(currentDateISO, 0);
+        this.wantsMap.set(currentDateISO, 0);
 
-        // Filling dates with dummy data.
-        for(let i = 0; i < 365; i++)
+        // Filling dates with dummy 0.
+        for (let i = 0; i < 365; i++) 
         {
-          currentDate.setDate(currentDate.getDate() -1);
-          this.onlineUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.registeredUserMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.transactionsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.volumeMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.offersMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-          this.wantsMap.set(currentDate.toDateString().slice(4),  Math.floor(Math.random() * 11));
-        }
-        // console.log(this.registeredUserMap.size);
-        // this.onlineUserMap.forEach((values, keys) => {
-        // console.log("values: ", values +
-        // ", keys: ", keys)
-        // })
+          currentDate.setDate(currentDate.getDate() - 1);
+          const previousDateISO = currentDate.toISOString().slice(0, 10);
+  
+          this.onlineUserMap.set(previousDateISO, 0);
+          this.registeredUserMap.set(previousDateISO, 0);
+          this.transactionsMap.set(previousDateISO, 0);
+          this.volumeMap.set(previousDateISO, 0);
+          this.offersMap.set(previousDateISO, 0);
+          this.wantsMap.set(previousDateISO, 0);
+          }
       },
-
-    
 
       updateStartEndDate(startDate, endDate)
       {
@@ -551,8 +480,6 @@ import { tSMethodSignature } from '@babel/types';
           //   this.selectedDate = [new Date(startDate), new Date(endDate)];
           // });
       },
-
-
 
       weekGraph(currentChart)
       {
@@ -606,7 +533,6 @@ import { tSMethodSignature } from '@babel/types';
       {
         let map;
         let color;
-        console.log(currentChart);
 
         switch(currentChart)
         {
@@ -623,13 +549,13 @@ import { tSMethodSignature } from '@babel/types';
             color = '#b51f1f';
             break;
           case "transactions":
-            this.testData = 20;
+            this.showTransactions = true;
             this.currentChart = "transactions";
             map = this.transactionsMap;
             color = '#bcbf0d'; 
             break;
           case "volume":
-            this.testData = 5;
+            this.showTransactions = false;
             this.currentChart = "volume";  
             map = this.volumeMap;
             color = '#bcbf0d';
@@ -659,8 +585,8 @@ import { tSMethodSignature } from '@babel/types';
           let current = new Date(from);
           while (current <= to) 
           {
-            newData.push(map.get(current.toDateString().slice(4)));
-            newDate.push(current.toDateString().slice(4));
+            newData.push(map.get(current.toISOString().slice(0,10)));
+            newDate.push(current.toISOString().slice(0,10));
             current.setDate(current.getDate() + 1);
           }
         }
@@ -704,38 +630,170 @@ import { tSMethodSignature } from '@babel/types';
           this.chartSeries = newChart; 
        },
 
-      async getOnlineUsers()
+       getUsers(userData)
+       {
+          let onlineMembers = 0;
+          // Slice off miliseconds.
+          let unixTime = Math.floor(Date.now()/1000);
+          // Time in seconds to online (900 = 15 minutes).
+          const onlineThreshold = 900;
+          let Threshhold = unixTime - onlineThreshold;
+          //Problem här. Får ej Users.
+          //console.log(user.profile.accountName + " "+user._id.getTimestamp())
+          if(userData != null)
+          {
+              userData.forEach((user) => 
+              {
+                // Fetching when they are registerd.
+                // const curDate = user.registerd;
+                if(user.last_online/1000 > Threshhold)       
+                {
+                  onlineMembers++;
+                }
+                
+              }); 
+          }
+          return onlineMembers;
+       },
+
+       getTradeData(trades)
+       {
+          let date = new Date();
+          date = date.toISOString().slice(0,10);
+          trades.forEach((trade) => 
+          {
+            if(trade.state != "completed")
+            {
+              return;
+            }
+            console.log(trade);
+            //Transactions
+            let cur = this.transactionsMap.get(trade.date.slice(0,10));
+            let new_value = cur + 1;
+            this.transactionsMap.set(trade.date.slice(0,10), new_value);
+
+            //Volume
+            let volume = this.volumeMap.get(trade.date.slice(0,10));
+            let new_volume = volume + parseInt(trade.entries[0].quantity.substring(1));
+            this.volumeMap.set(trade.date.slice(0,10), new_volume);
+
+          });
+          
+          this.transactions = this.transactionsMap.get(date);
+          this.volume = this.volumeMap.get(date);
+       },
+
+      getNetwork(trades)
       {
+        trades.forEach((trade) =>
+        {  
+          if(trade.state != "completed")
+          {
+            return;
+          }
+          
+          let fromNode =
+          {
+            id: trade.entries[0].payee,
+            label: trade.entries[0].payee
+          };
+          
+          let toNode =
+          {
+            id: trade.entries[0].payer,
+            label: trade.entries[0].payer
+          };
+          
+          // Is node already existing
+          const isFromNodeInArray = this.nodes.some(node => node.id === fromNode.id);
+          const isToNodeInArray = this.nodes.some(node => node.id === toNode.id);
+
+          // If not existing add.
+          if (!isFromNodeInArray)
+          {
+            this.nodes.push(fromNode);
+          };
+          
+          // If not existing add.
+          if (!isToNodeInArray)
+          {
+            this.nodes.push(toNode);
+          };
+
+          const edge =
+          {
+            from: fromNode.label,
+            to: toNode.label,
+          };
+
+          // Is edge already existing?
+          // Potentially add, if two people trade more?
+          // Incrase thickness of edge.
+          const isEdgeInArray = this.edges.some(existingEdge =>
+          (existingEdge.from === edge.from && existingEdge.to === edge.to) ||
+          (existingEdge.from === edge.to && existingEdge.to === edge.from));
+
+          // Add if not already existing.
+          if(!isEdgeInArray)
+          {
+            this.edges.push(edge);
+          } 
+        });
+      },
+
+      async getDisplayData() // Fetcha ->> stödfunktioner
+      {
+        //User Data
         this.registerdUsersCount = await getUserCount();
+        let userData = await getMembers();
+        this.onlineUsersCount = this.getUsers(userData);
+        
+        //Trade Data
+        let trades = await getAllTransactions();
+        this.getTradeData(trades);
+
+        //Listed Date
+        let listed = await getAllArticles();
+        this.getListedData(listed);
+        
+        //Networkgraph 
+        this.getNetwork(trades);
       },
     
-      async getTrades() {
-        var articles = await getAllArticles();
-        articles = JSON.parse(articles);
-
-        this.offers = articles.filter(function (article) {
-            return (article.status == "offer")
+      getListedData(listed) 
+      {
+        let date = new Date();
+        date = date.toISOString().slice(0,10);
+        listed = JSON.parse(listed);  
+        listed.forEach((listing) =>
+        { 
+          var tempDate = new Date(parseInt(listing.uploadDate,10));
+          tempDate = tempDate.toISOString().slice(0,10);
+          if(listing.status == "offer")
+          {
+            let cur = this.offersMap.get(tempDate);
+            cur++;
+            this.offersMap.set(tempDate, cur);
+          }
+          else if(listing.status == "want")
+          {
+            let cur = this.wantsMap.get(tempDate);
+            cur++;
+            this.wantsMap.set(tempDate, cur); 
+          }
         });
-        this.wants = articles.filter(function (article) {
-            return (article.status == "want")
-         });
-        this.offerCount = this.offers.length;
-        this.wantCount = this.wants.length;
-        this.listedCount = this.offerCount + this.wantCount;
+        this.offerCount = this.offersMap.get(date);
+        this.wantCount = this.wantsMap.get(date);
       },
     },
 
     mounted()
     {
-      this.getOnlineUsers();
-      this.getTrades();
-      this.printDashboardText("Dashboard");
       this.fetchDataToMaps();
+      this.getDisplayData();
+      this.printDashboardText("Dashboard");
       this.weekGraph(this.currentChart);
       this.getUTCTime(false);
-      
-
-      this.createNodes();
 
       this.timer = setInterval(() => {
         this.getUTCTime(false);
@@ -766,10 +824,9 @@ import { tSMethodSignature } from '@babel/types';
     align-items: flex-start;
     flex-direction: column;
     border-radius: 5px;
+    
     width: 13vw;
     height: 15vh;
-    /* width: 26vw;
-    height: 30vh; */
   }
   .test-container-lhs
   {
@@ -810,6 +867,8 @@ import { tSMethodSignature } from '@babel/types';
     width: 100%;
     height: 30%;
     background-color: rgba(0, 0, 0, 0.138);
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
     font-size: 100%;
     color: rgb(255, 255, 255);
   }
@@ -819,10 +878,13 @@ import { tSMethodSignature } from '@babel/types';
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    font-size: 0.85vw;
+    font-weight: 500;
     width: 100%;
     height: 30%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
     background-color: rgba(0, 0, 0, 0.138);
-    font-size: 100%;
     color: rgb(255, 255, 255);
   }
   .test-container-lower-rhs
@@ -831,9 +893,12 @@ import { tSMethodSignature } from '@babel/types';
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    font-size: 0.85vw;
+    font-weight: 500;
     width: 50%;
     height: 100%;
-    border-left: 1px rgba(0, 0, 0, 0.200) solid;
+    border-bottom-right-radius: 5px;
+    border-left: 0.09vw rgba(0, 0, 0, 0.200) solid;
   }
   .test-container-lower-graph:hover
   {
@@ -851,25 +916,27 @@ import { tSMethodSignature } from '@babel/types';
   .test-container-lower-lhs
   {
     flex-direction: row;
-    font-size: 100%;
+    font-size: 0.85vw;
+    font-weight: 500;
     width: 50%;
     height: 100%;
     color: rgb(255, 255, 255);
     display: flex;
     justify-content: center;
     align-items: center;
-    border-right: 1px rgba(0, 0, 0, 0.200) solid;
+    border-bottom-left-radius: 5px;
+    border-right: 0.09vw rgba(0, 0, 0, 0.200) solid;
   }
   .test-container-text-upper
   {
-    font-size: 110%;
+    font-size: 0.92vw;
     font-weight: bold;
     color: white;
     user-select: none;
   }
   .test-container-text-lower
   {
-    font-size: 110%;
+    font-size: 0.92vw;
     color: white;
     user-select: none;
   }
@@ -908,6 +975,7 @@ import { tSMethodSignature } from '@babel/types';
     width: 5%;
     height: 88%;
     color: rgb(0, 0, 0);
+    font-size: 0.88vw;
     border-radius: 4px;
   }
 
@@ -923,6 +991,7 @@ import { tSMethodSignature } from '@babel/types';
   }
   .chart-text
   {
+    font-size: 0.83vw;
     font-weight: bold;
   }
 
@@ -939,7 +1008,7 @@ import { tSMethodSignature } from '@babel/types';
   .dashboard-text
   {
     color: black;
-    font-size: 50px;
+    font-size: 2.6vw;
     font-weight: bold;
     text-align: left;
     user-select: none;
@@ -951,6 +1020,8 @@ import { tSMethodSignature } from '@babel/types';
     align-items: center;
     width: 30%;
     height: 70%;
+    
+    
   }
   .node-graph-container
   {
@@ -962,6 +1033,7 @@ import { tSMethodSignature } from '@babel/types';
   }
   .datepicker
   {
+    
     /* Background color  */
     --v-calendar-input-bg-color: #e0e0e0;
 
@@ -970,6 +1042,7 @@ import { tSMethodSignature } from '@babel/types';
     --v-calendar-datepicker-icon-size: 1.0rem;
 
     /* Storlek på inputen texten */
+    /* --v-calendar-input-font-size: 1.0rem; */
     --v-calendar-input-font-size: 1.0rem;
     --v-calendar-input-font-weight: 500;
     --v-calendar-input-text-color: #000000;
@@ -977,6 +1050,7 @@ import { tSMethodSignature } from '@babel/types';
     /* Inne i kalendern header */
     --v-calendar-view-button-font-size: 1rem;
     --v-calendar-select-bg-color: #e0e0e0;
+
 
   }
   .network
