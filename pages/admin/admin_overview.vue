@@ -6,20 +6,18 @@
       </div>
 
       <div class="main-container">
-
-      <div class="data-box" style="background-color: #ff4558;">
+      
+        <div class="data-box" style="background-color: #ff4558;">
         <div class="container-upper">
           <div class="container-lhs">
             <div class="container-text-upper" v-if="showOnline"> {{ onlineUsersCount }}</div>
             <div class="container-text-upper" v-if="!showOnline"> {{ registerdUsersCount }}</div>
             <div class="container-text-lower"> Users</div>
           </div>
-
           <div class="container-rhs">
             <img class="container-img" :src="onlineUser" alt="User image" draggable="false">
           </div>
         </div>
-
         <div class="container-lower">
           <button class="container-lower-lhs" v-if="showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('online')">
             Online
@@ -100,7 +98,6 @@
             <img class="container-img" :src="nodeGraph" alt="Graph image" draggable="false">
           </div>
         </div>
-
         <button class="container-lower-graph" v-if="!showChart" style="background-color: rgba(0, 0, 0, 0.300) ;" @click="hideGraph()">
             Display
         </button>
@@ -130,8 +127,7 @@
 
           <div class="datepicker-container">
             <Datepicker ref="dpicker" range showClearButton v-model="selectedDate" circle class="datepicker" placeholder="Custom date" lang="en"
-            @change="datePickRange(currentChart)"/>
-          
+            @change="getDataRange(currentChart)"/>
           </div>
 
           <div class="chart-text-box" v-if="showChart">
@@ -139,12 +135,13 @@
               UTC:{{  utcTime}}
             </div>
           </div>
-
         </div>
+
         <div class="chart" v-if="showChart">
           <apexchart ref="chart" type="area" :options="chartOptions" :series="chartSeries">
           </apexchart>
         </div>
+
       </div>
     </div>
   </div>
@@ -170,8 +167,6 @@
   // fetchFuncs
   import { Network } from "vue-vis-network";
   import { getUserCount, getMembers, getAllArticles, getAllTransactions } from '/pages/gqlFetch.js';
-  import { tSMethodSignature } from '@babel/types';
-  import { forEach } from 'vis-util';
   // fetchFuncs end
 
   export default
@@ -360,7 +355,7 @@
           this.utcTime = utcTime.slice(11, 16)
       },
 
-      fetchDataToMaps()
+      prepareMaps()   //Prepares the maps for use in later functions 
       {
         const currentDate = new Date();
         const currentDateISO = currentDate.toISOString().slice(0, 10); // Get the date part of the ISO string
@@ -372,7 +367,7 @@
         this.offersMap.set(currentDateISO, 0);
         this.wantsMap.set(currentDateISO, 0);
 
-        // Filling dates with dummy 0.
+        // Filling dates with dummy 0. 365 days(1y).
         for (let i = 0; i < 365; i++) 
         {
           currentDate.setDate(currentDate.getDate() - 1);
@@ -391,24 +386,20 @@
       {
           this.selectedDate[0] = startDate;
           this.selectedDate[1] = endDate;
-          // this.$nextTick(() => 
-          // {
-          //   this.selectedDate = [new Date(startDate), new Date(endDate)];
-          // });
       },
 
+      // Displays 1 week.
       weekGraph(currentChart)
       {
-        //this.$refs.dpicker.resetDate();
         const endDate = new Date();
         const startDate = new Date(endDate);
         startDate.setDate(endDate.getDate() - 6);
         
         this.updateStartEndDate(startDate, endDate);
         this.getDataRange(currentChart);
-        
       },
 
+      // Displays 1 month.
       monthGraph(currentChart)
       {
         const endDate = new Date();
@@ -419,6 +410,7 @@
         this.getDataRange(currentChart);
       },
 
+      // Displays 3 months.
       ThreemonthGraph(currentChart)
       {
         const endDate = new Date();
@@ -429,6 +421,7 @@
         this.getDataRange(currentChart);
       },
 
+      // Displays 1 year.
       yearGraph(currentChart)
       {
         const endDate = new Date();
@@ -440,12 +433,8 @@
 
       },
 
-      datePickRange(currentChart)
-      {
-        this.getDataRange(currentChart);
-      },
-
-      getDataRange(currentChart)
+      // Selects and "loads" the correct chart data to be shown
+      getDataRange(currentChart)  
       {
         let map;
         let color;
@@ -518,87 +507,79 @@
         [
           {
             name: '# of Online',
-            data: newData, // fake data
+            data: newData,
           }
         ];
 
         
-         this.$nextTick(() => 
-           {
-            this.$refs.chart.updateOptions( 
+        this.$nextTick(() => 
+        {
+          this.$refs.chart.updateOptions( 
+          {
+            colors: [color],
+            chart: 
             {
-              colors: [color],
-
-              chart: 
-              {
-                width: '100%',
-                height: '100%'
-              },
-
-              xaxis:
-              { 
-                categories: newDate
-              } 
-            });
+              width: '100%',
+              height: '100%'
+            },
+            xaxis:
+            { 
+               categories: newDate
+            } 
           });
-          
-          this.showChart = true;
-          this.chartSeries = newChart; 
-       },
+        });
+        this.showChart = true;
+        this.chartSeries = newChart; 
+      },
 
-       getUsers(userData)
-       {
-          let onlineMembers = 0;
-          // Slice off miliseconds.
-          let unixTime = Math.floor(Date.now()/1000);
-          // Time in seconds to online (900 = 15 minutes).
-          const onlineThreshold = 900;
-          let Threshhold = unixTime - onlineThreshold;
-          //Problem här. Får ej Users.
-          //console.log(user.profile.accountName + " "+user._id.getTimestamp())
-          if(userData != null)
+      // Fetch userdata from DB.
+      getUsers(userData)
+      {
+        let onlineMembers = 0;
+        let unixTime = Math.floor(Date.now()/1000);
+        const onlineThreshold = 900;   // 15 min
+        let Threshhold = unixTime - onlineThreshold;
+        if(userData != null)
+        {
+          userData.forEach((user) => 
           {
-              userData.forEach((user) => 
-              {
-                // Fetching when they are registerd.
-                // const curDate = user.registerd;
-                if(user.last_online/1000 > Threshhold)       
-                {
-                  onlineMembers++;
-                }
-                
-              }); 
-          }
-          return onlineMembers;
-       },
-
-       getTradeData(trades)
-       {
-          let date = new Date();
-          date = date.toISOString().slice(0,10);
-          trades.forEach((trade) => 
-          {
-            if(trade.state != "completed")
+            if(user.last_online/1000 > Threshhold)       
             {
-              return;
+              onlineMembers++;
             }
-            console.log(trade);
-            //Transactions
-            let cur = this.transactionsMap.get(trade.date.slice(0,10));
-            let new_value = cur + 1;
-            this.transactionsMap.set(trade.date.slice(0,10), new_value);
+          }); 
+        }
+        return onlineMembers;
+      },
 
-            //Volume
-            let volume = this.volumeMap.get(trade.date.slice(0,10));
-            let new_volume = volume + parseInt(trade.entries[0].quantity.substring(1));
-            this.volumeMap.set(trade.date.slice(0,10), new_volume);
+      // Fetch tradedata from DB.
+      getTradeData(trades)
+      {
+        let date = new Date();
+        date = date.toISOString().slice(0,10);
+        trades.forEach((trade) => 
+        {
+          if(trade.state != "completed")
+          {
+            return;
+          }
+          console.log(trade);
+          //Transactions
+          let cur = this.transactionsMap.get(trade.date.slice(0,10));
+          let new_value = cur + 1;
+          this.transactionsMap.set(trade.date.slice(0,10), new_value);
 
+          //Volume
+          let volume = this.volumeMap.get(trade.date.slice(0,10));
+          let new_volume = volume + parseInt(trade.entries[0].quantity.substring(1));
+          this.volumeMap.set(trade.date.slice(0,10), new_volume);
           });
           
           this.transactions = this.transactionsMap.get(date);
           this.volume = this.volumeMap.get(date);
-       },
+      },
 
+      // Fetch networkgraph from DB.
       getNetwork(trades)
       {
         trades.forEach((trade) =>
@@ -657,7 +638,8 @@
         });
       },
 
-      async getDisplayData() // Fetcha ->> stödfunktioner
+      // Calls all function for datafetching.
+      async getDisplayData()
       {
         //User Data
         this.registerdUsersCount = await getUserCount();
@@ -676,6 +658,7 @@
         this.getNetwork(trades);
       },
     
+      // Fetch listingdata from DB.
       getListedData(listed) 
       {
         let date = new Date();
@@ -705,7 +688,7 @@
 
     mounted()
     {
-      this.fetchDataToMaps();
+      this.prepareMaps();
       this.getDisplayData();
       this.printDashboardText("Dashboard");
       this.weekGraph(this.currentChart);
@@ -747,13 +730,12 @@
   .container-lhs
   {
     display: flex;
+    align-items: flex-start;
+    justify-content: center;
     flex-direction: column;
     padding-left: 10%;
-    justify-content: center;
-    align-items: flex-start;
     width: 50%;
     height: 100%;
-
   }
   .container-rhs
   {
@@ -777,9 +759,9 @@
   .container-lower
   {
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 30%;
     background-color: rgba(0, 0, 0, 0.138);
@@ -824,7 +806,6 @@
   {
     background-color: rgba(0, 0, 0, 0.200)
   }
-
   .container-lower-lhs:hover
   {
     background-color: rgba(0, 0, 0, 0.200)
@@ -866,12 +847,10 @@
   }
   .chart
   {
-    /* Change chartsize here!! */
     background-color: white;
     width: 100%;
     height: 90%;
   }
-
   .chart-buttons
   {
     display: flex;
@@ -884,7 +863,6 @@
     height: 10%;
     border-bottom: 2px solid #d6dfe7;
   }
-
   .chart-button
   {
     background-color: #e0e0e0;
@@ -894,7 +872,6 @@
     font-size: 0.88vw;
     border-radius: 4px;
   }
-
   .chart-button:hover
   {
     background-color: #999;
@@ -910,7 +887,6 @@
     font-size: 0.83vw;
     font-weight: bold;
   }
-
   .chart-container
   {
     display: flex;
@@ -936,8 +912,6 @@
     align-items: center;
     width: 30%;
     height: 70%;
-    
-    
   }
   .node-graph-container
   {
@@ -966,7 +940,6 @@
     --v-calendar-view-button-font-size: 1rem;
     --v-calendar-select-bg-color: #e0e0e0;
   }
-
   .network
   {
     width: 100%;

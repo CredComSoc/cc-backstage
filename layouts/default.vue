@@ -17,9 +17,7 @@
         <v-col></v-col>
         <v-col align="right"> <help></help> </v-col>
       </v-app-bar>        
-     
     <!-- Top toolbar code above-->
-
     <v-main>
       <v-container>
         <nuxt />
@@ -60,17 +58,8 @@ export default {
   }
 }
 
-
-
-
-
-
-
 </script>
-
 <style scoped>
-
-
 .logo_button
 {
   width: 13rem;
