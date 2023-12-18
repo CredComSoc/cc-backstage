@@ -537,16 +537,23 @@
       {
         let onlineMembers = 0;
         let unixTime = Math.floor(Date.now()/1000);
-        const onlineThreshold = 900;   // 15 min
         let Threshhold = unixTime - onlineThreshold;
+        
+        const onlineThreshold = 900;   // 15 min
         if(userData != null)
         {
           userData.forEach((user) => 
           {
+            // Counting online users.
             if(user.last_online/1000 > Threshhold)       
             {
               onlineMembers++;
             }
+            // Filling the registration map
+            let date = new Date(parseInt(user.registered));
+            let cur = this.registeredUserMap.get(date.toISOString().slice(0,10));
+            cur++;
+            this.registeredUserMap.set(date.toISOString().slice(0,10), cur);
           }); 
         }
         return onlineMembers;
@@ -563,7 +570,6 @@
           {
             return;
           }
-          console.log(trade);
           //Transactions
           let cur = this.transactionsMap.get(trade.date.slice(0,10));
           let new_value = cur + 1;
@@ -645,6 +651,7 @@
         this.registerdUsersCount = await getUserCount();
         let userData = await getMembers();
         this.onlineUsersCount = this.getUsers(userData);
+        
         
         //Trade Data
         let trades = await getAllTransactions();
