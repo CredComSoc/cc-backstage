@@ -5,106 +5,106 @@
         {{ dashBoardText }}
       </div>
 
-      <div class="test-main-container">
+      <div class="main-container">
 
-      <div class="test-container" style="background-color: #ff4558;">
-        <div class="test-container-upper">
-          <div class="test-container-lhs">
-            <div class="test-container-text-upper" v-if="showOnline"> {{ onlineUsersCount }}</div>
-            <div class="test-container-text-upper" v-if="!showOnline"> {{ registerdUsersCount }}</div>
-            <div class="test-container-text-lower"> Users</div>
+      <div class="data-box" style="background-color: #ff4558;">
+        <div class="container-upper">
+          <div class="container-lhs">
+            <div class="container-text-upper" v-if="showOnline"> {{ onlineUsersCount }}</div>
+            <div class="container-text-upper" v-if="!showOnline"> {{ registerdUsersCount }}</div>
+            <div class="container-text-lower"> Users</div>
           </div>
 
-          <div class="test-container-rhs">
-            <img class="test-container-img" :src="onlineUser" alt="User image" draggable="false">
+          <div class="container-rhs">
+            <img class="container-img" :src="onlineUser" alt="User image" draggable="false">
           </div>
         </div>
 
-        <div class="test-container-lower">
-          <button class="test-container-lower-lhs" v-if="showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('online')">
+        <div class="container-lower">
+          <button class="container-lower-lhs" v-if="showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('online')">
             Online
           </button>
-          <button class="test-container-lower-lhs" v-if="!showOnline" @click="displayGraph('online')">
+          <button class="container-lower-lhs" v-if="!showOnline" @click="displayGraph('online')">
             Online
           </button>
-          <button class="test-container-lower-rhs" v-if="showOnline" @click="displayGraph('registered')">
+          <button class="container-lower-rhs" v-if="showOnline" @click="displayGraph('registered')">
             Registered
           </button>
-          <button class="test-container-lower-rhs" v-if="!showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('registered')">
+          <button class="container-lower-rhs" v-if="!showOnline" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('registered')">
             Registered
           </button>
         </div>
       </div>
 
-      <div class="test-container" style="background-color:  #ffc000;">
-        <div class="test-container-upper">
-          <div class="test-container-lhs">
-            <div class="test-container-text-upper" v-if="showTransactions"> {{ transactions }}</div>
-            <div class="test-container-text-upper" v-if="!showTransactions"> {{ volume }} BKr </div>
-            <div class="test-container-text-lower"> Trades</div>
+      <div class="data-box" style="background-color:  #ffc000;">
+        <div class="container-upper">
+          <div class="container-lhs">
+            <div class="container-text-upper" v-if="showTransactions"> {{ transactions }}</div>
+            <div class="container-text-upper" v-if="!showTransactions"> {{ volume }} BKr </div>
+            <div class="container-text-lower"> Trades</div>
           </div>
-          <div class="test-container-rhs">
-            <img class="test-container-img" :src="trade" alt="User image" draggable="false">
+          <div class="container-rhs">
+            <img class="container-img" :src="trade" alt="User image" draggable="false">
           </div>
         </div>
-        <div class="test-container-lower">
-          <button class="test-container-lower-lhs" v-if="showTransactions" style="background-color: rgba(0, 0, 0, 0.200);" @click="displayGraph('transactions')">
+        <div class="container-lower">
+          <button class="container-lower-lhs" v-if="showTransactions" style="background-color: rgba(0, 0, 0, 0.200);" @click="displayGraph('transactions')">
             Transactions
           </button>
-          <button class="test-container-lower-lhs" v-if="!showTransactions" @click="displayGraph('transactions')">
+          <button class="container-lower-lhs" v-if="!showTransactions" @click="displayGraph('transactions')">
             Transactions
           </button>
-          <button class="test-container-lower-rhs" v-if="showTransactions" @click="displayGraph('volume')">
+          <button class="container-lower-rhs" v-if="showTransactions" @click="displayGraph('volume')">
             Volume
           </button>
-          <button class="test-container-lower-rhs" v-if="!showTransactions" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('volume')">
+          <button class="container-lower-rhs" v-if="!showTransactions" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('volume')">
             Volume
           </button>
         </div>
       </div>
 
-      <div class="test-container" style="background-color: #00abe0;">
-        <div class="test-container-upper">
-          <div class="test-container-lhs">
-            <div class="test-container-text-upper" v-if="showOffers"> {{offerCount}}</div>
-            <div class="test-container-text-upper" v-if="!showOffers"> {{wantCount}}</div>
-            <div class="test-container-text-lower"> Listed</div>
+      <div class="data-box" style="background-color: #00abe0;">
+        <div class="container-upper">
+          <div class="container-lhs">
+            <div class="container-text-upper" v-if="showOffers"> {{offerCount}}</div>
+            <div class="container-text-upper" v-if="!showOffers"> {{wantCount}}</div>
+            <div class="container-text-lower"> Listed</div>
           </div>
-          <div class="test-container-rhs">
-            <img class="test-container-img" :src="listed" alt="User image" draggable="false">
+          <div class="container-rhs">
+            <img class="container-img" :src="listed" alt="User image" draggable="false">
           </div>
         </div>
-        <div class="test-container-lower">
-          <button class="test-container-lower-lhs" v-if="showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('offers')">
+        <div class="container-lower">
+          <button class="container-lower-lhs" v-if="showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-lhs" v-if="!showOffers" @click="displayGraph('offers')">
+          <button class="container-lower-lhs" v-if="!showOffers" @click="displayGraph('offers')">
             Offers
           </button>
-          <button class="test-container-lower-rhs" v-if="showOffers" @click="displayGraph('wants')">
+          <button class="container-lower-rhs" v-if="showOffers" @click="displayGraph('wants')">
             Wants
           </button>
-          <button class="test-container-lower-rhs" v-if="!showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('wants')">
+          <button class="container-lower-rhs" v-if="!showOffers" style="background-color: rgba(0, 0, 0, 0.200) ;" @click="displayGraph('wants')">
             Wants
           </button>
         </div>
       </div>
 
-      <div class="test-container" style="background-color: #00d282;">
-        <div class="test-container-upper">
-          <div class="test-container-lhs">
-            <div class="test-container-text-upper"> Network graph</div>
+      <div class="data-box" style="background-color: #00d282;">
+        <div class="container-upper">
+          <div class="container-lhs">
+            <div class="container-text-upper"> Network graph</div>
           </div>
 
-          <div class="test-container-rhs">
-            <img class="test-container-img" :src="nodeGraph" alt="Graph image" draggable="false">
+          <div class="container-rhs">
+            <img class="container-img" :src="nodeGraph" alt="Graph image" draggable="false">
           </div>
         </div>
 
-        <button class="test-container-lower-graph" v-if="!showChart" style="background-color: rgba(0, 0, 0, 0.300) ;" @click="hideGraph()">
+        <button class="container-lower-graph" v-if="!showChart" style="background-color: rgba(0, 0, 0, 0.300) ;" @click="hideGraph()">
             Display
         </button>
-        <button class="test-container-lower-graph" v-if="showChart" @click="hideGraph()">
+        <button class="container-lower-graph" v-if="showChart" @click="hideGraph()">
             Display
         </button>
       </div>
@@ -147,12 +147,6 @@
         </div>
       </div>
     </div>
-
-  <!--   <v-network-graph
-      class="graph"
-      :nodes="nodes"
-      :edges="edges"
-    /> -->
   </div>
 
   </template>
@@ -171,10 +165,6 @@
   import 'vue-datepicker-ui/lib/vuedatepickerui.css';
   import VueDatepickerUi from 'vue-datepicker-ui';
   import "vue-vis-network/node_modules/vis-network/dist/vis-network.css";
-  /* import "v-network-graph/lib/style.css";
-  import VNetworkGraph from "v-network-graph";  */
-
-
   // packages end
 
   // fetchFuncs
@@ -182,9 +172,6 @@
   import { getUserCount, getMembers, getAllArticles, getAllTransactions } from '/pages/gqlFetch.js';
   import { tSMethodSignature } from '@babel/types';
   import { forEach } from 'vis-util';
-
-  
-
   // fetchFuncs end
 
   export default
@@ -196,7 +183,6 @@
       network: Network
     },
 
-
     data() {
       return {
         // Picture references
@@ -206,40 +192,32 @@
         nodeGraph,
         // ------------------
         
-        currentChart: "online",
-
         // Dates 
         utcTime: null,
         currentDate: null,
         from: null,
         to: null,
         // ------------------        
-
-        // Usr
-        usersList: [],
+        
+        // Online and Registerd Box
         onlineUsersCount: 0,
         registerdUsersCount: 0,
         showOnline: true,
         // ------------------        
         
-        // Trades
+        // Transactions and Volume box
         transactions: 0,
         volume: 0,
         showTransactions: true,
         // ------------------
         
-        // Listings
-        
-        offers: [],
-        wants: [],
+        // Offers and wants box
         offerCount: 0,
         wantCount: 0,
-        listedCount: 0,
-        activeTrades: 0,
         showOffers: true,
         // ------------------
-
-        // Maps
+        
+        // Maps holding data, 1 year back in time.
         registeredUserMap: new Map(),
         onlineUserMap : new Map(),
         transactionsMap: new Map(),
@@ -247,7 +225,12 @@
         offersMap: new Map(),
         wantsMap: new Map(),
         // ------------------  
+        
+        // Header Text.
         dashBoardText: "",
+        
+        // Init Display chart
+        currentChart: "online",
         showChart: true,
         
         // DatePicker
@@ -255,97 +238,36 @@
         [
           new Date(),
           new Date(),
-          //new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)
         ],
         // ------------------
+      
+        // Nodes and Edges for node graph.
+        nodes:
+        [],
+        
+        edges:
+        [],
+        
+        options: {
+          nodes: {
+            borderWidth: 4,
+            color: '#00d282'
+          },
+          edges: {
+            color: 'lightgray'
+          }
+        },
+        // ------------------
 
-
-
-      dummytransactions:
-      [
-        // Transactions between pairs
-        { from: "janne", to: "william" },
-        { from: "janne", to: "adam" },
-        { from: "adam", to: "astrid" },
-        { from: "adam", to: "william" },
-        { from: "william", to: "janne" },
-        { from: "astrid", to: "john" },
-        { from: "john", to: "adam" },
-        { from: "adam", to: "william" },
-        { from: "janne", to: "john" },
-        { from: "john", to: "astrid" },
-        { from: "william", to: "astrid" },
-        { from: "janne", to: "emma" },
-        { from: "emma", to: "william" },
-        { from: "janne", to: "oliver" },
-        { from: "oliver", to: "adam" },
-        { from: "astrid", to: "william" },
-        { from: "john", to: "emma" },
-        { from: "oliver", to: "william" },
-        { from: "william", to: "emma" },
-        { from: "oliver", to: "dennis" },
-        { from: "oliver", to: "tester1" },
-        { from: "oliver", to: "tester2" },
-        { from: "oliver", to: "tester3" },
-        { from: "oliver", to: "tester4" },
-        { from: "oliver", to: "tester5" },
-        { from: "tester1", to: "tester6" },
-        { from: "tester1", to: "tester7" },
-        { from: "tester1", to: "tester8" },
-        { from: "tester1", to: "tester9" },
-        { from: "tester1", to: "tester10" },
-        { from: "tester1", to: "tester11" },
-        { from: "tester1", to: "tester12" },
-        { from: "tester1", to: "tester13" },
-      ],
-
-      nodes:
-      [],
-
-      edges:
-      [],
-
-      options: {
-         nodes: {
-          borderWidth: 4,
-          color: '#00d282'
-         },
-         edges: {
-          color: 'lightgray'
-        }
-      },
-        selectedDate: [
+        
+        selectedDate: 
+        [
           new Date(),
-          new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)],
-
-        chartSeries: //Date structure for chart
-        [
-
+          new Date(new Date().getTime() + 9 * 24 * 60 * 60 * 1000)
         ],
 
-        dataListedTrades:
-        [
-          {
-            name: '# of Listed',
-            data: [500, 349, 675, 110, 99], // fake data
-          }
-        ],
-
-        dataOnlineUsr:
-        [
-          {
-            name: '# of Online',
-            data: [5, 7, 3, 11, 1, 99], // fake data
-          }
-        ],
-
-        dataTrades:
-        [
-          {
-            name: '# of Trades',
-            data: [12, 19, 3, 5, 2], // fake data
-          }
-        ],
+        // Apexchart settings
+        chartSeries: [],  //Date structure for chart
 
         chartOptions:
         {
@@ -390,13 +312,11 @@
     {
       onNodeSelected()
       {
-        console.log("Funkar");
+        //Function if a node in network graph is pressed
       }, 
 
       displayGraph(currentChart)
       {
-        
-
         if (this.showChart === false)
         { 
           this.showChart = true;
@@ -423,9 +343,9 @@
         }
       },
 
-      updateChart(data, color)
-      {
-      },
+      // updateChart(data, color)
+      // {
+      // },
 
       updateChartOptions(color)
       {
@@ -804,7 +724,7 @@
   </script>
 
   <style scoped>
-  .test-main-container
+  .main-container
   {
     display: flex;
     justify-content: center;
@@ -812,12 +732,12 @@
     flex-direction: row;
     gap: 2%;
   }
-  .test-container-img
+  .container-img
   {
     width: 50%;
     height: 60%;
   }
-  .test-container
+  .data-box
   {
     display: flex;
     justify-content: flex-start;
@@ -828,7 +748,7 @@
     width: 13vw;
     height: 15vh;
   }
-  .test-container-lhs
+  .container-lhs
   {
     display: flex;
     flex-direction: column;
@@ -839,7 +759,7 @@
     height: 100%;
 
   }
-  .test-container-rhs
+  .container-rhs
   {
     display: flex;
     flex-direction: column;
@@ -848,7 +768,7 @@
     width: 50%;
     height: 100%;
   }
-  .test-container-upper
+  .container-upper
   {
     display: flex;
     flex-direction: row;
@@ -858,7 +778,7 @@
     width: 100%;
     height: 70%;
   }
-  .test-container-lower
+  .container-lower
   {
     display: flex;
     justify-content: center;
@@ -872,7 +792,7 @@
     font-size: 100%;
     color: rgb(255, 255, 255);
   }
-  .test-container-lower-graph
+  .container-lower-graph
   {
     display: flex;
     justify-content: center;
@@ -887,7 +807,7 @@
     background-color: rgba(0, 0, 0, 0.138);
     color: rgb(255, 255, 255);
   }
-  .test-container-lower-rhs
+  .container-lower-rhs
   {
     display: flex;
     justify-content: center;
@@ -900,20 +820,20 @@
     border-bottom-right-radius: 5px;
     border-left: 0.09vw rgba(0, 0, 0, 0.200) solid;
   }
-  .test-container-lower-graph:hover
+  .container-lower-graph:hover
   {
     background-color: rgba(0, 0, 0, 0.200)
   }
-  .test-container-lower-rhs:hover
+  .container-lower-rhs:hover
   {
     background-color: rgba(0, 0, 0, 0.200)
   }
 
-  .test-container-lower-lhs:hover
+  .container-lower-lhs:hover
   {
     background-color: rgba(0, 0, 0, 0.200)
   }
-  .test-container-lower-lhs
+  .container-lower-lhs
   {
     flex-direction: row;
     font-size: 0.85vw;
@@ -927,14 +847,14 @@
     border-bottom-left-radius: 5px;
     border-right: 0.09vw rgba(0, 0, 0, 0.200) solid;
   }
-  .test-container-text-upper
+  .container-text-upper
   {
     font-size: 0.92vw;
     font-weight: bold;
     color: white;
     user-select: none;
   }
-  .test-container-text-lower
+  .container-text-lower
   {
     font-size: 0.92vw;
     color: white;
@@ -1033,26 +953,24 @@
   }
   .datepicker
   {
-    
     /* Background color  */
     --v-calendar-input-bg-color: #e0e0e0;
 
-    /* Icon size och storlek */
+    /* Icon size */
     --v-calendar-datepicker-icon-color: #000000;
     --v-calendar-datepicker-icon-size: 1.0rem;
 
-    /* Storlek på inputen texten */
+    /* Input text size */
     /* --v-calendar-input-font-size: 1.0rem; */
     --v-calendar-input-font-size: 1.0rem;
     --v-calendar-input-font-weight: 500;
     --v-calendar-input-text-color: #000000;
 
-    /* Inne i kalendern header */
+    /* Calender header */
     --v-calendar-view-button-font-size: 1rem;
     --v-calendar-select-bg-color: #e0e0e0;
-
-
   }
+
   .network
   {
     width: 100%;
