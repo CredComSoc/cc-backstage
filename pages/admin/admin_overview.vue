@@ -449,6 +449,7 @@
         const currentDate = new Date();
         const currentDateISO = currentDate.toISOString().slice(0, 10); // Get the date part of the ISO string
         
+        // Load with random for dummy data
         this.registeredUserMap.set(currentDateISO, 0);
         this.onlineUserMap.set(currentDateISO, 0);
         this.transactionsMap.set(currentDateISO, 0);
@@ -825,6 +826,8 @@
     flex-direction: column;
     border-radius: 5px;
     
+    box-shadow: 10px 7px 21px -5px rgba(0,0,0,0.51);
+
     width: 13vw;
     height: 15vh;
   }
