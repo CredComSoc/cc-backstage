@@ -53,11 +53,11 @@ export async function getMembers() {
             last_online,
             logo
           }  }` }),
-    }).then(r => r.json())
-      .then(data => member_arr = data)
-    member_arr = member_arr.data.allMembers
-    //console.log(member_arr)
-    return member_arr
+  }).then(r => r.json())
+    .then(data => member_arr = data)
+  member_arr = member_arr.data.allMembers
+  //console.log(member_arr)
+  return member_arr
 }
 
 export async function getUserArticles(name) {
@@ -259,8 +259,8 @@ export async function getAllTransactions(id) {
     }),
   }).then(r => r.json())
     .then(data => transactions = data)
-    transactions = transactions.data.allTransactions // Remove the Json "padding" to get the object or array
-    //console.log(transactions)
+  transactions = transactions.data.allTransactions // Remove the Json "padding" to get the object or array
+  //console.log(transactions)
   return transactions
 }
 

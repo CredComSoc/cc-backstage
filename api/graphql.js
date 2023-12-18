@@ -253,7 +253,7 @@ async function getUserArticles(username) { // Get all article data related to a 
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)//Simple query returning all posts that the user has uploaded
-        var articles = await dbo.collection("posts").find({ "userUploader": username.accountName }).toArray()
+        var articles = await dbo.collection("posts").find({ "userUploader": username.accountName }).toArray() // use $gte with date to only get offers that have not expired
         db.close()
     } catch (error) {
         console.error("Query userArticles encountered an error: " + error)
@@ -268,7 +268,7 @@ async function getAllArticles() { // Get all posts
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
-        var articles = await dbo.collection("posts").find({}).toArray()
+        var articles = await dbo.collection("posts").find({}).toArray() // use $gte with date to only get offers that have not expired
         db.close()
     } catch (error) {
         console.error("Query allArticles encountered an error: " + error)
@@ -299,7 +299,7 @@ async function getUserCount() { // Get how many users that are not admins are in
 async function getAllTransactions() {
     try {
         var namedTransactions = []
-        var transactions = allTransactions//Dummy data incase CC-node is disabled
+        var transactions = structuredClone(allTransactions)//Dummy data incase CC-node is disabled
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
         var users = await dbo.collection("users").find({}).toArray()
@@ -347,7 +347,7 @@ async function getAllTransactions() {
 
 
 async function getUserTransactions({ id }) {
-    var transactions = allTransactions
+    var transactions = structuredClone(allTransactions)
     try {
         var namedTransactions = []
         const db = await MongoClient.connect(DB_URL)
