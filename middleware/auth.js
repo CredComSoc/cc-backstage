@@ -1,4 +1,4 @@
-const active = false
+const active = true
 import { authenticate, checkAdminStatus } from "~/pages/expressFetch"
 export default async function (context) {
 
