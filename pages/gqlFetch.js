@@ -62,7 +62,6 @@ export async function getMembers() {
 
 export async function getUserArticles(name) {
   var articles
-  console.log(name)
   await fetch("/api/graphql", {
     method: "POST",
     headers: {
@@ -80,6 +79,7 @@ export async function getUserArticles(name) {
               status
               destination
               price
+              endDate
               uploadDate
               userUploader
               userId
@@ -90,7 +90,7 @@ export async function getUserArticles(name) {
   }).then(r => r.json())
     .then(data => articles = data)
   articles = JSON.stringify(articles.data.allUserArticles) // Remove the Json "padding" to get the object or array
-  //console.log(articles)
+  console.log(articles)
   return articles
 }
 
@@ -114,6 +114,7 @@ export async function getAllArticles() {
               status
               destination
               price
+              endDate
               uploadDate
               userUploader
               userId

@@ -141,6 +141,7 @@ export default {
 	methods: {
 		async updateOffers() {
 			var articles = await getUserArticles(this.memberName)
+			console.log(this.memberName)
 			articles = JSON.parse(articles)
 
 			this.offers = articles.filter(function (article) {

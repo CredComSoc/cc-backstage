@@ -2,7 +2,7 @@ const { buildSchema } = require("graphql")
 const { MongoClient, ObjectId } = require('mongodb')
 import { CC_BACKEND_URL, DB_FOLDER, DB_URL, CC_NODE_URL, CC_NODE_ENABLED } from './config.js'
 /*In the schema below, objects can be defined for GraphQL to use in queries or mutations*/
-let schema = buildSchema(`
+var schema = buildSchema(`
 
     type Billing{
         name: String
@@ -54,6 +54,7 @@ let schema = buildSchema(`
         status: String
         destination: String
         price: String
+        endDate: String
         uploadDate: String
         userUploader: String
         userId: String
@@ -248,16 +249,17 @@ async function getAllMembers() { // Get a list of all the members
 }
 
 async function getUserArticles(username) { // Get all article data related to a user
+    console.log(username.accountName)
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)//Simple query returning all posts that the user has uploaded
-        let articles = await dbo.collection("posts").find({ "userUploader": username.accountName }).toArray()
+        var articles = await dbo.collection("posts").find({ "userUploader": username.accountName }).toArray()
         db.close()
     } catch (error) {
         console.error("Query userArticles encountered an error: " + error)
         throw error
     }
-    console.info("Query userArticles(" + username + ") finished without errors")
+    console.info("Query userArticles(" + username.accountName + ") finished without errors")
     return articles
 }
 
@@ -266,7 +268,7 @@ async function getAllArticles() { // Get all posts
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
-        let articles = await dbo.collection("posts").find({}).toArray()
+        var articles = await dbo.collection("posts").find({}).toArray()
         db.close()
     } catch (error) {
         console.error("Query allArticles encountered an error: " + error)
@@ -282,7 +284,7 @@ async function getUserCount() { // Get how many users that are not admins are in
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
-        let count = await dbo.collection("users").countDocuments({ "is_admin": false })
+        var count = await dbo.collection("users").countDocuments({ "is_admin": false })
         db.close()
     }
     catch (error) {
@@ -403,7 +405,7 @@ async function getUserNotifications({ name }) {
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)//Getting all notifications from the database to a specific user
-        let notifications = await dbo.collection("notifications").find({ "toUser": name }).toArray()
+        var notifications = await dbo.collection("notifications").find({ "toUser": name }).toArray()
         db.close()
     } catch (error) {
         console.error("Query userNotifications(" + name + ") encountered an error: " + error)

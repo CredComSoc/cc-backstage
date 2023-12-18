@@ -7,7 +7,7 @@
                     Admin Login
                 </div>
             </div>
-    
+
             <div class="login_box_body">
                 <div class="login_box_body_upper">
                     <div class="login_box_text">
@@ -56,10 +56,10 @@
         </v-dialog>
     </div>
     </template>
-    
-    
+
+
     <script>
-    import {login, getCurrentProfile} from '/pages/expressFetch.js'
+    import {login, getCurrentUser} from '/pages/expressFetch.js'
     export default
     {
         data(){
@@ -73,7 +73,7 @@
                 toDisplay: false
             }
         },
-    
+
         methods:
         {
             async handleSubmit () {
@@ -89,19 +89,19 @@
                 }})
             },
             async ConsoleLogName() {
-                const result = await getCurrentProfile()
+                const result = await getCurrentUser()
                 console.log(result)
             },
-    
+
         mounted()
         {
             this.isAdminLoggedIn = false;
         }
     }
     }
-    
+
     </script>
-    
+
     <style scoped>
     .main
     {
@@ -146,7 +146,7 @@
         font-weight: bold;
         font-size: 1.5vw;
         color: black;
-    
+
     }
     .login_box_body
     {
@@ -156,9 +156,9 @@
         flex-direction: column;
         width: 100%;
         height: 80%;
-    
+
     }
-    
+
     .login_box_body_upper
     {
         width: 100%;
@@ -170,7 +170,7 @@
         align-items: flex-start;
         justify-content: flex-start;
     }
-    
+
     .login_box_body_middle
     {
         width: 100%;
@@ -181,19 +181,19 @@
         align-items: flex-start;
         justify-content: flex-start;
     }
-    
+
     .login_box_body_lower
     {
-    
+
         width: 100%;
         height: 33%;
         display: flex;
         flex-direction: row;
         align-items: flex-start;
         justify-content: center;
-    
+
     }
-    
+
     .login_box_foot
     {
         width: 100%;
@@ -203,16 +203,16 @@
         align-items: center;
         border-top: 1px solid black;
     }
-    
+
     .login_box_text
     {
         font-size: 1.6vw;
         color: black;
     }
-    
+
     .input_bar
     {
-    
+
     }
     .input_bar input
     {
@@ -222,7 +222,7 @@
         border-radius: 5px;
         font-size: 0.9vw;
     }
-    
+
     .login_button
     {
         border: 1px solid black;
@@ -235,20 +235,20 @@
     {
         background-color: #ccc;
     }
-    
+
     .login_button:active
     {
         transform: translateY(2.5%);
     }
-    
-    
+
+
     .login_box.fade-in
     {
       opacity: 0;
       transform: translateY(20px);
       animation: fade-in 0.5s ease forwards;
     }
-    
+
     @keyframes fade-in
     {
       to {
@@ -256,7 +256,7 @@
         transform: translateY(0);
       }
     }
-    
-    
-    
+
+
+
     </style>
