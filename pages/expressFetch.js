@@ -65,7 +65,7 @@ export async function getCurrentUser() {
   })
 }
 
-//edittest pwd oko1yreq
+
 export async function updateUserProfile(previousname, accountName, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone, logo) {
   const data = new FormData()
   data.append('accountInfo', JSON.stringify({
@@ -96,7 +96,7 @@ export async function updateUserProfile(previousname, accountName, description, 
   })
 }
 
-//logotest mptvk169
+
 export async function getImg (filename) {
   const promise = await fetch(EXPRESS_URL + '/image/' + filename, {
     method: 'GET',
