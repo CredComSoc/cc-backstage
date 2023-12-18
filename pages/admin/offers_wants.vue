@@ -30,7 +30,7 @@ Load and display one user's offers and wants. The search box filters the list on
 							<img src="./admin_icons/Spinner-5.gif" class="spinner">
 						</div>
 						<div v-else> <!-- Display list-->
-							<v-row class="top-border" v-for="offer in offers">
+							<v-row class="top-border" v-for="offer in offers" :key="offer.id">
 								<v-col cols="2" class="row-text">
 									{{ offer.uploadDate }}
 								</v-col>
@@ -73,7 +73,7 @@ Load and display one user's offers and wants. The search box filters the list on
 							<img src="./admin_icons/Spinner-5.gif" class="spinner">
 						</div>
 						<div v-else> <!-- Display list-->
-							<v-row class="top-border" v-for="want in wants">
+							<v-row class="top-border" v-for="want in wants" :key="want.id">
 								<v-col cols="2" class="row-text">
 									{{ want.uploadDate }}
 								</v-col>

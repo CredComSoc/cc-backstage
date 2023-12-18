@@ -6,7 +6,7 @@
 <template>
     <div>
         <div name="scrollbox" class="chatbox fixed-box">
-            <v-row class="message-row" v-for="message in messages">
+            <v-row class="message-row" v-for="message in messages" :key="message.id">
                 <v-col v-if="message.from_me" cols="3"></v-col>
                 <v-col v-if="message.from_me" cols="8" class="message right-message">
                     <div class="timestamp">{{ message.date }} {{ message.time }}</div>
@@ -38,11 +38,11 @@ export default {
             myMessage: "",
 
             messages: [
-                { date: "2023-09-12", time: "12:03", from: "Anna Karlsson", message: "Hej Hej Hej Hej Hej Hej Hej Hej ", from_me: true },
-                { date: "2023-09-12", time: "12:04", from: "Patrik Olsson", message: "Hejsan", from_me: false },
-                { date: "2020-01-10", time: "12:05", from: "Anna Karlsson", message: "Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då ", from_me: true },
-                { date: "2023-09-12", time: "12:06", from: "Patrik Olsson", message: "Hejsan", from_me: false },
-                { date: "2023-09-12", time: "12:07", from: "Anna Karlsson", message: "Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej ", from_me: true }
+                { id: 0, date: "2023-09-12", time: "12:03", from: "Anna Karlsson", message: "Hej Hej Hej Hej Hej Hej Hej Hej ", from_me: true },
+                { id: 1, date: "2023-09-12", time: "12:04", from: "Patrik Olsson", message: "Hejsan", from_me: false },
+                { id: 2, date: "2020-01-10", time: "12:05", from: "Anna Karlsson", message: "Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då ", from_me: true },
+                { id: 3, date: "2023-09-12", time: "12:06", from: "Patrik Olsson", message: "Hejsan", from_me: false },
+                { id: 4, date: "2023-09-12", time: "12:07", from: "Anna Karlsson", message: "Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej ", from_me: true }
             ],
 
         }

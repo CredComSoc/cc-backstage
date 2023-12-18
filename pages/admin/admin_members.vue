@@ -33,9 +33,9 @@
                             <img src="./admin_icons/Spinner-5.gif" class="spinner">
                         </div>
                         <div v-else> <!-- Display member list-->
-                            <member_row v-for="member in members" :id="member.id" :accountName="member.accountName"
-                                :balance="member.balance" :status="member.status" :phone="member.phone"
-                                :email="member.email" />
+                            <member_row v-for="member in members" :key="member.id" :id="member.id"
+                                :accountName="member.accountName" :balance="member.balance" :status="member.status"
+                                :phone="member.phone" :email="member.email" />
                         </div>
                     </div>
                     <div class="admin-box">
@@ -63,7 +63,7 @@
                             <img src="./admin_icons/Spinner-5.gif" class="spinner">
                         </div>
                         <div v-else>
-                            <v-row class="top-border" v-for="transaction in transactions">
+                            <v-row class="top-border" v-for="transaction in transactions" :key="transaction.uuid">
                                 <v-col cols="2" class="row-text">
                                     {{ transaction.date.split(' ')[0] }}
                                 </v-col>
