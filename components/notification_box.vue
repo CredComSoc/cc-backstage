@@ -5,7 +5,7 @@
 <template>
     <div>
         <div class="notification-box fixed-box">
-            <v-row class="notification" v-for="notification in notifications">
+            <v-row class="notification" v-for="notification in notifications" :key="notification._id">
                 <v-col cols="6">
                     <div class="timestamp">{{ notification.date }}</div>
                     <div class="larger-font">{{ notification.amount }}</div>

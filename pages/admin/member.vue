@@ -31,7 +31,7 @@ Fetches all transactions this user has, and display them either in Kronas or Bar
 							<img src="./admin_icons/Spinner-5.gif" class="spinner">
 						</div>
 						<div v-else>
-							<v-row class="top-border" v-for="transaction in transactions">
+							<v-row class="top-border" v-for="transaction in transactions" :key="transaction.uuid">
 								<v-col cols="2" class="row-text">
 									{{ transaction.state }}
 								</v-col>
@@ -81,7 +81,7 @@ Fetches all transactions this user has, and display them either in Kronas or Bar
 							<img src="./admin_icons/Spinner-5.gif" class="spinner">
 						</div>
 						<div v-else>
-							<v-row class="top-border" v-for="transaction in transactions">
+							<v-row class="top-border" v-for="transaction in transactions" :key="transaction.uuid">
 								<v-col cols="2" class="row-text">
 									{{ transaction.state }}
 								</v-col>
