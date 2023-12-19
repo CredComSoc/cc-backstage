@@ -24,12 +24,18 @@ export default {
     }
 
 }
+
+
+To add new functions here, make sure the query is defined in /api/graphql.js following the format at the top, then
+1. create an export async function here
+2. Make sure the query is defined in the http call with all the data of the query that you want to use
+3. To get the actual data or array inside the response, use variable = variable.data.queryname
 */
 
 
 //Functions that make it easier for front-end pages to fetch from the graphql without having to copy-paste fetch calls
 
-//Gets members from a member list and returns them without the unnecessary labels
+//Gets all members from a member list
 export async function getMembers() {
   var member_arr
   await fetch("/api/graphql", {
@@ -37,7 +43,7 @@ export async function getMembers() {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-    },                             // When querying graphql without parameters, simply include the type and all members in it that you want to recieve
+    },                             // When querying graphql without parameters, simply include the type and all data variables in it that you want to get
     body: JSON.stringify({
       query: `{ allMembers{ id,
             accountName,
@@ -89,7 +95,7 @@ export async function getUserArticles(name) {
     }),
   }).then(r => r.json())
     .then(data => articles = data)
-  articles = JSON.stringify(articles.data.allUserArticles) // Remove the Json "padding" to get the object or array
+  articles = JSON.stringify(articles.data.allUserArticles) // Get the object inside the response.data.query that the call returns
   console.log(articles)
   return articles
 }
@@ -123,7 +129,7 @@ export async function getAllArticles() {
     }),
   }).then(r => r.json())
     .then(data => articles = data)
-  articles = JSON.stringify(articles.data.allArticles) // Remove the Json "padding" to get the object or array
+  articles = JSON.stringify(articles.data.allArticles) // Get the object inside the response.data.query that the call returns
   //console.log(articles)
   return articles
 }
@@ -164,7 +170,7 @@ export async function getMember(name) {
   }).then(r => r.json())
     .then(data => member = data)
   //console.log(member)
-  member = member.data.member // Remove the Json "padding" to get the object or array
+  member = member.data.member // Get the object inside the response.data.query that the call returns
   //console.log(member)
   return member
 }
@@ -221,7 +227,7 @@ export async function getUserTransactions(id) {
     }),
   }).then(r => r.json())
     .then(data => transactions = data)
-  transactions = transactions.data.userTransactions // Remove the Json "padding" to get the object or array
+  transactions = transactions.data.userTransactions // Get the object inside the response.data.query that the call returns
   console.log(transactions)
   return transactions
 }
@@ -259,7 +265,7 @@ export async function getAllTransactions(id) {
     }),
   }).then(r => r.json())
     .then(data => transactions = data)
-    transactions = transactions.data.allTransactions // Remove the Json "padding" to get the object or array
+    transactions = transactions.data.allTransactions // Get the object inside the response.data.query that the call returns
     //console.log(transactions)
   return transactions
 }

@@ -1,5 +1,5 @@
-const CC_BACKEND_URL = "http://localhost:3000"
-const CC_NODE_URL = "http://161.35.95.33"
+const CC_BACKEND_URL = "http://localhost:3000" //The address for the CreditCoopTech backend (the main app, not the admin app)
+const CC_NODE_URL = "http://161.35.95.33" //CC-node address
 const CC_NODE_ENABLED = true
 const DB_URL = "mongodb+srv://lukbj623:kZVtbkb4Cr093CC5@cluster0.49bpcgc.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
 const DB_FOLDER = "test"

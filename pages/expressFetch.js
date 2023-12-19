@@ -1,5 +1,7 @@
 const FormData = require('form-data')
-const EXPRESS_URL = "http://localhost:3000"
+const EXPRESS_URL = "http://localhost:3000" //The address for the CreditCoopTech backend (the main app, not the admin app)
+
+/*This file has calls to the CreditCoopTech backend express app for things such as login, authenticate and chat functions*/
 
 export async function login(email, password) { // The same login function as on sb.web.app. Stores a cookie when login successful
   return await fetch(EXPRESS_URL + '/login', {
@@ -37,7 +39,7 @@ export async function authenticate() { //Checks if the cookie is valid and the u
   })
 }
 
-export async function checkAdminStatus() {
+export async function checkAdminStatus() { //checks if the user logged in is an admin
   return fetch(EXPRESS_URL + '/admin', {
     method: 'GET',
     headers: {
@@ -51,7 +53,7 @@ export async function checkAdminStatus() {
   })
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser() { //Gets the member info of the currently logged in user
   return fetch(EXPRESS_URL + '/profile', {
     method: 'GET',
     headers: {
@@ -65,7 +67,7 @@ export async function getCurrentUser() {
   })
 }
 
-
+//This is to be used when modifying the profile of a user.
 export async function updateUserProfile(previousname, accountName, description, address, city, billingName, billingBox, billingAddress, orgNumber, email, phone, logo) {
   const data = new FormData()
   data.append('accountInfo', JSON.stringify({
@@ -96,7 +98,7 @@ export async function updateUserProfile(previousname, accountName, description, 
   })
 }
 
-
+//This takes the filename of an image stored in the database and uses the CreditCoopBackend to retrieve it
 export async function getImg (filename) {
   const promise = await fetch(EXPRESS_URL + '/image/' + filename, {
     method: 'GET',
@@ -112,6 +114,8 @@ export async function getImg (filename) {
   return promise
 }
 
+
+//This ensures that the user is not logged in by telling the backend that they are no longer logged in
 export async function logout () {
   await fetch(EXPRESS_URL + '/logout', {
     method: 'POST',

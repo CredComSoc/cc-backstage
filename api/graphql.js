@@ -1,6 +1,15 @@
 const { buildSchema } = require("graphql")
 const { MongoClient, ObjectId } = require('mongodb')
 import { CC_BACKEND_URL, DB_FOLDER, DB_URL, CC_NODE_URL, CC_NODE_ENABLED } from './config.js'
+
+/*
+To define new objects to use in graphql, define in the var schema below
+To add queries to retrieve data using mongodb, add to the query type in the schema, define name of the query and what object should be returned, then
+1. Add the query to the resolver "var root". If a parameter is needed, send it as an object {parameter}
+2. To make things easier, create an async function to be called from the resolver, which receives the potential parameter
+3. When getting data from the mongoDB or CC-node, use await
+Then, to use the query from the frontend, define it in /pages/gqlFetch.js, then call that function using await
+*/
 /*In the schema below, objects can be defined for GraphQL to use in queries or mutations*/
 var schema = buildSchema(`
 
@@ -168,18 +177,21 @@ const allTransactions = [
     }
 ]
 
+/*Here the functions called from the resolver are called.
+This first one is thoroughly documented to show how they work, they all work very similiarly*/
 
-async function getMember({ id, accountName }) { // Get a single member, selected by either id or name
+async function getMember({ id, accountName }) { // Get a single member, selected by name
     try {
-        const db = await MongoClient.connect(DB_URL) //Connect to the mongoDB
+        const db = await MongoClient.connect(DB_URL) //Connect to the mongoDB. Address & login defined in config.js
         const dbo = db.db(DB_FOLDER)    // state the correct folder in the DB
-        var user = await dbo.collection("users").findOne({ "profile.accountName": accountName }) //Get the data from the mongoDB based on the collection name and the query in findOne/find
-        if (CC_NODE_ENABLED) {
+        var user = await dbo.collection("users").findOne({ "profile.accountName": accountName }) //Get the data from the mongoDB based on the collection name and the query in findOne/find. Find returns all matching results while findOne returns the first match
+
+        if (CC_NODE_ENABLED) { //If CC-node is enabled (its address and whether its enabled or not is defined in config.js), get all account information such as balance
             var response
             await fetch(CC_NODE_URL + '/account/summary', {
                 method: "GET",
                 headers: {
-                    'cc-user': user._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-user': user._id,
                     'cc-auth': '123'
                 },
                 credentials: 'include'
@@ -187,16 +199,16 @@ async function getMember({ id, accountName }) { // Get a single member, selected
                 .then(data => response = data)
         }
         var userData = user.profile //For users, unecessary information such as Password is not to be sent back to the frontend
-        userData.registered = user._id.getTimestamp()
-        userData.logo = user.logo
-        userData.is_admin = user.is_admin
+        userData.registered = user._id.getTimestamp() //Timestamp of when the account was created is coded inside the ID, this translates it to a date object
+        userData.logo = user.logo //Logo is the filename of the profile picture the user has.
+        userData.is_admin = user.is_admin //Bool whether the user is an admin or not.
         userData.email = user.email
         userData.id = user._id
-        userData.status = user.is_active ? "Active" : "Inactive"
-        if (CC_NODE_ENABLED && response.ok && response.data[userData.id] != null) { //If the user has not performed any CC-node actions yet, its ID wont be in account summary
+        userData.status = user.is_active ? "Active" : "Inactive" //This translates a bool whether the account is active or suspended and assigns a string which is clearer to use in the frontend.
+        if (CC_NODE_ENABLED && response.ok && response.data[userData.id] != null) { //If the user has not performed any CC-node actions yet, its ID wont be in account summary?
             userData.balance = response.data[userData.id].completed.balance
         }
-        db.close()
+        db.close() //Close the current connection to the database after the data has been retrieved
     }
     catch (error) {
         console.error("Query member(" + accountName + ") encountered an error: " + error)
@@ -218,14 +230,14 @@ async function getAllMembers() { // Get a list of all the members
             await fetch(CC_NODE_URL + '/account/summary', {
                 method: "GET",
                 headers: {
-                    'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-user': users[0]._id, //Should ideally be the ID of the admin using the app rather than the first id of the list?
                     'cc-auth': '123'
                 },
                 credentials: 'include'
             }).then(r => r.json())
                 .then(data => response = data)
         }
-        for (const user of users) {
+        for (const user of users) { //Looping through all users to perform the same assignments as in getMember
 
             let userData = user.profile
             userData.registered = user._id.getTimestamp()
@@ -249,7 +261,7 @@ async function getAllMembers() { // Get a list of all the members
 }
 
 async function getUserArticles(username) { // Get all article data related to a user
-    console.log(username.accountName)
+    //console.log(username.accountName)
     try {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)//Simple query returning all posts that the user has uploaded
@@ -299,7 +311,7 @@ async function getUserCount() { // Get how many users that are not admins are in
 async function getAllTransactions() {
     try {
         var namedTransactions = []
-        var transactions = allTransactions//Dummy data incase CC-node is disabled
+        var transactions = allTransactions//Dummy data incase CC-node is disabled. If this is not removed, in order to use transaction dummy data it has to be deepcopied in these functions or the logic will break when trying to replace ID with username
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)
         var users = await dbo.collection("users").find({}).toArray()
@@ -308,7 +320,7 @@ async function getAllTransactions() {
             await fetch(CC_NODE_URL + '/transactions', {
                 method: "GET",
                 headers: {
-                    'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-user': users[0]._id,
                     'cc-auth': '123'
                 },
                 credentials: 'include'
@@ -317,7 +329,8 @@ async function getAllTransactions() {
             transactions = transactions.data
         }
 
-        for (const transaction of transactions) {
+        for (const transaction of transactions) { // For loop to get the date and to translate the IDs that the CC-node sends back into usernames
+            //Currently as this system appears to only use transactions with one entry, the first entry is translated. If this is used in a system with multiple entries per transaction, it would have to be changed.
             var transactionData = transaction
             transactionData.date = transaction.written
             transactionData.entries[0].quantity = transaction.entries[0].quant
@@ -329,9 +342,6 @@ async function getAllTransactions() {
                 return user._id == transactionData.entries[0].payer
             }).profile.accountName
 
-
-            //Get balance information from CC-node using ID from user._id
-            //As well as necessary logic for this.
             namedTransactions.push(transactionData)
 
         }
@@ -358,7 +368,7 @@ async function getUserTransactions({ id }) {
             await fetch(CC_NODE_URL + '/transactions', {
                 method: "GET",
                 headers: {
-                    'cc-user': users[0]._id, //Should be the ID of the admin, not the first id of the list
+                    'cc-user': users[0]._id,
                     'cc-auth': '123'
                 },
                 credentials: 'include'

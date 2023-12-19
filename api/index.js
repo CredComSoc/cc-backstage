@@ -1,13 +1,13 @@
 const express = require('express')
-import { createHandler } from "graphql-http/lib/use/express" // https://www.npmjs.com/package/graphql-http
-// npm install express, graphql, graphql-http
+import { createHandler } from "graphql-http/lib/use/express" // Module to use graphql in express
+// for this backend, npm install express graphql graphql-http
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
 const {schema, root} = require('./graphql.js')
 
-app.use(
+app.use( //Using the schema and resolver as defined in /api/graphql.js
     "/graphql",
     createHandler({
         schema: schema,
@@ -15,7 +15,7 @@ app.use(
     })
 )
 
-app.listen(4000)
+app.listen(4000) //Port the backend listens to
 
 
 export default{
