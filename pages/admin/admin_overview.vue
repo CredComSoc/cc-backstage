@@ -666,6 +666,8 @@
       },
     
       // Fetch listingdata from DB.
+      // Currently it can't get all of the current listings since listing.endDate is null
+      // Impossible to know when
       getListedData(listed) 
       {
         let date = new Date();
@@ -675,6 +677,7 @@
         { 
           var tempDate = new Date(parseInt(listing.uploadDate,10));
           tempDate = tempDate.toISOString().slice(0,10);
+          console.log(listing.endDate);
           if(listing.status == "offer")
           {
             let cur = this.offersMap.get(tempDate);
