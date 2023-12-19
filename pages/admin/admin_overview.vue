@@ -38,7 +38,7 @@
         <div class="container-upper">
           <div class="container-lhs">
             <div class="container-text-upper" v-if="showTransactions"> {{ transactions }}</div>
-            <div class="container-text-upper" v-if="!showTransactions"> {{ volume }} BKr </div>
+            <div class="container-text-upper" v-if="!showTransactions"> {{ volume }} </div>
             <div class="container-text-lower"> Trades</div>
           </div>
           <div class="container-rhs">
@@ -367,7 +367,7 @@
         this.offersMap.set(currentDateISO, 0);
         this.wantsMap.set(currentDateISO, 0);
 
-        // Filling dates with dummy 0. 365 days(1y).
+        // Filling dates with 0. 365 days(1y).
         for (let i = 0; i < 365; i++) 
         {
           currentDate.setDate(currentDate.getDate() - 1);
@@ -430,7 +430,6 @@
         this.updateStartEndDate(startDate, endDate);
 
         this.getDataRange(currentChart);
-
       },
 
       // Selects and "loads" the correct chart data to be shown
@@ -652,7 +651,6 @@
         let userData = await getMembers();
         this.onlineUsersCount = this.getUsers(userData);
         
-        
         //Trade Data
         let trades = await getAllTransactions();
         this.getTradeData(trades);
@@ -666,8 +664,9 @@
       },
     
       // Fetch listingdata from DB.
-      // Currently it can't get all of the current listings since listing.endDate is null
-      // Impossible to know when
+      // Currently displays listings that may be past experation date
+      // Can't check experation date currently as listing.endDate is null
+      // To get the amout of listings posted today uncomment the two lines at the bottom.
       getListedData(listed) 
       {
         let date = new Date();
@@ -677,22 +676,23 @@
         { 
           var tempDate = new Date(parseInt(listing.uploadDate,10));
           tempDate = tempDate.toISOString().slice(0,10);
-          console.log(listing.endDate);
           if(listing.status == "offer")
           {
             let cur = this.offersMap.get(tempDate);
             cur++;
             this.offersMap.set(tempDate, cur);
+            this.offerCount++;
           }
           else if(listing.status == "want")
           {
             let cur = this.wantsMap.get(tempDate);
             cur++;
             this.wantsMap.set(tempDate, cur); 
+            this.wantCount++;
           }
         });
-        this.offerCount = this.offersMap.get(date);
-        this.wantCount = this.wantsMap.get(date);
+        //this.offerCount = this.offersMap.get(date);
+        //this.wantCount = this.wantsMap.get(date);
       },
     },
 
