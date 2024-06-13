@@ -32,10 +32,13 @@ To add new functions here, make sure the query is defined in /api/graphql.js fol
 3. To get the actual data or array inside the response, use variable = variable.data.queryname
 */
 
+import { getCurrentUser } from "./expressFetch"
+
 
 //Functions that make it easier for front-end pages to fetch from the graphql without having to copy-paste fetch calls
 
 //Gets all members from a member list
+// import fetch from "node-fetch"
 export async function getMembers() {
   var member_arr
   await fetch("/api/graphql", {
@@ -308,6 +311,34 @@ export async function getUserNotifications(name) {
   return notifications
 }
 
+export async function getUserMessages(name) {
+  try {
+    var user = await getCurrentUser()
+    var messages = await fetch("/api/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+      body: JSON.stringify({
+        query: `query userMessages($user: String!, $name: String!) {
+        userMessages(user: $user, name: $name) {
+            receiver
+            sender
+            message
+          }
+        }`,
+        variables: { user: user.name, name: name },
+      }),
+    }).then(r => r.json())
+      .then(data => messages = data)
+  } catch (error) {
+    console.error("Error fetching messages: ", error)
+    throw error
+  }
+  messages = messages.data.userMessages
+  return messages
+}
 
 // type EntryMeta{
 //   id: String

@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { getUserMessages } from '/pages/gqlFetch.js'
 export default {
 
     data() {
@@ -64,10 +65,17 @@ export default {
             this.messages.push(mess);
             this.myMessage = "";
             this.scrollToBottom();
+        },
+        async loadMessages() {
+            // Fetch messages from database
+            const userMessages = await getUserMessages("testuser17");
+            console.log("User messages: ", userMessages);
+            this.messages = userMessages;
         }
     },
 
-    created() {
+    async created() {
+        await this.loadMessages();
         this.scrollToBottom();
     }
 

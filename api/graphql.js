@@ -1,6 +1,10 @@
 const { buildSchema } = require("graphql")
 const { MongoClient, ObjectId } = require('mongodb')
 import { CC_BACKEND_URL, DB_FOLDER, DB_URL, CC_NODE_URL, CC_NODE_ENABLED } from './config.js'
+// import { getChatHistory } from './chatFunctions.js'
+const uuid = require('uuid');
+const { query } = require('express');
+const { model } = require('mongoose');
 
 /*
 To define new objects to use in graphql, define in the var schema below
@@ -80,6 +84,13 @@ var schema = buildSchema(`
         itemCount: Int
         limitSurplusAmount: Int
     }
+    type Messages{
+        message: String
+        messageType: String
+        filename: String
+        sender: String
+        receiver: String
+    }
     type Query{
         member(id: Int, accountName: String): Member
         allMembers: [Member]
@@ -89,6 +100,7 @@ var schema = buildSchema(`
         userTransactions(id: String!): [Transaction]
         userNotifications(name: String!): [Notification]
         userCount: Int
+        userMessages(user: String!, name: String!): [Messages]
     }
 
 
@@ -422,7 +434,200 @@ async function getUserNotifications({ name }) {
         throw error
     }
     console.info("Query userNotifications(" + name + ") finished without errors")
+    console.log(notifications)
     return notifications
+}
+
+async function deleteChat(user, chatter, chatID) {
+    console.log("deleteChat called...")
+    const db = await MongoClient.connect(DB_URL);
+    const dbo = db.db(DB_FOLDER);
+    const key = 'chats.' + chatID;
+    dbo.collection('users').updateOne({'profile.accountName': user}, { $unset: { [key]: 1 } }, (err, res) => {
+        if (err) {
+            console.error(err);
+            db.close(); 
+        }
+        else {
+            db.close();
+        }
+    }); 
+}
+
+async function createChat(user, chatter, chatID) {
+  console.log("createChat called...");
+
+    try {
+        const db = await MongoClient.connect(DB_URL);
+        const dbo = db.db(DB_FOLDER);
+        const key = 'chats.' + chatID;
+
+        // Update user document with the chat information
+        const updateResult = await dbo.collection('users').updateOne(
+            { 'profile.accountName': user },
+            { $set: { [key]: chatter } }
+        );
+
+        // Check update result for success
+        if (updateResult.matchedCount > 0) {
+            db.close();
+            return true; // Chat successfully created for the user
+        } else {
+            db.close();
+            return false; // User not found or update failed
+        }
+    } catch (err) {
+        console.error(err);
+        return false; // Handle errors by returning false
+    }
+}
+
+async function initChat(sender, receiver) {
+  console.log("initChat called...");
+
+  try {
+    // Generate chat ID
+    const chatID = uuid.v4();
+
+    // Create chat documents for both users
+    const createSenderChat = createChat(sender, receiver, chatID);
+    const createReceiverChat = createChat(receiver, sender, chatID);
+
+    // Wait for both chat creations to finish (assuming createChat is async)
+    const [res1, res2] = await Promise.all([createSenderChat, createReceiverChat]);
+
+    if (!res1 || !res2) {
+      // Failed to create chats for both users, clean up
+      await deleteChat(sender, receiver, chatID);
+      throw new Error("Failed to initialize chat");  // Throw an error for proper handling
+    }
+
+    // Connect to database and initialize chat history
+    const db = await MongoClient.connect(DB_URL);
+    const dbo = db.db(DB_FOLDER);
+    await dbo.collection('chats').insertOne({ [chatID]: [] }); // Use await for insertion
+
+    // Close the database connection
+    db.close();
+
+    // Chat initialized successfully, return chat ID
+    return chatID;
+  } catch (err) {
+    console.error(err);
+    return false; // Or potentially throw a specific error for caller handling
+  }
+}
+
+async function getChatHistory(chatID) {
+    console.log("getChatHistory called...");
+
+    try {
+        const db = await MongoClient.connect(DB_URL);
+        const dbo = db.db(DB_FOLDER);
+
+        const res = await dbo.collection('chats').findOne({ [chatID]: { $exists: true } });
+
+        if (res) {
+            return res[chatID]; // Return chat history if found
+        } else {
+            return false; // Chat not found
+        }
+    } catch (err) {
+        console.error(err);
+        return false; // Handle errors by returning false
+    }
+}
+
+async function getChatID(user, chatter) {
+    console.log("getChatID called...");
+
+    try {
+        const db = await MongoClient.connect(DB_URL);
+        const dbo = db.db(DB_FOLDER);
+
+        const res = await dbo.collection('users').findOne({ 'profile.accountName': user });
+
+        if (res && res.chats) {
+            for (const [key, val] of Object.entries(res.chats)) {
+                if (val === chatter) {
+                    return key; // Found chat ID, return it
+                }
+            }
+            return false; // No matching chat found
+        } else {
+            return false; // User not found or no chats exist
+        }
+    } catch (err) {
+        console.error(err);
+        return false; // Handle errors by returning false
+    }
+}
+
+async function chatExists(user, chatter) {
+    console.log("chatExists called...")
+    const chatExist = await checkChatStatus(user, chatter);
+    console.log("chatExists: " + chatExist)
+    if (!chatExist) {
+        const chatID = await initChat(user, chatter);
+        console.log("New chatID: " + chatID)
+        return chatID;
+    }
+    else {
+        const chatID = await getChatID(user, chatter);
+        if (chatID === false) {
+            console.log("ChatID not found");
+            return chatID;
+        }   
+        else {
+            console.log("ChatID found: " + chatID);
+            return chatID;
+        }
+    }
+}
+
+async function checkChatStatus(user, chatter) {
+  console.log("checkChatStatus called...");
+
+    try {
+        const db = await MongoClient.connect(DB_URL);
+        const dbo = db.db(DB_FOLDER);
+        const key = 'chats.' + chatter;
+
+        const res = await dbo.collection('users').findOne({ 'profile.accountName': user });
+
+        if (res) {
+            if ('chats' in res) {
+                return Object.values(res.chats).findIndex(val => val === chatter) > -1;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
+async function getUserChats({ user, name }) {
+    // const { chatExists } = require('./chatFunctions.js');
+    console.log("getUserChats called...")
+    try {
+        const chatID = await chatExists(user, name);
+        if (chatID === false) {
+            console.log("Query userChats(" + user + ") finished without errors and found no data")
+            return []
+        } else {
+            // const { getChatHistory } = require('./chatFunctions.js');
+            const history = await getChatHistory(chatID);
+            console.log("Query userChats(" + name + ") finished without errors")
+            return history
+        }
+    } catch (error) {
+        console.log("Query userChats(" + user + ") encountered an error: " + error)
+        throw error
+    }
 }
 
 
@@ -449,8 +654,10 @@ var root = { //This is where what each query does is defined. When a query is se
         return getUserTransactions({ id })
     },
     userNotifications: ({ name }) => {
-
         return getUserNotifications({ name })
+    },
+    userMessages: ({ user, name }) => {
+        return getUserChats({ user, name })
     }
 
 }

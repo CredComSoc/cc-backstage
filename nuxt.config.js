@@ -66,5 +66,9 @@ export default {
   },
   router: {
     middleware: "auth",
+  },
+
+  server: {
+    port: 8001
   }
 }
