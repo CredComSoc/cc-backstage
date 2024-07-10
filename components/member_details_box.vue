@@ -4,7 +4,14 @@
 
 <template>
     <div>
-        <div class="member-details-box fixed-box">
+        <div v-if="loading">
+            <v-row>
+                <v-col>
+                    <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+                </v-col>
+            </v-row>
+        </div>
+        <div v-if="!loading" class="member-details-box fixed-box">
             <img v-bind:src="imgUrl" class="member-details-image" />
             <div class="member-details-heading">Company name</div>
             <div class="member-details-text">{{ memberDetails.accountName }}</div>
@@ -51,13 +58,18 @@ export default {
                 },
                 logo: ""
             },
-
+            // memberDetails: {},
+            loading: false
         }
     },
 
     methods: {
         async updateMemberDetails() {
+            this.loading = true
             this.memberDetails = await getMember(this.memberName)
+            await this.getImage()
+            this.loading = false
+            console.log("Member details: ", this.memberDetails)
         },
         async getImage() {
             const response = await getImg(this.memberDetails.logo)
@@ -69,7 +81,6 @@ export default {
     },
     mounted: async function () {
         await this.updateMemberDetails()
-        this.getImage()
     }
 }
 </script>

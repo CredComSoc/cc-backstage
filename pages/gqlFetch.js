@@ -323,9 +323,12 @@ export async function getUserMessages(name) {
       body: JSON.stringify({
         query: `query userMessages($user: String!, $name: String!) {
         userMessages(user: $user, name: $name) {
-            receiver
-            sender
-            message
+            chatID
+            chatMessages {
+              receiver
+              sender
+              message
+            }
           }
         }`,
         variables: { user: user.name, name: name },
@@ -338,6 +341,43 @@ export async function getUserMessages(name) {
   }
   messages = messages.data.userMessages
   return messages
+}
+
+export async function getChatHistories() {
+  try {
+    var user = await getCurrentUser()
+    var chatHistories = await fetch("/api/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },                           //When querying GraphQL with one or more parameters, the format below is needed in the query string as well as the "variables" field with whatever parameters are to be sent
+      body: JSON.stringify({
+        query: `query chatHistories($user: String!) {
+        chatHistories(user: $user) {
+              chats {
+                chatID
+                chatter
+                chatMessages {
+                  receiver
+                  sender
+                  message
+                }
+              }    
+              username
+          }
+        }`,
+        variables: { user: user.name },
+      }),
+    })
+      .then(r => r.json())
+      .then(data => chatHistories = data)
+  } catch (error) {
+    console.error("Error fetching chat histories: ", error)
+    throw error
+  }
+  chatHistories = chatHistories.data.chatHistories
+  return chatHistories
 }
 
 // type EntryMeta{

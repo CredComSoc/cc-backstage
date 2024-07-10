@@ -27,7 +27,8 @@ One row of data in the member table. Takes as parameters and displays a user's n
 			</NuxtLink>
 			<NuxtLink :to="{
 				name: 'admin-member',
-				params: { id: id, name: accountName }
+				params: { id: id, name: accountName },
+				props: { chats: userChats }
 			}">
 				<div class="white-button">Transact</div>
 			</NuxtLink>
@@ -45,7 +46,12 @@ One row of data in the member table. Takes as parameters and displays a user's n
 
 
 <script>
+
 export default {
-	props: ["id", "accountName", "balance", "status", "phone", "email"]
+	props: ["id", "accountName", "balance", "status", "phone", "email", "userChats"],
+
+	async created() {
+		console.log("User chats == ", this.userChats)
+	}
 }
 </script>

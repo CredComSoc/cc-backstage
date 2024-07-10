@@ -6,7 +6,12 @@
 <template>
     <div>
         <div name="scrollbox" class="chatbox fixed-box">
-            <v-row class="message-row" v-for="message in messages" :key="message.id">
+            <v-row v-if="loading">
+                <v-col>
+                    <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                </v-col>
+            </v-row>
+            <v-row v-if="!loading" class="message-row" v-for="message in messages" :key="message.id">
                 <v-col v-if="message.from_me" cols="3"></v-col>
                 <v-col v-if="message.from_me" cols="8" class="message right-message">
                     <div class="timestamp">{{ message.date }} {{ message.time }}</div>
@@ -30,22 +35,32 @@
 </template>
 
 <script>
-import { getUserMessages } from '/pages/gqlFetch.js'
+import { getUserMessages, getChatHistories } from '/pages/gqlFetch.js'
+import io from 'socket.io-client'
+import { CHAT_URL, getCurrentUser } from '/pages/expressFetch.js'
 export default {
+
+    props: ['memberName'],
 
     data() {
         return {
 
             myMessage: "",
-
-            messages: [
-                { id: 0, date: "2023-09-12", time: "12:03", from: "Anna Karlsson", message: "Hej Hej Hej Hej Hej Hej Hej Hej ", from_me: true },
-                { id: 1, date: "2023-09-12", time: "12:04", from: "Patrik Olsson", message: "Hejsan", from_me: false },
-                { id: 2, date: "2020-01-10", time: "12:05", from: "Anna Karlsson", message: "Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då Hej då hej då ", from_me: true },
-                { id: 3, date: "2023-09-12", time: "12:06", from: "Patrik Olsson", message: "Hejsan", from_me: false },
-                { id: 4, date: "2023-09-12", time: "12:07", from: "Anna Karlsson", message: "Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej Hej ", from_me: true }
-            ],
-
+            messages: [],
+            history: [],
+            history_values: {},
+            activeChat: [],
+            reciever: '',
+            socket: 0,
+            all_chatIDs: {},
+            chatters: {},
+            user: '',
+            chosenChat: null,
+            allmembers: [],
+            showMemberlist: false,
+            checkedNames: [],
+            chatID: '',
+            loading: false
         }
     },
 
@@ -56,27 +71,117 @@ export default {
                 myObj.scrollTop = myObj.scrollHeight;
             })
         },
-
         sendMessage() {
-            var fullDate = new Date();
-            var dateStr = fullDate.getFullYear() + "-" + (fullDate.getMonth() + 1) + "-" + fullDate.getDate(); // getMonth returns 0-11
-            var timeStr = fullDate.getHours() + ":" + fullDate.getUTCMinutes();
-            var mess = { date: dateStr, time: timeStr, from: "Me", message: this.myMessage, from_me: true }
-            this.messages.push(mess);
-            this.myMessage = "";
-            this.scrollToBottom();
+            if (this.memberName === 'all') {
+                this.myMessage = 'BROADCAST! ' + this.myMessage
+                let message = {
+                    message: this.myMessage,
+                    messagetype: 'string',
+                    filename: '',
+                    sender: this.user.name,
+                }
+                for (const [key, value] of Object.entries(this.all_chatIDs)) {
+                    // console.log("Value: ", value)
+                    message['id'] = key
+                    message['reciever'] = this.chatters[key]
+                    const chatRoom = {
+                        user: this.user.name,
+                        chatID: key
+                    }
+                    this.socket.emit('join', chatRoom)
+                    this.socket.emit('message', message)
+                    this.socket.emit('leave', { chatID: key })
+                }
+                message['id'] = 'all'
+                message['reciever'] = 'all'
+                this.messages.push(message)
+            } else {
+                let message = {
+                    message: this.myMessage,
+                    messagetype: 'string',
+                    filename: '',
+                    sender: this.user.name,
+                    id: this.chatID,
+                    reciever: this.memberName
+                }
+                this.socket.emit('message', message)
+                this.messages.push(message)
+            }
+            //save an instance of that message for putting it in activeChat
+            // this.myMessage = message
+            // console.log("My message: ", this.myMessage)
         },
         async loadMessages() {
             // Fetch messages from database
-            const userMessages = await getUserMessages("testuser17");
+            const userMessages = await getUserMessages(this.memberName);
             console.log("User messages: ", userMessages);
-            this.messages = userMessages;
-        }
+            this.messages = userMessages.chatMessages;
+            this.chatID = userMessages.chatID;
+            const chatRoom = {
+                user: this.user.name,
+                chatID: userMessages.chatID
+            }
+            this.socket.emit('join', chatRoom)
+        },
+        async getChatHistories(chatid) {
+            getChatHistories()
+                // .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    if (data.chats) {
+                        for (const [key, value] of Object.entries(data.chats)) {
+                            this.all_chatIDs[value.chatID] = value.chatMessages
+                            this.chatters[value.chatID] = value.chatter
+                            if (this.memberName === 'all') {
+                                for (const chat of value.chatMessages) {
+                                    if (chat['message'].startsWith("BROADCAST!")) {
+                                        this.messages.push(chat)
+                                    }
+                                }
+                            } else {
+                                for (const chat of value.chatMessages) {
+                                    // if (chat['message'].startsWith("BROADCAST!")) {
+                                    this.messages.push(chat)
+                                    // }
+                                }
+                            }
+                        }
+                        this.user = data.username
+                    }
+                })
+                .catch(err => console.log(err))
+        },
     },
 
+    // async created() {
+    //     await this.loadMessages();
+    //     this.scrollToBottom();
+    // },
     async created() {
-        await this.loadMessages();
-        this.scrollToBottom();
+        this.loading = true
+        const user = await getCurrentUser();
+        this.socket = io(CHAT_URL)
+        this.user = user;
+        if (this.memberName === 'all') {
+            await this.getChatHistories()
+        } else {
+            await this.loadMessages()
+            console.log("My mesages: ", this.messages)
+        }
+
+        this.socket.on('message', (data) => {
+            this.messages.push(data)
+            this.$refs.chatbox.scrolltoBottom()
+        })
+
+        this.socket.onAny((event, ...args) => {
+            console.log("socket onAny")
+            console.log(event, args)
+        })
+        this.loading = false
+    },
+    beforeUnmount() {
+        this.socket.disconnect()
     }
 
 

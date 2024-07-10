@@ -111,7 +111,7 @@ Fetches all transactions this user has, and display them either in Kronas or Bar
 				<!-- Chat tabs is a tabbed component with one tab holding the chat box and the other the member details -->
 				<chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"MEMBER DETAILS"' :rightTabTitle='"MEMBER CHAT"' />
 				<member_details_box v-if=onLeftChatboxTab :memberName="memberName" />
-				<chatbox v-else />
+				<chatbox v-else :memberName="memberName" />
 			</v-col>
 		</v-row>
 	</div>
@@ -121,7 +121,7 @@ Fetches all transactions this user has, and display them either in Kronas or Bar
 
 <script>
 import member_header from '/components/member_header.vue'
-import { getMember, getUserTransactions } from '/pages/gqlFetch.js'
+import { getMember, getUserTransactions, getChatHistories } from '/pages/gqlFetch.js'
 import member_tabs from '/components/member_tabs.vue'
 import chat_tabs from '/components/chat_tabs.vue'
 import chatbox from '/components/chatbox.vue'
@@ -199,6 +199,38 @@ export default {
 			})
 			this.allTransactions = this.transactions
 			this.isLoadingTransactionData = false // stop spinner
+		},
+		getChatHistories(chatid) {
+			getChatHistories()
+				// .then(res => res.json())
+				.then(data => {
+					console.log(data)
+					if (data.chats) {
+						while (this.history.length > 0) {
+							this.history.pop()
+						}
+						for (const [key, value] of Object.entries(data.chats)) {
+							// console.log("Key: ", key, "Value: ", value)
+							console.log("Value._id: ", value.chatID, "Value.chatMessages: ", value.chatMessages)
+							this.all_chatIDs[value.chatID] = value.chatMessages
+							this.history.push(value.chatMessages)
+							if (chatid) {
+								if (chatid === value.chatID) {
+									this.chosenChat = value.chatMessages
+									this.messages = value.chatMessages
+								}
+							} else if (this.$route.params.chatID) {
+								if (this.$route.params.chatID === value.chatID) {
+									this.chosenChat = value.chatMessages
+									this.messages = value.chatMessages
+								}
+							}
+						}
+						this.user = data.username
+						// this.getAllMembers()
+					}
+				})
+				.catch(err => console.log(err))
 		},
 
 

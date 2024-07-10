@@ -1,7 +1,9 @@
 const FormData = require('form-data')
 const EXPRESS_URL = "http://localhost:3000" //The address for the CreditCoopTech backend (the main app, not the admin app)
+const CHAT_URL = "http://localhost:3001" //The address for the CreditCoopTech chat backend
 
 /*This file has calls to the CreditCoopTech backend express app for things such as login, authenticate and chat functions*/
+export { CHAT_URL };
 
 export async function login(email, password) { // The same login function as on sb.web.app. Stores a cookie when login successful
   return await fetch(EXPRESS_URL + '/login', {

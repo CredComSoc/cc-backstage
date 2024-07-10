@@ -5,7 +5,12 @@
 <template>
     <div>
         <div class="notification-box fixed-box">
-            <v-row class="notification" v-for="notification in notifications" :key="notification._id">
+            <v-row v-if="loading">
+                <v-col>
+                    <v-progress-circular indeterminate color="primary"></v-progress-circular>
+                </v-col>
+            </v-row>
+            <v-row v-if="!loading" class="notification" v-for="notification in notifications" :key="notification._id">
                 <v-col cols="6">
                     <div class="timestamp">{{ notification.date }}</div>
                     <div class="larger-font">{{ notification.amount }}</div>
@@ -13,7 +18,7 @@
                 <v-col cols="6" class="align-right row-text">
                     {{ notification.fromUser }}<br>
                     {{ notification.type }}<br>
-                    {{ notification.toUser }}
+                    <!-- {{ notification.toUser }} -->
                 </v-col>
             </v-row>
         </div>
@@ -28,35 +33,28 @@ export default {
 
     data() {
         return {
-            notifications: [ // Dummy data
-                { date: "2023-09-12", fromUser: "Anna Karlsson", toUser: "Patrik Olsson", type: "Pending", amount: "50" },
-                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Patrik Olsson", type: "Paid", amount: "100" },
-                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Kurt Bertilsson", type: "Paid", amount: "540" },
-                { date: "2023-09-12", fromUser: "Anna Karlsson", toUser: "Patrik Olsson", type: "Pending", amount: "50" },
-                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Patrik Olsson", type: "Paid", amount: "100" },
-                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Kurt Bertilsson", type: "Paid", amount: "540" },
-                { date: "2023-09-12", fromUser: "Anna Karlsson", toUser: "Patrik Olsson", type: "Pending", amount: "50" },
-                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Patrik Olsson", type: "Paid", amount: "100" },
-                { date: "2023-09-12", fromUser: "Alfred Skog", toUser: "Kurt Bertilsson", type: "Paid", amount: "540" },
-            ],
-
+            notifications: [],
+            loading: false
         }
     },
 
     methods: {
         async updateNotifications() {
+            this.loading = true
             const currentUser = await getCurrentUser()
-            this.notifications = await getUserNotifications(currentUser.name)
-            if (this.notifications == null) {
+            // this.notifications = await getUserNotifications(currentUser.name)
+            this.notifications = await getUserNotifications('testuser')
+            if (this.notifications.length === 0) {
                 this.notifications = []
-                var noNotifications = { date: "", fromUser: "", toUser: "", type: "", amount: "No notifications" }
+                var noNotifications = { date: "", fromUser: "", toUser: "", type: "No notification", amount: '0' }
                 this.notifications.push(noNotifications)
             }
+            this.loading = false
         }
     },
 
-    mounted() {
-        this.updateNotifications()
+    async mounted() {
+        await this.updateNotifications()
     }
 
 }
