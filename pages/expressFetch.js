@@ -1,7 +1,9 @@
 const FormData = require('form-data')
-const EXPRESS_URL = "http://localhost:3000" //The address for the CreditCoopTech backend (the main app, not the admin app)
-const CHAT_URL = "http://localhost:3001" //The address for the CreditCoopTech chat backend
-
+import { CC_BACKEND_URL } from '/api/config.js'
+// const EXPRESS_URL = "http://localhost:3000" //The address for the CreditCoopTech backend (the main app, not the admin app)
+// const CHAT_URL = "http://localhost:3001" //The address for the CreditCoopTech chat backend
+const EXPRESS_URL = CC_BACKEND_URL
+const CHAT_URL = CC_BACKEND_URL
 /*This file has calls to the CreditCoopTech backend express app for things such as login, authenticate and chat functions*/
 export { CHAT_URL };
 

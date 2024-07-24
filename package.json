@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.2",
+    "@nuxtjs/dotenv": "^1.4.2",
     "apexcharts": "^3.42.0",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.0",
     "consola": "^3.2.3",
     "core-js": "^3.25.3",
+    "dotenv-flow": "^4.1.0",
     "express": "^4.19.2",
     "graphql": "^16.8.1",
     "graphql-http": "^1.22.1",
@@ -39,7 +41,6 @@
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10",
     "vue-vis-network": "^1.0.2"
-    
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
