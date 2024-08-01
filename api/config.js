@@ -5,4 +5,6 @@ const CC_NODE_ENABLED = process.env.CC_NODE_ENABLED
 const DB_URL = process.env.DB_URL
 const DB_FOLDER = process.env.DB_FOLDER
 
+console.log("Environment variables: ", CC_BACKEND_URL, CC_NODE_URL, DB_URL, DB_FOLDER, CC_NODE_ENABLED)
+
 export { CC_BACKEND_URL, CC_NODE_URL, DB_URL, DB_FOLDER, CC_NODE_ENABLED }
