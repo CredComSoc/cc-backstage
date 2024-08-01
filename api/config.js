@@ -1,4 +1,5 @@
 // const CC_BACKEND_URL = process.env.CC_BACKEND_URL
+require('dotenv').config()
 const CC_BACKEND_URL = "https://api.credcomstaging.mutualcredit.services"
 const CC_NODE_URL = process.env.CC_NODE_URL
 const CC_NODE_ENABLED = process.env.CC_NODE_ENABLED
