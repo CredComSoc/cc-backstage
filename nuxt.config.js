@@ -43,12 +43,14 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    // ['@nuxtjs/dotenv', { filename: '.env' }],
   ],
 
    // Modules (https://go.nuxtjs.dev/config-modules)
    modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
+     '@nuxtjs/axios',
+     '@nuxtjs/dotenv',
   ],
   serverMiddleware: {
     '/api': '~/api',
@@ -66,5 +68,9 @@ export default {
   },
   router: {
     middleware: "auth",
-  }
+  },
+
+  server: {
+    port: 8001
+  },
 }
