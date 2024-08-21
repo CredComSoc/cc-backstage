@@ -26,6 +26,7 @@
             <div class="billing-details-text">{{ memberDetails.billing.box }}</div>
             <div class="billing-details-text">{{ memberDetails.billing.address }}</div>
             <div class="billing-details-text">{{ memberDetails.billing.orgNumber }}</div>
+            <div class="billing-details-text"><button ref="editMemberData" @click="editMember">Edit Member</button></div>
         </div>
     </div>
 </template>
@@ -77,7 +78,14 @@ export default {
                 this.imgUrl = response.url
             }
         },
-
+        editMember() {
+            this.$router.push({
+                path: '/admin/admin_add_member',
+                query: {
+                    memberName: this.memberName
+                }
+            })
+        }
     },
     mounted: async function () {
         await this.updateMemberDetails()
@@ -112,5 +120,22 @@ export default {
 
 .align-right {
     text-align: right;
+}
+
+button {
+    padding: 0;
+    border: none;
+    /* background: none; */
+    margin-top: 20px;
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+    padding: 2% 2%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #4690CD;
+    color: white;
 }
 </style>

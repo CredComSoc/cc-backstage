@@ -2,8 +2,15 @@
   <v-app dark class="default_background">
     <v-app-bar fixed app>
       <v-col></v-col>
+      <v-col>
+        <addData></addData>
+      </v-col>
       <v-col></v-col>
-      <v-col align="right">
+      <v-col>
+        <addMembers></addMembers>
+      </v-col>
+      <v-col></v-col>
+      <v-col>
         <members></members>
       </v-col>
       <v-col></v-col>
@@ -39,6 +46,8 @@
 <script>
 import svenskBarter from './svensk_barter.png';
 import members from '/components/topbar_members.vue';
+import addMembers from '/components/topbar_add_member.vue';
+import addData from '/components/topbar_add_data.vue';
 import help from '/components/topbar_help.vue';
 import notice from '/components/topbar_notice.vue';
 import { logout } from '/pages/expressFetch.js';
@@ -67,6 +76,8 @@ export default {
   {
     help: help,
     members: members,
+    addMembers: addMembers,
+    addData: addData,
     notice: notice,
   }
 }

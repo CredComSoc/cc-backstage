@@ -3,7 +3,7 @@ export default {
   ssr: false,
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -50,7 +50,7 @@ export default {
    modules: [
     // https://go.nuxtjs.dev/axios
      '@nuxtjs/axios',
-     '@nuxtjs/dotenv',
+     '@nuxtjs/i18n'
   ],
   serverMiddleware: {
     '/api': '~/api',
@@ -62,9 +62,27 @@ export default {
   vuetify: {
     optionsPath: './vuetify.options.js',
   },
-
+  // i18n module configuration (https://i18n.nuxtjs.org/options-reference)
+  i18n: {
+    locales: ['en'], // Example: Supported locales
+    defaultLocale: 'en',
+    lazy: true,
+    langDir: 'locales/',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieName: 'locale',
+      cookieExpires: 7 * 24 * 60 * 60,
+      alwaysRedirect: false
+    }
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    extend (config, { isDev, isClient }) {
+
+       config.node = {
+          fs: 'empty'
+        }
+    }
   },
   router: {
     middleware: "auth",

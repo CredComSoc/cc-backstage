@@ -2,7 +2,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 import { DB_URL, DB_FOLDER } from './config.js'
 // const config = require('./config');
 const uuid = require('uuid');
-const { query } = require('express');
+// const { query } = require('express');
 const { model } = require('mongoose');
 
 const mongoURL = DB_URL;
