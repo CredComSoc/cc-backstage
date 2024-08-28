@@ -88,7 +88,7 @@ export default {
     middleware: "auth",
   },
 
-  server: {
-    port: 8001
-  },
+  // server: {
+  //   port: 8001
+  // },
 }
