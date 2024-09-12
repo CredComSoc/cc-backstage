@@ -1,9 +1,9 @@
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
-  ssr: false,
+  ssr: true,
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -43,12 +43,13 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    // ['@nuxtjs/dotenv', { filename: '.env' }],
   ],
 
    // Modules (https://go.nuxtjs.dev/config-modules)
    modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
+     '@nuxtjs/axios',
   ],
   serverMiddleware: {
     '/api': '~/api',
@@ -60,11 +61,33 @@ export default {
   vuetify: {
     optionsPath: './vuetify.options.js',
   },
-
+  // i18n module configuration (https://i18n.nuxtjs.org/options-reference)
+  i18n: {
+    locales: ['en'], // Example: Supported locales
+    defaultLocale: 'en',
+    lazy: true,
+    langDir: 'locales/',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieName: 'locale',
+      cookieExpires: 7 * 24 * 60 * 60,
+      alwaysRedirect: false
+    }
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    extend (config, { isDev, isClient }) {
+
+       config.node = {
+          fs: 'empty'
+        }
+    }
   },
   router: {
     middleware: "auth",
-  }
+  },
+
+  // server: {
+  //   port: 4000
+  // },
 }

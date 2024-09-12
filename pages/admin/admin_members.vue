@@ -11,7 +11,8 @@
         <member_header @keyup="onSearch" :title='"ALL MEMBERS"' />
         <v-row>
             <v-col cols="8">
-                <member_tabs @click="setMemberListTabStatus" :blueTabTitle='"MEMBERS"' :greenTabTitle='"TRANSACTIONS"' />
+                <member_tabs @click="setMemberListTabStatus" :blueTabTitle='"MEMBERS"'
+                    :greenTabTitle='"TRANSACTIONS"' />
 
                 <div v-if="onBlueTab">
                     <v-row class="row-headings">
@@ -35,7 +36,8 @@
                         <div v-else> <!-- Display member list-->
                             <member_row v-for="member in members" :key="member.id" :id="member.id"
                                 :accountName="member.accountName" :balance="member.balance" :status="member.status"
-                                :phone="member.phone" :email="member.email" />
+                                :phone="member.phone" :email="member.email"
+                                :userChats="memberChats[member.accountName]" />
                         </div>
                     </div>
                     <div class="admin-box">
@@ -92,7 +94,7 @@
                 <chat_tabs @click="setChatboxTabStatus" :leftTabTitle='"NOTIFICATIONS/LOG"'
                     :rightTabTitle='"MEMBER CHAT"' />
                 <notification_box v-if=onLeftChatboxTab />
-                <chatbox v-else />
+                <chatbox v-else :memberName="'all'" />
             </v-col>
         </v-row>
     </div>
@@ -101,6 +103,7 @@
 <script>
 import { getMembers, getAllTransactions } from '/pages/gqlFetch.js'
 import { getCurrentUser } from '/pages/expressFetch.js'
+import { getChatHistories } from '/pages/gqlFetch.js'
 import member_header from '/components/member_header.vue'
 import member_row from '/components/member_row.vue'
 import member_tabs from '/components/member_tabs.vue'
@@ -119,6 +122,7 @@ export default {
         return {
             members: [],
             allMembers: [],
+            memberChats: {},
             admin: {},
             search: "",
             onBlueTab: true,
@@ -180,16 +184,32 @@ export default {
 
         async updateAdminUser() {
             this.admin = await getCurrentUser()
-        }
+        },
+        getChatHistories() {
+            getChatHistories()
+                .then(data => {
+                    if (data.chats) {
+                        while (this.history.length > 0) {
+                            this.history.pop()
+                        }
+                        for (const [key, value] of Object.entries(data.chats)) {
+                            this.memberChats[value.chatID] = value.chatMessages
+                        }
+                    }
+                })
+                .catch(err => console.log(err))
+        },
 
 
     },
-    mounted: function () {
+    mounted: async function () {
         this.isLoadingUserData = true // start spinner
         this.isLoadingTransactionData = true
         this.updateMembers()
         this.updateAdminUser()
+        this.getChatHistories()
         this.updateTransactions()
+        
 
     }
 

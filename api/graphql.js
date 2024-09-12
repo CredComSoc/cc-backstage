@@ -1,6 +1,10 @@
 const { buildSchema } = require("graphql")
 const { MongoClient, ObjectId } = require('mongodb')
 import { CC_BACKEND_URL, DB_FOLDER, DB_URL, CC_NODE_URL, CC_NODE_ENABLED } from './config.js'
+import { initChat, deleteChat, createChat, chatExists, getAllChatIDs, getAllChatHistories, getChatHistory, getChatID, checkChatStatus } from './chatFunctions.js'
+// const uuid = require('uuid');
+// const { query } = require('express');
+// const { model } = require('mongoose');
 
 /*
 To define new objects to use in graphql, define in the var schema below
@@ -80,6 +84,22 @@ var schema = buildSchema(`
         itemCount: Int
         limitSurplusAmount: Int
     }
+    type ChatHistory{
+        message: String
+        messageType: String
+        filename: String
+        sender: String
+        receiver: String
+    }
+    type ChatHistorys{
+        chatID: String
+        chatter: String
+        chatMessages: [ChatHistory]
+    }
+    type UserChats{
+        username: String
+        chats: [ChatHistorys]
+    }
     type Query{
         member(id: Int, accountName: String): Member
         allMembers: [Member]
@@ -89,12 +109,12 @@ var schema = buildSchema(`
         userTransactions(id: String!): [Transaction]
         userNotifications(name: String!): [Notification]
         userCount: Int
+        userMessages(user: String, name: String): ChatHistorys
+        chatHistories(user: String): UserChats
     }
 
-
-
 `)
-
+        // userMessages(user: String!, name: String!): [Messages]
 // Dummy CC-node transactions for when the node is not used
 // Enable/disable the CC_NODE_ENABLED const in config.js to use
 const allTransactions = [
@@ -416,16 +436,73 @@ async function getUserNotifications({ name }) {
         const db = await MongoClient.connect(DB_URL)
         const dbo = db.db(DB_FOLDER)//Getting all notifications from the database to a specific user
         var notifications = await dbo.collection("notifications").find({ "toUser": name }).toArray()
+        for (let i = 0; i < notifications.length; i++) {
+            let date = notifications[i]['date']
+            let year = date.getFullYear()
+            let month = String(date.getMonth() + 1).padStart(2, '0')
+            let day = String(date.getDate()).padStart(2, '0')
+            let formattedDate = year + "-" + month + "-" + day
+            notifications[i]['date'] = formattedDate
+        }
         db.close()
     } catch (error) {
         console.error("Query userNotifications(" + name + ") encountered an error: " + error)
         throw error
     }
     console.info("Query userNotifications(" + name + ") finished without errors")
+    // console.log(notifications)
     return notifications
 }
 
 
+async function getUserChats({ user, name }) {
+    // const { chatExists } = require('./chatFunctions.js');
+    console.log("getUserChats called...")
+    try {
+        const chatID = await chatExists(user, name);
+        if (chatID === false) {
+            console.log("Query userChats(" + user + ") finished without errors and found no data")
+            return []
+        } else {
+            // const { getChatHistory } = require('./chatFunctions.js');
+            const history = await getChatHistory(chatID);
+            console.log("Query userChats(" + name + ") finished without errors")
+            const chatInfo = {};
+            chatInfo.chatID = chatID;
+            // chatInfo.chatter = name;
+            chatInfo.chatMessages = history;
+            return chatInfo;
+        }
+    } catch (error) {
+        console.log("Query userChats(" + user + ") encountered an error: " + error)
+        throw error
+    }
+}
+
+async function getChatHistories({ user }) {
+    console.log("getChatHistories called...")
+    try {
+        const chatHistories = await getAllChatHistories(user);
+        if (chatHistories === false) {
+            console.log("Query getChatHistories(" + user + ") finished without errors and found no data")
+            return []
+        } else {
+            const userInfo = {};
+            userInfo.chats = chatHistories;
+            userInfo.username = user;
+            console.log("User chats: ", userInfo)
+            console.log("Query getChatHistories(" + user + ") finished without errors")
+            return userInfo;
+        }
+    } catch (error) {
+        console.log("Query userChatHistory(" + user + ") encountered an error: " + error)
+        throw error
+    }
+}
+
+    // userMessages: ({ user, name }) => {
+    //     return getUserChats({ user, name })
+    // },
 var root = { //This is where what each query does is defined. When a query is sent with any of the names below, the corresponding function is called.
     member: ({ id, accountName }) => {
         return getMember({ id, accountName })
@@ -449,8 +526,13 @@ var root = { //This is where what each query does is defined. When a query is se
         return getUserTransactions({ id })
     },
     userNotifications: ({ name }) => {
-
         return getUserNotifications({ name })
+    },
+    chatHistories: ({ user }) => {
+        return getChatHistories({ user })
+    },
+    userMessages: ({ user, name }) => {
+        return getUserChats({ user, name })
     }
 
 }

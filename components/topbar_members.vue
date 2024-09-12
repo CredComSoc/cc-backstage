@@ -21,6 +21,7 @@
       membersClicked()
       {
         this.$router.push('/admin/admin_members');
+        // this.$router.push('/admin/admin_add_member');
 
       }
     },

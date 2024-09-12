@@ -4,7 +4,14 @@
 
 <template>
     <div>
-        <div class="member-details-box fixed-box">
+        <div v-if="loading">
+            <v-row>
+                <v-col>
+                    <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+                </v-col>
+            </v-row>
+        </div>
+        <div v-if="!loading" class="member-details-box fixed-box">
             <img v-bind:src="imgUrl" class="member-details-image" />
             <div class="member-details-heading">Company name</div>
             <div class="member-details-text">{{ memberDetails.accountName }}</div>
@@ -19,6 +26,7 @@
             <div class="billing-details-text">{{ memberDetails.billing.box }}</div>
             <div class="billing-details-text">{{ memberDetails.billing.address }}</div>
             <div class="billing-details-text">{{ memberDetails.billing.orgNumber }}</div>
+            <div class="billing-details-text"><button ref="editMemberData" @click="editMember">Edit Member</button></div>
         </div>
     </div>
 </template>
@@ -51,13 +59,18 @@ export default {
                 },
                 logo: ""
             },
-
+            // memberDetails: {},
+            loading: false
         }
     },
 
     methods: {
         async updateMemberDetails() {
+            this.loading = true
             this.memberDetails = await getMember(this.memberName)
+            await this.getImage()
+            this.loading = false
+            console.log("Member details: ", this.memberDetails)
         },
         async getImage() {
             const response = await getImg(this.memberDetails.logo)
@@ -65,11 +78,17 @@ export default {
                 this.imgUrl = response.url
             }
         },
-
+        editMember() {
+            this.$router.push({
+                path: '/admin/admin_add_member',
+                query: {
+                    memberName: this.memberName
+                }
+            })
+        }
     },
     mounted: async function () {
         await this.updateMemberDetails()
-        this.getImage()
     }
 }
 </script>
@@ -101,5 +120,22 @@ export default {
 
 .align-right {
     text-align: right;
+}
+
+button {
+    padding: 0;
+    border: none;
+    /* background: none; */
+    margin-top: 20px;
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+    padding: 2% 2%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #4690CD;
+    color: white;
 }
 </style>
