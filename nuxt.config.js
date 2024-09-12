@@ -50,7 +50,6 @@ export default {
    modules: [
     // https://go.nuxtjs.dev/axios
      '@nuxtjs/axios',
-     '@nuxtjs/i18n'
   ],
   serverMiddleware: {
     '/api': '~/api',
@@ -89,6 +88,6 @@ export default {
   },
 
   // server: {
-  //   port: 8001
+  //   port: 4000
   // },
 }
